@@ -23,7 +23,7 @@ Auth::routes();
 Route::get('/about', 'HomeController@showAbout');
 Route::get('/dashboard', 'HomeController@showDashboard');
 Route::get('/help', 'HomeController@showHelp');
-Route::get('/home', 'HomeController@showHome');
+Route::get('/home', 'HomeController@index');
 Route::get('/login1', 'HomeController@showLogin1');
 Route::get('/register1', 'HomeController@showRegister1');
 Route::get('/unit', 'HomeController@showUnit');
