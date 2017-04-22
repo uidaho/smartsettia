@@ -15,8 +15,8 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li class="active" role="presentation"><a href="/temp/dashboard">Dashboard </a></li>
-				<li role="presentation"><a href="/temp/help">Help </a></li>
+				<li class="active" role="presentation"><a href="/dashboard">Dashboard </a></li>
+				<li role="presentation"><a href="/help">Help </a></li>
 				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li role="presentation"><a href="#">Manage Users </a></li>

@@ -35,7 +35,7 @@
 				<div class="form-group">
 					<button class="btn btn-primary btn-block" type="submit">Sign Up</button>
 				</div>
-				<a href="/temp/login" class="already">You already have an account? Login here.</a></form>
+				<a href="/login1" class="already">You already have an account? Login here.</a></form>
 		</div>
 	</div>
 @endsection
@@ -49,7 +49,7 @@
 				<div class="col-sm-6 social-icons">
 					<a href="#"><i class="fa fa-facebook"></i></a>
 					<a href="#"><i class="fa fa-twitter"></i></a>
-					<a href="/temp/dashboard"><i class="fa fa-instagram" href="/dashboard.html"></i></a>
+					<a href="/dashboard"><i class="fa fa-instagram" href="/dashboard.html"></i></a>
 				</div>
 			</div>
 		</div>
