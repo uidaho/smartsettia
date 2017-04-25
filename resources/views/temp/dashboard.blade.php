@@ -161,10 +161,19 @@
 		var interval = setInterval(checkTime, 100);
 		function checkTime()
 		{
-			if(Math.floor(myVideo.currentTime) == 28){
+			if(Math.floor(myVideo.currentTime) == 18){
 				//clearInterval(interval);
 				myVideo.pause();
-				myVideo.currentTime = 10;
+				//myVideo.currentTime = 18;
+				var temp = currentType;
+				currentType = lastType;
+				lastType = temp;
+				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+			}
+			else if(Math.floor(myVideo.currentTime) == 37){
+				//clearInterval(interval);
+				myVideo.pause();
+				//myVideo.currentTime = 18;
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
@@ -173,11 +182,11 @@
 		}
 
 		//Detect video finished
-		document.getElementById('video1').addEventListener('ended', openFinished, false);
+		/*document.getElementById('video1').addEventListener('ended', openFinished, false);
 		function openFinished(e)
 		{
 			myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
-		}
+		}*/
 
 		//Play and pause commands
 		function playPause()
