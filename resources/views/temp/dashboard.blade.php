@@ -1,7 +1,7 @@
 @extends('temp.layouts.main2')
 
 @section('head')
-	<title>Landing Page</title>
+	<title>Dashboard</title>
 
 	<nav class="navbar navbar-default">
 		<div class="container">
@@ -111,7 +111,7 @@
 					<td><i class="glyphicon glyphicon-collapse-up"></i> OPEN </td>
 					<td>
 						<div class="btn-group" role="group">
-							<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="mainButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
+							<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="secondaryButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>
@@ -181,7 +181,8 @@
 
 	<script>
 		var myVideo = document.getElementById("video1");
-		var myButton = document.getElementById("mainButton");
+		var mainButton = document.getElementById("mainButton");
+		var secondaryButton = document.getElementById("secondaryButton");
 		var currentType = "Close";
 		var lastType = "Open";
 
@@ -196,7 +197,8 @@
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 			}
 			else if(Math.floor(myVideo.currentTime) == 37){
 				//clearInterval(interval);
@@ -205,7 +207,8 @@
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 			}
 		}
 
@@ -213,7 +216,7 @@
 		/*document.getElementById('video1').addEventListener('ended', openFinished, false);
 		function openFinished(e)
 		{
-			myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+			mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 		}*/
 
 		//Play and pause commands
@@ -222,12 +225,14 @@
 			if (myVideo.paused)
 			{
 				myVideo.play();
-				myButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
+				mainButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
 			}
 			else
 			{
 				myVideo.pause();
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
 			}
 		}
 	</script>

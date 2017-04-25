@@ -1,7 +1,7 @@
 @extends('temp.layouts.main2')
 
 @section('head')
-	<title>Landing Page</title>
+	<title>Unit</title>
 
 	<nav class="navbar navbar-default">
 		<div class="container">
