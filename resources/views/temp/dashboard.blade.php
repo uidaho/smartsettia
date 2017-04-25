@@ -17,17 +17,17 @@
 			<h3>Unit List Boxed</h3></div>
 		<p>A list of all the units in a boxed view.</p>
 		<div class="row product">
-			<div class="col-md-5 col-md-offset-0">
+			<div class="col-md-7">
 
 
-				<video id="video1" width="420">
+				<video id="video1" width="650">
 					<source src="/video/cover.mp4" type="video/mp4">
 					Your browser does not support HTML5 video.
 				</video>
 
 
 			</div>
-			<div class="col-md-7">
+			<div class="col-md-5">
 				<h2>Unit Alpha</h2>
 				<p><i class="fa fa-id-card-o"></i> uid-1001 <i class="fa fa-address-card-o"></i> 66.123.129.12 <i class="fa fa-clock-o"></i> 2/27/2017 2:09 PM <i class="fa fa-thermometer-empty"></i> 47 C </p>
 				<div>
@@ -52,7 +52,7 @@
 
 					<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="mainButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 					<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
-					<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>
+					<!--button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button-->
 					<button class="btn btn-primary btn-warning" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
 					<button class="btn btn-primary btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Delete</button>
 				</div>
