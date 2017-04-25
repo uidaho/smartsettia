@@ -155,8 +155,6 @@
 		var currentType = "Close";
 		var lastType = "Open";
 
-		myVideo.currentTime = 10;
-
 		//Detect time of video
 		var interval = setInterval(checkTime, 100);
 		function checkTime()
@@ -164,7 +162,7 @@
 			if(Math.floor(myVideo.currentTime) == 18){
 				//clearInterval(interval);
 				myVideo.pause();
-				//myVideo.currentTime = 18;
+				myVideo.currentTime = 19;
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
@@ -173,7 +171,7 @@
 			else if(Math.floor(myVideo.currentTime) == 37){
 				//clearInterval(interval);
 				myVideo.pause();
-				//myVideo.currentTime = 18;
+				myVideo.currentTime = 0;
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
