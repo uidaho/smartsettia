@@ -2,6 +2,37 @@
 
 @section('head')
 	<title>Landing Page</title>
+
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><i class="glyphicon glyphicon-grain"></i>SmartSettia</a>
+				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+			</div>
+			<div class="collapse navbar-collapse" id="navcol-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#"> <img src="/img/avatar.jpg" class="dropdown-image">jvandal<span class="caret"></span></a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li role="presentation"><a href="/user-settings">Settings </a></li>
+							<li role="presentation"><a href="/user-notifications">Notifications </a></li>
+							<li role="presentation" class="active"><a href="/">Logout (jvandal) </a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active" role="presentation"><a href="/dashboard">Dashboard </a></li>
+					<li role="presentation"><a href="/help">Help </a></li>
+					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li role="presentation"><a href="#">Manage Users </a></li>
+							<li role="presentation"><a href="#">Manage Groups </a></li>
+							<li role="presentation"><a href="#">Manage Units </a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 @endsection
 
 @section('mainBody')
@@ -76,12 +107,11 @@
 				<tbody>
 				<tr>
 					<td>1 </td>
-					<td href="/unit.html">Alpha</td>
+					<td><a href="/unit">Alpha</a></td>
 					<td><i class="glyphicon glyphicon-collapse-up"></i> OPEN </td>
 					<td>
 						<div class="btn-group" role="group">
-							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-resize-full"></i> Open</button>
-							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-resize-small"></i> Close</button>
+							<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="mainButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>

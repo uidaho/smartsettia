@@ -2,6 +2,37 @@
 
 @section('head')
 	<title>Landing Page</title>
+
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><i class="glyphicon glyphicon-grain"></i>SmartSettia</a>
+				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+			</div>
+			<div class="collapse navbar-collapse" id="navcol-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#"> <img src="/img/avatar.jpg" class="dropdown-image">jvandal<span class="caret"></span></a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li role="presentation"><a href="/user-settings">Settings </a></li>
+							<li role="presentation"><a href="/user-notifications">Notifications </a></li>
+							<li role="presentation" class="active"><a href="/">Logout (jvandal) </a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active" role="presentation"><a href="/dashboard">Dashboard </a></li>
+					<li role="presentation"><a href="/help">Help </a></li>
+					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li role="presentation"><a href="#">Manage Users </a></li>
+							<li role="presentation"><a href="#">Manage Groups </a></li>
+							<li role="presentation"><a href="#">Manage Units </a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 @endsection
 
 @section('mainBody')
@@ -19,15 +50,15 @@
 	</section>
 	<div class="container">
 		<div class="row product">
-			<div class="col-md-5 col-md-offset-0">
+			<div class="col-md-6">
 
-				<video id="video1" width="420">
+				<video id="video1" width=100%" height="auto">
 					<source src="/video/cover.mp4" type="video/mp4">
 					Your browser does not support HTML5 video.
 				</video>
 
 			</div>
-			<div class="col-md-7">
+			<div class="col-md-6">
 				<h2>Unit Alpha</h2>
 				<p><i class="fa fa-id-card-o"></i> uid-1001 <i class="fa fa-address-card-o"></i> 66.123.129.12 <i class="fa fa-clock-o"></i> 2/27/2017 2:09 PM <i class="fa fa-thermometer-empty"></i> 47 C </p>
                 <textarea rows="5" style="width:100%" placeholder="Type your notes about this unit here..."
@@ -140,16 +171,23 @@
 		var currentType = "Close";
 		var lastType = "Open";
 
-		myVideo.currentTime = 10;
-
 		//Detect time of video
 		var interval = setInterval(checkTime, 100);
 		function checkTime()
 		{
-			if(Math.floor(myVideo.currentTime) == 28){
+			if(Math.floor(myVideo.currentTime) == 18){
 				//clearInterval(interval);
 				myVideo.pause();
-				myVideo.currentTime = 10;
+				myVideo.currentTime = 19;
+				var temp = currentType;
+				currentType = lastType;
+				lastType = temp;
+				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+			}
+			else if(Math.floor(myVideo.currentTime) == 37){
+				//clearInterval(interval);
+				myVideo.pause();
+				myVideo.currentTime = 0;
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
@@ -158,11 +196,11 @@
 		}
 
 		//Detect video finished
-		document.getElementById('video1').addEventListener('ended', openFinished, false);
-		function openFinished(e)
-		{
-			myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
-		}
+		/*document.getElementById('video1').addEventListener('ended', openFinished, false);
+		 function openFinished(e)
+		 {
+		 myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+		 }*/
 
 		//Play and pause commands
 		function playPause()
