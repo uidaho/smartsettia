@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', '{{ $view_name }}')
-
 @section('content')
 <div class="container">
     <div class="row">

@@ -24,3 +24,7 @@ Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@index');
 Route::get('about', 'HomeController@about');
 Route::get('help', 'HomeController@help');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
