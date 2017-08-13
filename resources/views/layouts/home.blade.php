@@ -48,7 +48,26 @@
                     <li class="active" role="presentation"><a href="{{ route('') }}">Home</a></li>
                     <li role="presentation"><a href="{{ route('about') }}">About</a></li>
                     <li role="presentation"><a href="{{ route('help') }}">Help</a></li>
-                    <li role="presentation"><a href="{{ route('login') }}">Log In</a></li>
+                    @if (Auth::guest())
+                        <li role="presentation"><a href="{{ route('login') }}">Login</a></li>
+                        <li role="presentation"><a href="{{ route('login') }}">Register</a></li>
+                    @else
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                                 document.getElementById('logout-form').submit();">
+                                        Logout
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>
