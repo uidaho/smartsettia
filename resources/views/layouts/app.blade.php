@@ -36,7 +36,7 @@
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand navbar-link" href="{{ route('/') }}">
+                <a class="navbar-brand navbar-link" href="/">
                     <i class="glyphicon glyphicon-grain"></i>SmartSettia
                 </a>
                 <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span
@@ -45,7 +45,7 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active" role="presentation"><a href="{{ route('/') }}">Home</a></li>
+                    <li class="active" role="presentation"><a href="/">Home</a></li>
                     <li role="presentation"><a href="{{ route('about') }}">About</a></li>
                     <li role="presentation"><a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
