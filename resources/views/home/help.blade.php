@@ -1,4 +1,4 @@
-@extends('temp.layouts.main')
+@extends('layouts.home')
 
 @section('title', '{{ $view_name }}')
 

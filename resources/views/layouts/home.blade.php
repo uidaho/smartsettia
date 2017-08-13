@@ -27,7 +27,7 @@
         ]) !!};
     </script>
 
-    <!-- DEPRICATED: yeild head -->
+    <!-- DEPRICATED: yield head -->
     @yield('head')
 </head>
 
