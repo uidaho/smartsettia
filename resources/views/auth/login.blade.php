@@ -9,6 +9,23 @@
 			<form method="POST" action="{{ route('login') }}">
                 {{ csrf_field() }}
 				<h2 class="text-center">Log in</h2>
+				<div class="form-group">
+					<input class="form-control" type="text" placeholder="Username or Email" name="username">
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="password" name="password" placeholder="Password">
+				</div>
+				<div class="form-group">
+					<div class="checkbox">
+						<label class="control-label">
+							<input type="checkbox">Remember me on this computer</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-primary btn-block" type="submit">Log In</button>
+				</div>
+
+
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label for="email" class="col-md-4 control-label">E-Mail Address</label>
@@ -59,8 +76,7 @@
                         </a>
                     </div>
                 </div>
-
-                <a href="/register1" class="already">Dont have an account? Click here.</a></form>
+            </form>
 		</div>
 	</div>
 @endsection
