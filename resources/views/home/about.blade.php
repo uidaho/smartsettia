@@ -1,6 +1,6 @@
 @extends('layouts.home')
 
-@section('title', '{{ $view_name }}')
+@section('title', 'About')
 
 @section('content')
 	<div class="team-boxed">

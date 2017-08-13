@@ -1,6 +1,6 @@
 @extends('layouts.home')
 
-@section('title', '{{ $view_name }}')
+@section('title', 'Help')
 
 @section('content')
 	<div class="article-list">
