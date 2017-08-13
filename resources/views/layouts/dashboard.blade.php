@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ config('app.locale') }}">
+<html lang="{{ config('app.locale', 'en') }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,12 +45,12 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active" role="presentation"><a href="/">Home</a></li>
-                    <li role="presentation"><a href="{{ route('about') }}">About</a></li>
-                    <li role="presentation"><a href="{{ route('help') }}">Help</a></li>
+                    <li class="{{ Route::currentRouteNamed('home') || Route::currentRouteNamed('/') ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
+                    <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
+                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
-                        <li role="presentation"><a href="{{ route('login') }}">Login</a></li>
-                        <li role="presentation"><a href="{{ route('login') }}">Register</a></li>
+                        <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation"><a href="{{ route('register') }}">Register</a></li>
+                        <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation"><a href="{{ route('login') }}">Login</a></li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
