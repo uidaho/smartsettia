@@ -1,7 +1,38 @@
 @extends('temp.layouts.main2')
 
 @section('head')
-	<title>Landing Page</title>
+	<title>Dashboard</title>
+
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><i class="glyphicon glyphicon-grain"></i>SmartSettia</a>
+				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+			</div>
+			<div class="collapse navbar-collapse" id="navcol-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#"> <img src="/img/avatar.jpg" class="dropdown-image">jvandal<span class="caret"></span></a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li role="presentation"><a href="/user-settings">Settings </a></li>
+							<li role="presentation"><a href="/user-notifications">Notifications </a></li>
+							<li role="presentation" class="active"><a href="/">Logout (jvandal) </a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active" role="presentation"><a href="/dashboard">Dashboard </a></li>
+					<li role="presentation"><a href="/help">Help </a></li>
+					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li role="presentation"><a href="#">Manage Users </a></li>
+							<li role="presentation"><a href="#">Manage Groups </a></li>
+							<li role="presentation"><a href="#">Manage Units </a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 @endsection
 
 @section('mainBody')
@@ -17,17 +48,17 @@
 			<h3>Unit List Boxed</h3></div>
 		<p>A list of all the units in a boxed view.</p>
 		<div class="row product">
-			<div class="col-md-7">
+			<div class="col-md-6">
 
 
-				<video id="video1" width="650">
+				<video id="video1" width=100%" height="auto">
 					<source src="/video/cover.mp4" type="video/mp4">
 					Your browser does not support HTML5 video.
 				</video>
 
 
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-6">
 				<h2>Unit Alpha</h2>
 				<p><i class="fa fa-id-card-o"></i> uid-1001 <i class="fa fa-address-card-o"></i> 66.123.129.12 <i class="fa fa-clock-o"></i> 2/27/2017 2:09 PM <i class="fa fa-thermometer-empty"></i> 47 C </p>
 				<div>
@@ -52,7 +83,7 @@
 
 					<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="mainButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 					<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
-					<!--button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button-->
+					<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>
 					<button class="btn btn-primary btn-warning" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
 					<button class="btn btn-primary btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Delete</button>
 				</div>
@@ -76,12 +107,11 @@
 				<tbody>
 				<tr>
 					<td>1 </td>
-					<td href="/unit.html">Alpha</td>
+					<td><a href="/unit">Alpha</a></td>
 					<td><i class="glyphicon glyphicon-collapse-up"></i> OPEN </td>
 					<td>
 						<div class="btn-group" role="group">
-							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-resize-full"></i> Open</button>
-							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-resize-small"></i> Close</button>
+							<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="secondaryButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
 							<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>
@@ -151,7 +181,8 @@
 
 	<script>
 		var myVideo = document.getElementById("video1");
-		var myButton = document.getElementById("mainButton");
+		var mainButton = document.getElementById("mainButton");
+		var secondaryButton = document.getElementById("secondaryButton");
 		var currentType = "Close";
 		var lastType = "Open";
 
@@ -166,7 +197,8 @@
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 			}
 			else if(Math.floor(myVideo.currentTime) == 37){
 				//clearInterval(interval);
@@ -175,7 +207,8 @@
 				var temp = currentType;
 				currentType = lastType;
 				lastType = temp;
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 			}
 		}
 
@@ -183,7 +216,7 @@
 		/*document.getElementById('video1').addEventListener('ended', openFinished, false);
 		function openFinished(e)
 		{
-			myButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
+			mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-full'></i> " + currentType;
 		}*/
 
 		//Play and pause commands
@@ -192,12 +225,14 @@
 			if (myVideo.paused)
 			{
 				myVideo.play();
-				myButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
+				mainButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon glyphicon-stop'></i> Stop";
 			}
 			else
 			{
 				myVideo.pause();
-				myButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
+				mainButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
+				secondaryButton.innerHTML = "<i class='glyphicon glyphicon-resize-small'></i> " + currentType;
 			}
 		}
 	</script>
