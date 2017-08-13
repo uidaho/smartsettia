@@ -14,10 +14,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         // Create {{ $view_name }} provider in blade templates
-        // view()->composer('*', function($view){
-        //     $view_name = str_replace('.', '-', $view->getName());
-        //     view()->share('view_name', $view_name);
-        // });
+        view()->composer('*', function($view){
+            $view_name = str_replace('.', '-', $view->getName());
+            view()->share('view_name', $view_name);
+        });
     }
 
     /**
