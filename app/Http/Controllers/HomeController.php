@@ -6,97 +6,43 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+		//$this->middleware('auth');
+    }
+
+    /**
+     * Show the application home.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('home');
+    }
+
 	/**
-	 * Create a new controller instance.
-	 *
-	 * @return void
-	 */
-	/*public function __construct()
-	{
-		$this->middleware('auth');
-	}*/
-	
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		return view('temp/home');
-	}
-	
-	
-	
-	
-	
-	/**
-	 * Show the application dashboard.
+	 * Show the about page.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function showAbout()
+	public function about()
 	{
-		return view('temp/about');
-	}
-	
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showDashboard()
-	{
-		return view('temp/dashboard');
-	}
-	
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showHelp()
-	{
-		return view('temp/help');
-	}
-	
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showHome()
-	{
-		return view('temp/home');
+		return view('home.about');
 	}
 
 	/**
-	 * Show the application dashboard.
+	 * Show the help page.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function showLogin1()
+	public function help()
 	{
-		return view('temp/login1');
-	}
-
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showRegister1()
-	{
-		return view('temp/register1');
-	}
-
-	/**
-	 * Show the application dashboard.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showUnit()
-	{
-		return view('temp/unit');
+		return view('home.help');
 	}
 }
