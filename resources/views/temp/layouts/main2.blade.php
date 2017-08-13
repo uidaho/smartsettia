@@ -12,13 +12,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css" integrity="sha256-VZWWO8oq84vI5Es0R/L74m09VSsVHg0sugRTBgnPZnY=" crossorigin="anonymous">
 		<!-- Custom CSS -->
-		<link rel="stylesheet" href="/css/Article-Dual-Column.css">
-		<link rel="stylesheet" href="/css/Article-List.css">
-		<link rel="stylesheet" href="/css/header.css">
-		<link rel="stylesheet" href="/css/user.css">
-		<link rel="stylesheet" href="/css/Lightbox-Gallery.css">
-		<link rel="stylesheet" href="/css/register.css">
-		<link rel="stylesheet" href="/css/Team-Boxed.css">
+		<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 		@yield('head')
 	</head>
 

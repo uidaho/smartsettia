@@ -32,7 +32,6 @@
 </head>
 
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><i
@@ -52,10 +51,8 @@
         </div>
     </nav>
 
-    <!-- yield content -->
     @yield('content')
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
             <div class="row">
@@ -65,6 +62,9 @@
             </div>
         </div>
     </footer>
+
+
+
 
     <!-- Body Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
