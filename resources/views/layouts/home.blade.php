@@ -45,7 +45,7 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="{{ Route::currentRouteNamed('home') ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
+                    <li class="{{ Route::currentRouteNamed('home') || Route::currentRouteNamed('/') ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
                     <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
                     <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
