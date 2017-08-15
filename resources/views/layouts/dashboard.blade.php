@@ -45,13 +45,16 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
+                    {{!! Helper::linkActive('dashboard', 'Dashboard') !!}}
                     <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="/dashboard">Dashboard </a></li>
-                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="/help">Help </a></li>
+                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help </a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="{{ Route::currentRouteNamed('manageUsers') ? 'active' : '' }}" role="presentation"><a href="#">Manage Users </a></li>
                             <li class="{{ Route::currentRouteNamed('manageGroups') ? 'active' : '' }}" role="presentation"><a href="#">Manage Groups </a></li>
                             <li class="{{ Route::currentRouteNamed('manageUnits') ? 'active' : '' }}" role="presentation"><a href="#">Manage Units </a></li>
+
+                            {{!! Helper::shout('i am shouting right now') !!}}
 
                         </ul>
                     </li>
