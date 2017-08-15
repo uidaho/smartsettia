@@ -36,35 +36,43 @@
                 <a class="navbar-brand navbar-link" href="/">
                     <i class="glyphicon glyphicon-grain"></i>SmartSettia
                 </a>
-                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span
-                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
-                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="{{ Route::currentRouteNamed('home') || Request::segment(1) === '' ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
-                    <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
-                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
-                    @if (Auth::guest())
-                        <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation"><a href="{{ route('register') }}">Register</a></li>
-                        <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation"><a href="{{ route('login') }}">Login</a></li>
-                    @else
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
+                    <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="/dashboard">Dashboard </a></li>
+                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="/help">Help </a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="{{ Route::currentRouteNamed('manageUsers') ? 'active' : '' }}" role="presentation"><a href="#">Manage Users </a></li>
+                            <li class="{{ Route::currentRouteNamed('manageGroups') ? 'active' : '' }}" role="presentation"><a href="#">Manage Groups </a></li>
+                            <li class="{{ Route::currentRouteNamed('manageUnits') ? 'active' : '' }}" role="presentation"><a href="#">Manage Units </a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">
+                            <img src="/img/avatar.jpg" class="dropdown-image">{{ Auth::user()->name }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li class="{{ Route::currentRouteNamed('user-settings') ? 'active' : '' }}" role="presentation"><a href="/user-settings">Settings </a></li>
+                            <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation"><a href="/user-notifications">Notifications </a></li>
+                            <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Logout ({{ Auth::user()->name }})
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -93,5 +101,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js" integrity="sha256-fzbeRFWxDKUq4+WF3Eyv1jhRcV2hrj5LJDn2asBF6/0=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    @yield('bodyScripts')
 </body>
 </html>
