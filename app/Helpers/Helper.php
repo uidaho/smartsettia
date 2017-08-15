@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Html\HtmlBuilder;
+use Illuminate\Routing\Route;
 
 class Helper {
     public static function linkActive(string $name, string $title = null, array $parameters = array(), array $attributes = array())
