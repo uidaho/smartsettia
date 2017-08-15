@@ -5,7 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\NexmoMessage;
 
 class InvoicePaid extends Notification
 {
@@ -33,17 +33,16 @@ class InvoicePaid extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Get the SMS representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return \Illuminate\Notifications\Messages\NexmoMessage
      */
-    public function toMail($notifiable)
+    public function toNexmo($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return (new NexmoMessage)
+                    ->content('SmartSettia SMS: Invoice paid!')
+                    ->from('12088851101');
     }
 
     /**
