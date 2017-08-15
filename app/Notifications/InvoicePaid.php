@@ -29,7 +29,7 @@ class InvoicePaid extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['nexmo'];
     }
 
     /**
