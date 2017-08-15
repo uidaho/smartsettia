@@ -53,9 +53,6 @@
                             <li class="{{ Route::currentRouteNamed('manageUsers') ? 'active' : '' }}" role="presentation"><a href="#">Manage Users </a></li>
                             <li class="{{ Route::currentRouteNamed('manageGroups') ? 'active' : '' }}" role="presentation"><a href="#">Manage Groups </a></li>
                             <li class="{{ Route::currentRouteNamed('manageUnits') ? 'active' : '' }}" role="presentation"><a href="#">Manage Units </a></li>
-
-                            {{!! Helper::shout('i am shouting right now') !!}}
-
                         </ul>
                     </li>
                 </ul>
