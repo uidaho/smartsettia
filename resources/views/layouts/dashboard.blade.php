@@ -45,17 +45,18 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
+                    <li class="{{ Route::currentRouteNamed('home') || Request::segment(1) === '/' ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
+                    <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
+                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
                     <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="{{ route('dashboard') }}">Dashboard </a></li>
-                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help </a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Admin <span class="caret"></span></a>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="{{ Route::currentRouteNamed('manage-users') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-users') }}">Manage Users </a></li>
                             <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-groups') }}">Manage Groups </a></li>
                             <li class="{{ Route::currentRouteNamed('manage-units') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-units') }}">Manage Units </a></li>
                         </ul>
                     </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">
                             <img src="/img/avatar.jpg" class="dropdown-image">{{ Auth::user()->name }}
