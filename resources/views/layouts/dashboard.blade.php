@@ -45,7 +45,6 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    {{!! Helper::linkActive('dashboard', 'Dashboard') !!}}
                     <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="/dashboard">Dashboard </a></li>
                     <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help </a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="/">Admin <span class="caret"></span></a>
