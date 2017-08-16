@@ -49,6 +49,7 @@
                         <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation"><a href="{{ route('register') }}">Register</a></li>
                         <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation"><a href="{{ route('login') }}">Login</a></li>
                     @else
+                        <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
