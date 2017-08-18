@@ -67,7 +67,7 @@
                             <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation"><a href="{{ route('user-notifications') }}">Notifications</a></li>
                             <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
                                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout ({{ Auth::user()->name }})</a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                                <form id="logout-form" action="logout" method="POST" style="display: none;">{{ csrf_field() }}</form>
                             </li>
                         </ul>
                     </li>
