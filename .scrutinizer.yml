@@ -1,4 +1,7 @@
 # .scrutinizer.yml
+tools:
+  external_code_coverage:
+    runs: 3 # wait for 3 submitions, 5.6, 7.0, 7.1
 checks:
   php:
     code_rating: true
