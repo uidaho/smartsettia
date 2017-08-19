@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Create {{ $view_name }} provider in blade templates
-        view()->composer('*', function($view){
+        view()->composer('*', function($view) {
             $view_name = str_replace('.', '-', $view->getName());
             view()->share('view_name', $view_name);
         });
