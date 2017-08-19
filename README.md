@@ -1,4 +1,4 @@
-# The Squire Project
+# SmartSettia
 
 [![Build Status](https://travis-ci.org/uidaho/smartsettia.svg?branch=master)](https://travis-ci.org/uidaho/smartsettia)
 [![Total Downloads](https://poser.pugx.org/uidaho/smartsettia/d/total.svg)](https://packagist.org/packages/uidaho/smartsettia)
