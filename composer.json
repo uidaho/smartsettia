@@ -9,9 +9,10 @@
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
+        "laravelcollective/html": "~5.4.0",
+        "nesbot/carbon": "^1.22",
         "nexmo/client": "^0.4.0",
-        "predis/predis": "^1.1",
-        "laravelcollective/html": "~5.0"
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
