@@ -126,6 +126,81 @@
 		</table>
 	</div>
 </div>
+
+
+
+<div class="container">
+	<div class="page-header">
+		<h3>Hybrid List</h3>
+	</div>
+	<p>A list of all the units regardless of status. Possibly add filters and pagination.</p>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Status</th>
+					<th>Controls</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{-- @foreach ($units as $unit) --}}
+					<tr data-toggle="collapse" href="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+						<td>1</td>
+						<td><a href="{{ route('unit') }}">name</a></td>
+						<td>status</td>
+						<td>
+							<div class="btn-group" role="group">
+								<button class="btn btn-primary" type="button" data-toggle="collapse" href="#collapse-1" aria-expanded="false" aria-controls="collapse-1"><i class="glyphicon glyphicon-resize-small"></i></button>
+								<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="secondaryButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
+								<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-eye-open"></i> Screenshot</button>
+								<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
+								<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-user"></i> Permissions</button>
+								<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+							</div>
+						</td>
+					</tr>
+					<tr class="collapse" id="collapse-1">
+						<td colspan="4">
+							<div class="row product">
+								<div class="col-md-6">
+									<video id="video1" width=100%" height="auto">
+										<source src="{{ asset('video/cover.mp4') }}" type="video/mp4">
+										Your browser does not support HTML5 video.
+									</video>
+								</div>
+								<div class="col-md-6">
+									<h2>Unit Alpha</h2>
+									<p><i class="fa fa-id-card-o"></i> uid-1001 <i class="fa fa-address-card-o"></i> 66.123.129.12 <i class="fa fa-clock-o"></i> 2/27/2017 2:09 PM <i class="fa fa-thermometer-empty"></i> 47 C </p>
+									<div>
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#tab-1" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temperature <span class="badge">42 C</span></a></li>
+											<li><a href="#tab-2" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge">42 %</span></a></li>
+											<li><a href="#tab-3" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">42 cd</span></a></li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane active" role="tabpanel" id="tab-1">
+												<p><img class="img-responsive" src="{{ asset('img/temp-graph.png') }}"></p>
+											</div>
+											<div class="tab-pane" role="tabpanel" id="tab-2">
+												<p><img class="img-responsive" src="{{ asset('img/humidity-graph.png') }}"></p>
+											</div>
+											<div class="tab-pane" role="tabpanel" id="tab-3">
+												<p><img class="img-responsive" src="{{ asset('img/light-graph.png') }}"></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							</div>
+						</td>
+					</tr>
+				{{-- @endforeach --}}
+			</tbody>
+		</table>
+	</div>
+</div>
 @endsection
 
 @section('footer')
