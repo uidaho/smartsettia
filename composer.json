@@ -1,6 +1,6 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "uidaho/smartsettia",
+    "description": "SmartSettia is a poinsettia life-cycle management system that couples the flexibility of IoT devices with the power of the cloud. Control units can be securely installed and controlled anywhere with an internet connection.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
@@ -10,7 +10,8 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "nexmo/client": "^0.4.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "laravelcollective/html": "~5.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
