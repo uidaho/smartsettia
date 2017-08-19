@@ -6,52 +6,44 @@
 	<div class="register-photo">
 		<div class="form-container">
 			<div class="image-holder"></div>
-			<form method="POST" action="{{ route('login') }}">
+			{!! Form::open(['route' => 'login', 'method' => 'post', 'class' => 'form-horizontal']) !!}
                 {{ csrf_field() }}
-				<h2 class="text-center">Log in</h2>
+				<h2>Log in</h2>
 
-                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+				    {!! Form::label('email', 'Email address', ['class' =>'col-sm-3 control-label']) !!}
+				    <div class="col-sm-9">
+				        {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: foo@bar.com']) !!}
+				        <small class="text-danger">{{ $errors->first('email') }}</small>
+				    </div>
+				</div>
 
-                    <div class="col-md-6">
-                        <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-                        @if ($errors->has('email'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('email') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
+				<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+				    {!! Form::label('password', 'Password', ['class' => 'col-sm-3 control-label']) !!}
+				        <div class="col-sm-9">
+				            {!! Form::password('password', ['class' => 'form-control', 'required' => 'required']) !!}
+				            <small class="text-danger">{{ $errors->first('password') }}</small>
+				        </div>
+				</div>
 
-                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    <label for="password" class="col-md-4 control-label">Password</label>
-                    <div class="col-md-6">
-                        <input id="password" type="password" class="form-control" name="password" required>
-                        @if ($errors->has('password'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('password') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-6 col-md-offset-4">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
-                            </label>
-                        </div>
-                    </div>
-                </div>
+				<div class="form-group">
+				    <div class="col-sm-offset-3 col-sm-9">
+				        <div class="checkbox{{ $errors->has('remember') ? ' has-error' : '' }}">
+				            <label for="remember">
+				                {!! Form::checkbox('remember', null, null, ['id' => 'remember']) !!} Remember Me
+				            </label>
+				        </div>
+				        <small class="text-danger">{{ $errors->first('remember') }}</small>
+				    </div>
+				</div>
 
                 <div class="form-group">
-                    <div class="col-md-8 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary">Login</button>
-                        <a class="btn btn-link" href="{{ route('password.request') }}">Forgot Your Password?</a>
+                    <div class="col-xs-offset-3 col-xs-9">
+						{!! Form::submit('Login', ['class' => 'btn btn-info pull-right']) !!}
+                        <p><a class="margin-top-4" href="{{ route('password.request') }}">Forgot Your Password?</a></p>
                     </div>
                 </div>
-            </form>
+            {!! Form::close() !!}
 		</div>
 	</div>
 @endsection
