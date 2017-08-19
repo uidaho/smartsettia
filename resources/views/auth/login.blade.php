@@ -47,12 +47,3 @@
 		</div>
 	</div>
 @endsection
-
-
-<div class="form-group{{ $errors->has('inputname') ? ' has-error' : '' }}">
-    {!! Form::label('inputname', 'Input', ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-9">
-        {!! Form::text('inputname', null, ['class' => 'form-control', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('inputname') }}</small>
-    </div>
-</div>
