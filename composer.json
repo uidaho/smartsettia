@@ -6,13 +6,18 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "barryvdh/laravel-snappy": "^0.3.3",
+        "dompdf/dompdf": "^0.8.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "~5.4.0",
         "nesbot/carbon": "^1.22",
         "nexmo/client": "^0.4.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "yajra/laravel-datatables-buttons": "^2.0",
+        "yajra/laravel-datatables-html": "^2.0",
+        "yajra/laravel-datatables-oracle": "7.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

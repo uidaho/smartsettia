@@ -180,6 +180,10 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
 
+        Yajra\Datatables\DatatablesServiceProvider::class,
+        Yajra\Datatables\HtmlServiceProvider::class,
+        Yajra\Datatables\ButtonsServiceProvider::class,
+
     ],
 
     /*

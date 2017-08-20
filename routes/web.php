@@ -1,5 +1,7 @@
 <?php
 
+use App\DataTables\UsersDataTable;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,7 +18,6 @@
  *-----------------------*/
 Auth::routes();
 
-
 /*-----------------------*
  * Home Controller       *
  *-----------------------*/
@@ -29,7 +30,11 @@ Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 /*-----------------------*
  * User Controller       *
  *-----------------------*/
-Route::get('users', 'UserController@index')->name('users');
+// Route::get('users', function index(UsersDataTable $dataTable) {
+//     return $dataTable->render('users.index');
+// });
+
+Route::resource('users', 'UsersController');
 
 /*-----------------------*
  * Dashboard Controller  *
