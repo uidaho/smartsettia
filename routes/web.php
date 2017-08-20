@@ -34,7 +34,7 @@ Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 //     return $dataTable->render('users.index');
 // });
 
-Route::resource('users', 'UsersController')->name('users');
+Route::resource('users', 'UsersController');
 
 /*-----------------------*
  * Dashboard Controller  *
