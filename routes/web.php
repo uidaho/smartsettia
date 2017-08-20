@@ -12,13 +12,13 @@
 */
 
 /*-----------------------*
- *  Auth Controller     *
+ *  Auth Controller      *
  *-----------------------*/
 Auth::routes();
 
 
 /*-----------------------*
- * Home Controller     *
+ * Home Controller       *
  *-----------------------*/
 Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@index')->name('home');
@@ -26,6 +26,14 @@ Route::get('about', 'HomeController@about')->name('about');
 Route::get('help', 'HomeController@help')->name('help');
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
+/*-----------------------*
+ * User Controller       *
+ *-----------------------*/
+Route::get('users', 'UserController@index')->name('users');
+
+/*-----------------------*
+ * Dashboard Controller  *
+ *-----------------------*/
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');
