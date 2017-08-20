@@ -9,6 +9,16 @@ use App\Http\Controllers\Controller;
 class UsersController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
      * Display index page and process dataTable ajax request.
      *
      * @param \App\DataTables\UsersDataTable $dataTable

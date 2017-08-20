@@ -25,20 +25,16 @@ Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@index')->name('home');
 Route::get('about', 'HomeController@about')->name('about');
 Route::get('help', 'HomeController@help')->name('help');
-Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
 /*-----------------------*
  * User Controller       *
  *-----------------------*/
-// Route::get('users', function index(UsersDataTable $dataTable) {
-//     return $dataTable->render('users.index');
-// });
-
 Route::resource('users', 'UsersController');
 
 /*-----------------------*
  * Dashboard Controller  *
  *-----------------------*/
+Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');
