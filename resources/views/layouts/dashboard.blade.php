@@ -53,7 +53,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li class="{{ Route::currentRouteNamed('manage-users') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-users') }}">Manage Users </a></li>
+                            <li class="{{ Route::currentRouteNamed('users') ? 'active' : '' }}" role="presentation"><a href="{{ route('users') }}">Manage Users </a></li>
                             <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-groups') }}">Manage Groups </a></li>
                             <li class="{{ Route::currentRouteNamed('manage-units') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-units') }}">Manage Units </a></li>
                         </ul>
