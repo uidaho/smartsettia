@@ -26,6 +26,8 @@ Table of Contents
 
 
 ## Dependencies
+These instructions were tested using Ubuntu Server 16.04.3 LTS (Xenial Xerus) on a DigitalOcean.com virtual machine and Ubuntu Desktop 16.04.3 LTS. While this application can be run from a Windows environment, with the approriate dependencies, your mileage may vary.
+
 ### Update apt
 ```bash
 sudo apt update
