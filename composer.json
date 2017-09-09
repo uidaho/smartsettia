@@ -12,6 +12,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "~5.4.0",
+        "maatwebsite/excel": "^2.1",
         "nesbot/carbon": "^1.22",
         "nexmo/client": "^0.4.0",
         "predis/predis": "^1.1",
