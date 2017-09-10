@@ -22,7 +22,7 @@ class CreateNotificationsTable extends Migration
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *
