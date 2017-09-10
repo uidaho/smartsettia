@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\DataTables\UsersDataTable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\User;
 
 class UserController extends Controller
 {
@@ -23,18 +24,6 @@ class UserController extends Controller
         // $this->middleware('log')->only('index');
     }
 
-    /* Auto route definitions for resource routes:
-     * TYPE       URL                   METHOD   VIEW
-     * ---------- --------------------- -------- -------------
-     * GET	      /users                index    users.index
-     * GET	      /users/create	        create   users.create
-     * POST	      /users	            store	 users.store
-     * GET	      /users/{id}           show     users.show
-     * GET	      /users/{id}/edit      edit     users.edit
-     * PUT/PATCH  /users/{id}           update   users.update
-     * DELETE	  /users/{id}           destroy  users.destroy
-     */
-
     /**
      * Display index page and process dataTable ajax request.
      *
@@ -43,7 +32,7 @@ class UserController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
-        return $dataTable->render('users.index');
+        return $dataTable->render('user.index');
     }
 
     /**
@@ -53,7 +42,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('user.create');
     }
 
     /**
@@ -65,18 +54,58 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
-            'role' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|integer|max:3',
+            'phone' => 'numeric|phone|nullable',
         ]);
 
         if ($validator->fails()) {
-            return redirect('users/create')->withErrors($validator)->withInput();
+            return redirect('user.create')->withErrors($validator)->withInput();
         }
 
-        //Auth::login($this->create($request->all()));
+        $user = new User;
 
-        return redirect('users');
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = bcrypt($request->input('password'));
+        $user->role = $request->input('role');
+        $user->phone = $request->input('phone');
+
+        $user->save();
+
+        return redirect('user');
+    }
+
+    /**
+     * Show the given user.
+     *
+     * @param  Request  $request
+     * @param  string  $id
+     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->password = "";
+
+        return view('user.show', ['user' => $user]);
+    }
+
+    /**
+     * Edit the given user.
+     *
+     * @param  Request  $request
+     * @param  string  $id
+     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function edit(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->password = "";
+
+        return view('user.edit', ['user' => $user]);
     }
 
     /**
@@ -93,7 +122,48 @@ class UserController extends Controller
         // method_field helper can create this field for you:
         // {{ method_field('PUT') }}
 
-        // TODO: Use users model method to update record.
-        return redirect('users');
+        $user = User::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+            'role' => 'required|integer|max:3',
+            'phone' => 'numeric|phone|nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('user/'.$id.'/edit')->withErrors($validator)->withInput();
+        }
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->role = $request->input('role');
+        $user->phone = $request->input('phone');
+
+        $user->save();
+
+        return redirect('user');
+    }
+
+    /**
+     * Delete a user.
+     *
+     * @param  Request  $request
+     * @param  string  $id
+     * @return Response
+     */
+    public function destroy(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->trashed()) {
+            // if the user was already deleted then permananetly delete it
+            User::destroy($id);
+        } else {
+            // soft delete the user the first time
+            $user->delete();
+        }
+
+        return redirect('user');
     }
 }

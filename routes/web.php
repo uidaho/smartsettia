@@ -29,7 +29,7 @@ Route::get('help', 'HomeController@help')->name('help');
 /*-----------------------*
  * User Controller       *
  *-----------------------*/
-Route::resource('users', 'UserController');
+Route::resource('user', 'UserController');
 /* Auto route definitions for resource routes:
  * TYPE       URL                   METHOD   VIEW
  * ---------- --------------------- -------- -------------
@@ -50,7 +50,7 @@ Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');
 Route::get('admin', 'DashboardController@index')->name('admin');
-Route::get('manage-users', 'DashboardController@index')->name('manage-users');
+Route::get('manage-users', 'UserController@index')->name('manage-users');
 Route::get('manage-groups', 'DashboardController@index')->name('manage-groups');
 Route::get('manage-units', 'DashboardController@index')->name('manage-units');
 Route::get('user-settings', 'DashboardController@index')->name('user-settings');
