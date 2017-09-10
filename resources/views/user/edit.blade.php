@@ -48,7 +48,8 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                {!! Form::submit('Save', ['class' => 'btn btn-info pull-right']) !!}
+                                {!! Form::button('<i class="glyphicon glyphicon-ok"></i> Save', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
+                                <a href="{{ route('user.index') }}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-remove"></i> Cancel</a>
                             </div>
                         </div>
                     {!! Form::close() !!}

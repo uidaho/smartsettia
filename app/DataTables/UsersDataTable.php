@@ -14,14 +14,13 @@ class UsersDataTable extends DataTable
      */
     public function dataTable()
     {
-        $role_en = [0 => 'Registered', 1 => 'User', 2 => 'Manager', 3 => 'Admin'];
-
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', function ($user) {
-                return '<a href="/user/'.$user->id.'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
-            });
-            //->editColumn('role', $role_en[$role].'({{$role}})');
+            ->addColumn('action', 'user.action')
+            ->editColumn('role', function(User $user) {
+                    $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
+                    return $role_en[$user->role].' ('.$user->role.')';
+                });
     }
 
     /**

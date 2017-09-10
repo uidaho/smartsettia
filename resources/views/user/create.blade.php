@@ -27,6 +27,14 @@
                                 <small class="text-danger">{{ $errors->first('email') }}</small>
                             </div>
                         </div>
+                        
+                        <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
+                            {!! Form::label('phone', 'Phone number', ['class' => 'col-sm-3 control-label']) !!}
+                            <div class="col-sm-9">
+                                {!! Form::text('phone', null, ['class' => 'form-control']) !!}
+                                <small class="text-danger">{{ $errors->first('phone') }}</small>
+                            </div>
+                        </div>
 
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                             {!! Form::label('password', 'Password', ['class' => 'col-sm-3 control-label']) !!}
@@ -54,7 +62,8 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                {!! Form::submit('Create User', ['class' => 'btn btn-info pull-right']) !!}
+                                {!! Form::button('<i class="glyphicon glyphicon-ok"></i> Create', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
+                                <a href="{{ route('user.index') }}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-remove"></i> Cancel</a>
                             </div>
                         </div>
                     {!! Form::close() !!}
