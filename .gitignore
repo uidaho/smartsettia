@@ -10,6 +10,7 @@
 /public/packages
 /public/storage
 /storage/*.key
+/storage/databases/*
 /vendor
 .DS_Store
 .env
