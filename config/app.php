@@ -183,6 +183,8 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
         Yajra\Datatables\HtmlServiceProvider::class,
         Yajra\Datatables\ButtonsServiceProvider::class,
+        
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -212,6 +214,7 @@ return [
         'DB' => Illuminate\Support\Facades\DB::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,

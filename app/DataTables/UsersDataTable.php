@@ -19,8 +19,10 @@ class UsersDataTable extends DataTable
             ->addColumn('action', 'user.action')
             ->editColumn('role', function(User $user) {
                     $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
-                    return $role_en[$user->role].' ('.$user->role.')';
-                });
+                    return $role_en[$user->role].' ('.$user->role.')';})
+            ->setRowClass(function ($user) {
+                    return $user->trashed() ? 'alert-danger' : "";
+            });
     }
 
     /**
@@ -48,7 +50,7 @@ class UsersDataTable extends DataTable
                     //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
-                        //'order'   => [[0, 'desc']],
+                        'order'   => [[0, 'asc']],
                         'buttons' => [
                             'create',
                             'export',
@@ -74,7 +76,6 @@ class UsersDataTable extends DataTable
             'role',
             'created_at',
             'updated_at',
-            'deleted_at',
             'action',
         ];
     }

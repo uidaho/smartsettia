@@ -62,7 +62,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('user.create')->withErrors($validator)->withInput();
+            return redirect('user/create')->withErrors($validator)->withInput();
         }
 
         $user = new User;
@@ -146,7 +146,7 @@ class UserController extends Controller
     }
 
     /**
-     * Delete a user.
+     * Deletes a user.
      *
      * @param  Request  $request
      * @param  string  $id
@@ -165,5 +165,20 @@ class UserController extends Controller
         }
 
         return redirect('user');
+    }
+    
+    /**
+     * Confirms deletion a user.
+     *
+     * @param  Request  $request
+     * @param  string  $id
+     * @return Response
+     */
+    public function remove(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->password = "";
+        
+        return view('user.remove', ['user' => $user]);
     }
 }

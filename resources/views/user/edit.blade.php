@@ -9,10 +9,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Edit User</div>
                 <div class="panel-body">
-                    {!! Form::model($user, ['route' => ['user.update', $user->id], 'method' => 'post', 'class' => 'form-horizontal']) !!}
-                        {{ method_field('PUT') }}
-
-                        {{ csrf_field() }}
+                    {!! Form::model($user, ['route' => ['user.update', $user->id], 'method' => 'put', 'class' => 'form-horizontal']) !!}
 
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             {!! Form::label('name', 'Name', ['class' => 'col-sm-3 control-label']) !!}
@@ -41,7 +38,7 @@
                         <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
                             {!! Form::label('role', 'User Role', ['class' => 'col-sm-3 control-label']) !!}
                                 <div class="col-sm-9">
-                                    {!! Form::select('role', [0 => 'Registered - No access', 1 => 'User - Can control units', 2 => 'Manager - Can modify units and users', 3 => 'Owner - Can create managers'], null, ['placeholder' => 'Pick a role...', 'class' => 'form-control', 'name' => 'role', 'required' => 'required']) !!}
+                                    {!! Form::select('role', [0 => 'Registered - No access', 1 => 'User - Can control units', 2 => 'Manager - Can modify units and users', 3 => 'Admin - Can create managers'], null, ['placeholder' => 'Pick a role...', 'class' => 'form-control', 'name' => 'role', 'required' => 'required']) !!}
                                     <small class="text-danger">{{ $errors->first('role') }}</small>
                                 </div>
                         </div>
