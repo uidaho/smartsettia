@@ -2,51 +2,48 @@
 
 @section('title', 'Users')
 
-{{-- @section('content')
+@section('content')
 <div class="container">
 	<div class="page-header">
 		<h3>User List</h3>
 	</div>
 	<p>A list of all the users in the system.</p>
 	<div class="table-responsive">
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>id</th>
-					<th>name</th>
-					<th>email</th>
-                    <th>created_at</th>
-                    <th>updated_at</th>
-					<th>Controls</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach ($users as $user)
-				<tr>
-					<td>{{ $user->id }}</td>
-					<td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->created_at }}</td>
-                    <td>{{ $user->updated_at }}</td>
-					<td>
-						<div class="btn-group" role="group">
-							<button class="btn btn-primary" type="button" title="View Log"><i class="glyphicon glyphicon-eye-open"></i> </button>
-							<button class="btn btn-primary" type="button" title="Edit Groups"><i class="glyphicon glyphicon-user"></i> </button>
-							<button class="btn btn-primary btn-warning" type="button" title="Disable User"><i class="glyphicon glyphicon-lock"></i> </button>
-							<button class="btn btn-primary btn-danger" type="button" title="Delete User"><i class="glyphicon glyphicon-remove"></i> </button>
-						</div>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-		</table>
+		<div class="tabs">
+		    <ul class="nav nav-tabs">
+		        <li class="active">
+		            <a href="#users" role="tab" data-toggle="tab">
+		                <icon class="fa fa-user"></icon> Users
+		            </a>
+		        </li>
+		        <li>
+		            <a href="#trash" role="tab" data-toggle="tab" onclick="trashDataTables()">
+		                <i class="fa fa-trash"></i> Trash
+		            </a>
+		        </li>
+		    </ul>
+		    <div class="tab-content">
+		        <div class="tab-pane fade active in" id="users">
+		            {!! $dataTable->table(['class' => 'table table-bordered table-striped table-condensed'], true) !!}
+		        </div>
+		        <div class="tab-pane fade" id="trash">
+		            <table class="table table-bordered table-condensed" id="trashTable">
+		                <thead>
+		                <tr>
+		                    <th>Id</th>
+		                    <th>Name</th>
+		                    <th>Email</th>
+		                    <th>Role</th>
+		                    <th>Deleted At</th>
+		                    <th>Action</th>
+		                </tr>
+		                </thead>
+		            </table>
+		        </div>
+		    </div>
+		</div>
 	</div>
-    {{ $users->links() }}
 </div>
-@endsection --}}
-
-@section('content')
-{!! $dataTable->table(['class' => 'table table-bordered'], true) !!}
 @stop
 
 @push('styles')
