@@ -15,7 +15,7 @@
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             {!! Form::label('name', 'Name', ['class' => 'col-sm-3 control-label']) !!}
                             <div class="col-sm-9">
-                                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Joe Vandal']) !!}
                                 <small class="text-danger">{{ $errors->first('name') }}</small>
                             </div>
                         </div>
@@ -23,7 +23,7 @@
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             {!! Form::label('email', 'Email address', ['class' =>'col-sm-3 control-label']) !!}
                             <div class="col-sm-9">
-                                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: foo@bar.com']) !!}
+                                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: jvandal@uidaho.edu']) !!}
                                 <small class="text-danger">{{ $errors->first('email') }}</small>
                             </div>
                         </div>
