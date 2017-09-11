@@ -47,4 +47,44 @@ class User extends Authenticatable
     {
         return $this->phone;
     }
+    
+    /**
+     * Is user Admin or better?
+     *
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->role > 2;
+    }
+    
+    /**
+     * Is user Manager or better?
+     *
+     * @return boolean
+     */
+    public function isManager()
+    {
+        return $this->role > 1;
+    }
+
+    /**
+     * Is user User or better?
+     *
+     * @return boolean
+     */
+    public function isUser()
+    {
+        return $this->role > 0;
+    }
+    
+    /**
+     * Is user a guest?
+     *
+     * @return boolean
+     */
+    public function isGuest()
+    {
+        return $this->role == 0;
+    }
 }
