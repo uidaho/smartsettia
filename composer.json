@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^0.8.1",
         "barryvdh/laravel-snappy": "^0.3.3",
         "dompdf/dompdf": "^0.8.0",
+        "graham-campbell/markdown": "^8.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
