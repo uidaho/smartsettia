@@ -10,7 +10,11 @@
 /public/packages
 /public/storage
 /storage/*.key
+<<<<<<< HEAD
 /storage/databases/*
+=======
+/storage/databases
+>>>>>>> fd9d49a3db93d5f30e0f82dac085d2bf1203323a
 /vendor
 .DS_Store
 .env

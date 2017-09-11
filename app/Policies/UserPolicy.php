@@ -21,6 +21,7 @@ class UserPolicy
         // if ($user->isSuperAdmin()) {
         //     return true;
         // }
+        return false;
     }
 
     /**
@@ -30,10 +31,10 @@ class UserPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function view(User $user, User $user)
+    public function view(User $user, User $user2)
     {
         // TODO: Check if user role is > 0
-        return true;
+        return $user->role > 1 || $user->id === $user2->id;
     }
 
     /**
