@@ -17,11 +17,13 @@ class UsersDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'user.action')
+            ->blacklist(['action'])
             ->editColumn('role', function(User $user) {
                     $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
                     return $role_en[$user->role].' ('.$user->role.')';})
             ->setRowClass(function ($user) {
                     return $user->trashed() ? 'alert-danger' : "";
+            
             });
     }
 
@@ -76,7 +78,7 @@ class UsersDataTable extends DataTable
             'role',
             'created_at',
             'updated_at',
-            'action',
+            ['data' => 'action', 'name' => 'action', 'title' => 'Actions'],
         ];
     }
 
