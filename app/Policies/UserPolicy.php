@@ -50,13 +50,13 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can update the user.
+     * Determine whether the user can update the user2.
      *
      * @param  \App\User  $user
      * @param  \App\User  $user
      * @return mixed
      */
-    public function update(User $user, User $user)
+    public function update(User $user, User $user2)
     {
         // Users can update themselves
         //return $user->id === $user->id;
@@ -70,7 +70,7 @@ class UserPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function delete(User $user, User $user)
+    public function delete(User $user, User $user2)
     {
         // TODO: Check if user role > 1
         return true;
