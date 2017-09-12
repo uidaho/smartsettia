@@ -23,8 +23,15 @@ class UsersDataTable extends DataTable
                     return $role_en[$user->role].' ('.$user->role.')';})
             ->setRowClass(function ($user) {
                     return $user->trashed() ? 'alert-danger' : "";
-            
-            });
+            })
+            ->setRowData([
+                    'data-id' => function($user) {
+                        return 'row-' . $user->id;
+                    },
+                    'data-name' => function($user) {
+                        return 'row-' . $user->name;
+                    },
+            ]);
     }
 
     /**
@@ -78,7 +85,7 @@ class UsersDataTable extends DataTable
             'role',
             'created_at',
             'updated_at',
-            ['data' => 'action', 'name' => 'action', 'title' => 'Actions'],
+            ['name' => 'action', 'data' => 'action', 'title' => 'Actions', 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,],
         ];
     }
 

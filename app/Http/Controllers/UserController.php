@@ -9,6 +9,7 @@ use App\DataTables\UsersDataTable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\User;
+use Datatables;
 
 class UserController extends Controller
 {
