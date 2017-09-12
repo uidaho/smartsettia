@@ -16,8 +16,9 @@ class UsersDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'user.action')
-            ->blacklist(['action'])
+            // ->addColumn('action', 'user.action')
+            // ->blacklist(['action'])
+            ->addAction()
             ->editColumn('role', function(User $user) {
                     $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
                     return $role_en[$user->role].' ('.$user->role.')';})
@@ -55,7 +56,7 @@ class UsersDataTable extends DataTable
     {
         return $this->builder()
                     ->columns($this->getColumns())
-                    //->minifiedAjax('')
+                    ->minifiedAjax('')
                     //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
@@ -67,6 +68,10 @@ class UsersDataTable extends DataTable
                             'reset',
                             'reload',
                         ],
+                        'paging' => true,
+                        'searching' => true,
+                        'info' => true,
+                        'searchDelay' => 500,
                     ]);
     }
 
@@ -85,7 +90,7 @@ class UsersDataTable extends DataTable
             'role',
             'created_at',
             'updated_at',
-            ['name' => 'action', 'data' => 'action', 'title' => 'Actions', 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,],
+            ['name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => ''],
         ];
     }
 
