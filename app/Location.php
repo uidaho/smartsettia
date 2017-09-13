@@ -2,21 +2,17 @@
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Device extends Model
+class Location extends Model
 {
-    use SoftDeletes;
-    
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'location_id'
+        'name', 'site_id'
     ];
     
     public $timestamps = false;
@@ -24,8 +20,8 @@ class Device extends Model
     /**
      * Get the site for the location
      */
-    public function location()
+    public function site()
     {
-        return $this->belongsTo('App\Location');
+        return $this->belongsTo('App\Site');
     }
 }
