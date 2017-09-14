@@ -1,0 +1,23 @@
+/*
+======================================
+Dashboard
+======================================
+*/
+
+/*Set links to have no decorations*/
+.no-style-link
+{
+	text-decoration: none;
+	color:inherit;
+}
+
+.border-simple
+{
+	border: 3px solid rgba(0, 0, 0, .75);
+	border-radius: 8px;
+}
+
+.trialing-space
+{
+	margin-right: 10px;
+}

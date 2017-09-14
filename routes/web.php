@@ -56,3 +56,8 @@ Route::get('manage-groups', 'DashboardController@index')->name('manage-groups');
 Route::get('manage-units', 'DashboardController@index')->name('manage-units');
 Route::get('user-settings', 'DashboardController@index')->name('user-settings');
 Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
+
+/*-----------------------*
+ * Image Controller  *
+ *-----------------------*/
+Route::get('image/device/{device_id}', 'ImageController@show');
