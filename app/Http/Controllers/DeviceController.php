@@ -54,7 +54,7 @@ class DeviceController extends Controller
     {
         $device = Device::findOrFail($id);
 
-        return view('device.show', ['device' => $device]);
+        return view('device.show', [ 'device' => $device ]);
     }
 
     /**
@@ -68,12 +68,13 @@ class DeviceController extends Controller
     {
         $device = Device::findOrFail($id);
         $location = Location::where('id', $device->location_id)->first();
-        if ($location)
-            $site = Site::where('id', $location->site_id)->first();
-        else
-            $site = null;
+        if ($location) {
+                    $site = Site::where('id', $location->site_id)->first();
+        } else {
+                    $site = null;
+        }
 
-        return view('device.edit', ['device' => $device, 'location' => $location, 'site' => $site]);
+        return view('device.edit', [ 'device' => $device, 'location' => $location, 'site' => $site ]);
     }
 
     /**
@@ -81,7 +82,7 @@ class DeviceController extends Controller
      *
      * @param  Request  $request
      * @param  string  $id
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -145,7 +146,7 @@ class DeviceController extends Controller
      *
      * @param  Request  $request
      * @param  string  $id
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request, $id)
     {
@@ -155,8 +156,7 @@ class DeviceController extends Controller
         {
             // if the user was already deleted then permananetly delete it
             Device::destroy($id);
-        }
-        else
+        } else
         {
             //Remove the location from the device
             $oldLocation_id = $device->location_id;
@@ -183,7 +183,7 @@ class DeviceController extends Controller
     {
         $device = Device::findOrFail($id);
         
-        return view('device.remove', ['device' => $device]);
+        return view('device.remove', [ 'device' => $device ]);
     }
     
     /**

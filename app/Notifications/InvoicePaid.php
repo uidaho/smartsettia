@@ -25,11 +25,11 @@ class InvoicePaid extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return string[]
      */
     public function via($notifiable)
     {
-        return ['nexmo'];
+        return [ 'nexmo' ];
     }
 
     /**

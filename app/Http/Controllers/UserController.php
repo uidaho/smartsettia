@@ -6,10 +6,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\UsersDataTable;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use App\User;
-use Datatables;
 
 class UserController extends Controller
 {
@@ -50,7 +47,7 @@ class UserController extends Controller
      * Store a new user.
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -91,7 +88,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->password = "";
 
-        return view('user.show', ['user' => $user]);
+        return view('user.show', [ 'user' => $user ]);
     }
 
     /**
@@ -106,7 +103,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->password = "";
 
-        return view('user.edit', ['user' => $user]);
+        return view('user.edit', [ 'user' => $user ]);
     }
 
     /**
@@ -114,7 +111,7 @@ class UserController extends Controller
      *
      * @param  Request  $request
      * @param  string  $id
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -151,7 +148,7 @@ class UserController extends Controller
      *
      * @param  Request  $request
      * @param  string  $id
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request, $id)
     {
@@ -180,6 +177,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->password = "";
         
-        return view('user.remove', ['user' => $user]);
+        return view('user.remove', [ 'user' => $user ]);
     }
 }

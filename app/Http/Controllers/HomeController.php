@@ -33,7 +33,7 @@ class HomeController extends Controller
      */
     public function about()
     {
-    	return view('home.about');
+        return view('home.about');
     }
 
     /**
@@ -43,6 +43,6 @@ class HomeController extends Controller
      */
     public function help()
     {
-    	return view('home.help');
+        return view('home.help');
     }
 }

@@ -17,8 +17,8 @@ class DevicesDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'device.action')
-            ->blacklist(['action'])
-            ->setRowClass(function ($device) {
+            ->blacklist([ 'action' ])
+            ->setRowClass(function($device) {
                 return $device->trashed() ? 'alert-danger' : "";
             });
     }
@@ -57,7 +57,7 @@ class DevicesDataTable extends DataTable
                     //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
-                        'order'   => [[0, 'asc']],
+                        'order'   => [ [ 0, 'asc' ] ],
                         'buttons' => [
                             'export',
                             'print',
@@ -83,7 +83,7 @@ class DevicesDataTable extends DataTable
             'name',
             'location',
             'site',
-            ['name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => ''],
+            [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
     }
 
@@ -94,6 +94,6 @@ class DevicesDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'devices_' . time();
+        return 'devices_'.time();
     }
 }
