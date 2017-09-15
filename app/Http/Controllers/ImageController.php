@@ -28,7 +28,7 @@ class ImageController extends Controller
         $storagePath = storage_path('app/images/devices/');
         $imagePath = glob($storagePath . $device_id . "*" . ".jpg");
         
-        if ($imagePath)
+        if (!empty($imagePath))
             $image = Image::make($imagePath[0]);
         else
         {
