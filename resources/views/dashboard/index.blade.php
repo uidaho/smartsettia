@@ -244,9 +244,9 @@
 							<td colspan="2">
 								<div>
 									<ul class="nav nav-tabs">
-										<li class="active"><a href="#tab-1" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge">42 C</span></a></li>
-										<li><a href="#tab-2" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge">42 %</span></a></li>
-										<li><a href="#tab-3" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">42 cd</span></a></li>
+										<li class="active"><a href="#tab-11" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge">42 C</span></a></li>
+										<li><a href="#tab-22" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge">42 %</span></a></li>
+										<li><a href="#tab-33" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">42 cd</span></a></li>
 									</ul>
 									<div class="tab-content">
 										<div class="tab-pane active" role="tabpanel" id="tab-11">
