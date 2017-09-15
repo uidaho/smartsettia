@@ -16,18 +16,10 @@
 		<p>A list of all the units in a boxed view.</p>
 		<div class="row product">
 			<div class="col-md-6 text-center">
-				@if (false)
-					<img class="border-simple img-responsive" src="{{ URL('image/device/1/1') }}" alt="Device Image" id="deviceImage">
-					<br>
-					<a class="no-style-link" href="{{ URL('image/device/1/1') }}" download="custom_name.jpg">
-						<button class="btn btn-primary">Download Image</button>
-					</a>
-				@else
-					<video id="video1" width=100%" height="auto">
-						<source src="{{ asset('video/cover.mp4') }}" type="video/mp4">
-						Your browser does not support HTML5 video.
-					</video>
-				@endif
+				<video id="video1" width=100%" height="auto">
+					<source src="{{ asset('video/cover.mp4') }}" type="video/mp4">
+					Your browser does not support HTML5 video.
+				</video>
 			</div>
 			<div class="col-md-6">
 				<h2 style="padding-top: 0; margin-top: 0;">Unit Alpha</h2>
