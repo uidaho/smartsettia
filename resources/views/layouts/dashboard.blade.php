@@ -56,7 +56,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation"><a href="{{ route('user.index') }}">Manage Users </a></li>
                             <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-groups') }}">Manage Groups </a></li>
-                            <li class="{{ Route::currentRouteNamed('manage-units') ? 'active' : '' }}" role="presentation"><a href="{{ route('manage-units') }}">Manage Units </a></li>
+                            <li class="{{ Route::currentRouteNamed('manage-units') ? 'active' : '' }}" role="presentation"><a href="{{ route('device.index') }}">Manage Units </a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

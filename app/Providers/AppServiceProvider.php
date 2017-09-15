@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Validator::replacer('phone', function($message, $attribute, $rule, $parameters) {
-            return str_replace(':attribute',$attribute, ':attribute is invalid phone number');
+            return str_replace(':attribute', $attribute, ':attribute is invalid phone number');
         });
     }
 

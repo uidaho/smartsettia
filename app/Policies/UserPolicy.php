@@ -29,7 +29,7 @@ class UserPolicy
      *
      * @param  \App\User  $user
      * @param  \App\User  $user
-     * @return mixed
+     * @return boolean
      */
     public function view(User $user, User $user2)
     {
@@ -41,7 +41,7 @@ class UserPolicy
      * Determine whether the user can create users.
      *
      * @param  \App\User  $user
-     * @return mixed
+     * @return boolean
      */
     public function create(User $user)
     {
@@ -54,7 +54,7 @@ class UserPolicy
      *
      * @param  \App\User  $user
      * @param  \App\User  $user
-     * @return mixed
+     * @return boolean
      */
     public function update(User $user, User $user2)
     {
@@ -68,7 +68,7 @@ class UserPolicy
      *
      * @param  \App\User  $user
      * @param  \App\User  $user
-     * @return mixed
+     * @return boolean
      */
     public function delete(User $user, User $user2)
     {

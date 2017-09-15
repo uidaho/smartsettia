@@ -2,10 +2,10 @@
 
 namespace App\DataTables;
 
-use App\User;
+use App\Device;
 use Yajra\Datatables\Services\DataTable;
 
-class UsersDataTable extends DataTable
+class DevicesDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -16,22 +16,11 @@ class UsersDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'user.action')
+            ->addColumn('action', 'device.action')
             ->blacklist([ 'action' ])
-            ->editColumn('role', function(User $user) {
-                    $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
-                    return $role_en[ $user->role ].' ('.$user->role.')'; })
-            ->setRowClass(function($user) {
-                    return $user->trashed() ? 'alert-danger' : "";
-            })
-            ->setRowData([
-                    'data-id' => function($user) {
-                        return 'row-'.$user->id;
-                    },
-                    'data-name' => function($user) {
-                        return 'row-'.$user->name;
-                    },
-            ]);
+            ->setRowClass(function($device) {
+                return $device->trashed() ? 'alert-danger' : "";
+            });
     }
 
     /**
@@ -41,8 +30,17 @@ class UsersDataTable extends DataTable
      */
     public function query()
     {
-        $query = User::query();
-
+        $query = Device::query()
+                        ->select([
+                            'devices.id as id',
+                            'devices.name as name',
+                            'locations.name as location',
+                            'sites.name as site'
+                        ])
+                        ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                        ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
+    
+    
         return $this->applyScopes($query);
     }
 
@@ -55,12 +53,12 @@ class UsersDataTable extends DataTable
     {
         return $this->builder()
                     ->columns($this->getColumns())
+                    //->minifiedAjax('')
                     //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
                         'order'   => [ [ 0, 'asc' ] ],
                         'buttons' => [
-                            'create',
                             'export',
                             'print',
                             'reset',
@@ -83,11 +81,8 @@ class UsersDataTable extends DataTable
         return [
             'id',
             'name',
-            'email',
-            'phone',
-            'role',
-            'created_at',
-            'updated_at',
+            'location',
+            'site',
             [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
     }
@@ -99,6 +94,6 @@ class UsersDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'users_'.time();
+        return 'devices_'.time();
     }
 }
