@@ -7,17 +7,18 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class ExampleTest extends TestCase
+class SiteTest extends TestCase
 {
     /**
-     * A basic test example.
+     * Tests if the database, sites table, and seed work properly.
      *
      * @return void
      */
-    public function testBasicTest()
+    public function testDatabase()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        // Make call to application...
+        $this->assertDatabaseHas('sites', [
+            'id' => '1'
+        ]);
     }
 }
