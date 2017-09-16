@@ -42,26 +42,42 @@
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="{{ Route::currentRouteNamed('home') || Request::segment(1) === '/' ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
+                    <li class="{{ Route::currentRouteName() == '' ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
                     <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
                     <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
                         <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation"><a href="{{ route('register') }}">Register</a></li>
                         <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation"><a href="{{ route('login') }}">Login</a></li>
                     @else
+                        @if (Auth::user()->isManager())
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Manage <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('user.index') }}"><i class="fa fa-user"></i> Manage Users</a></li>
+                                    <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('manage-groups') }}"><i class="fa fa-group"></i> Manage Groups</a></li>
+                                    <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('device.index') }}"><i class="fa fa-microchip"></i> Manage Devices</a></li>
+                                    <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('logs') }}"><i class="fa fa-history"></i> View Logs</a></li>
+                                </ul>
+                            </li>
+                        @endif
                         <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">
+                                <img src="/img/avatar.jpg" class="dropdown-image">{{ Auth::user()->name }}
+                                <span class="caret"></span>
                             </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li class="{{ Route::currentRouteNamed('user.edit') ? 'active' : '' }}" role="presentation">
+                                    <a href="{{ route('user.edit', ['id' => Auth::user()->id]) }}"><i class="fa fa-gear"></i> Settings</a></li>
+                                <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
+                                    <a href="{{ route('user-notifications') }}"><i class="fa fa-envelope"></i> Notifications</a></li>
+                                <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i> Logout</a>
+                                    <form id="logout-form" action="logout" method="POST" style="display: none;">{{ csrf_field() }}</form>
                                 </li>
                             </ul>
                         </li>

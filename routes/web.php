@@ -69,8 +69,8 @@ Route::get('admin', 'DashboardController@index')->name('admin');
 Route::get('manage-users', 'UserController@index')->name('manage-users');
 Route::get('manage-groups', 'DashboardController@index')->name('manage-groups');
 Route::get('manage-units', 'DashboardController@index')->name('manage-units');
-Route::get('user-settings', 'DashboardController@index')->name('user-settings');
 Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
+Route::get('logs', 'DashboardController@index')->name('logs');
 
 /*-----------------------*
  * Image Controller  *
