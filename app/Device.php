@@ -22,10 +22,18 @@ class Device extends Model
     public $timestamps = false;
     
     /**
-     * Get the site for the location
+     * Get the location for the device
      */
     public function location()
     {
-        return $this->belongsTo('App\Location');
+        return $this->belongsTo('App\Location', 'location_id');
+    }
+    
+    /**
+     * Get the site for the device
+     */
+    public function site()
+    {
+        return $this->belongsTo('App\Site');
     }
 }

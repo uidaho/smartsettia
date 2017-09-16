@@ -22,6 +22,14 @@ class Location extends Model
      */
     public function site()
     {
-        return $this->belongsTo('App\Site');
+        return $this->belongsTo('App\Site', 'site_id');
+    }
+    
+    /**
+     * Get devices for the location
+     */
+    public function devices()
+    {
+        return $this->hasMany('App\Device');
     }
 }
