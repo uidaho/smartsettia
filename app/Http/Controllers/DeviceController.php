@@ -8,6 +8,7 @@ use App\DataTables\DevicesDataTable;
 use App\Device;
 use App\Site;
 use App\Location;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -67,14 +68,44 @@ class DeviceController extends Controller
     public function edit(Request $request, $id)
     {
         $device = Device::findOrFail($id);
+        
         $location = Location::where('id', $device->location_id)->first();
-        if ($location) {
-                    $site = Site::where('id', $location->site_id)->first();
-        } else {
-                    $site = null;
+        if ($location)
+        {
+            $sites = Site::query()->select([
+                                        'id',
+                                        'name',
+                                    ])
+                                    ->orderByRaw(DB::raw("(id = " . $location->site_id . ") DESC"))
+                                    ->get();
+            $locations = Location::query()->select([
+                                                'id',
+                                                'name',
+                                            ])
+                                            ->where('site_id', '=', $location->site_id)
+                                            ->orderByRaw(DB::raw("(id = " . $device->location_id . ") DESC"))
+                                            ->get();
+        }
+        else
+        {
+            $locations = null;
+            $sites = Site::all();
         }
 
-        return view('device.edit', [ 'device' => $device, 'location' => $location, 'site' => $site ]);
+        return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
+    }
+    
+    /**
+     * View the edit device page.
+     *
+     * @param  string  $site_id
+     * @return
+     */
+    public function locations($site_id)
+    {
+        $locations = Location::where('site_id', $site_id)->get();
+    
+        return $locations;
     }
 
     /**
@@ -96,41 +127,55 @@ class DeviceController extends Controller
         $location = null;
         $site = null;
 
+        // TODO figure out way for unique location names for each specific site
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'site' => 'string|max:255',
-            'location' => 'string|max:255',
+            'site' => 'required_without:new_site_name|int|max:255|nullable',
+            'new_site_name' => 'required_without:site|unique:sites,name|nullable',
+            'location' => 'required_without:new_location_name|int|max:255|nullable',
+            'new_location_name' => 'required_without:location|unique:locations,name|string|max:255|nullable',
         ]);
         
         if ($validator->fails()) {
             return redirect('device/'.$id.'/edit')->withErrors($validator)->withInput();
         }
-    
-        //Check if the site entered by the user is already created
-        $siteExist = Site::where('name', $request->input('site'))->first();
-        if (!$siteExist)
+        
+        $siteNew = !empty($request->input('new_site_name'));
+        //Get the site id of the old or newly created site
+        if ($siteNew)
         {
             //Create a new site
             $site = new Site;
-            $site->name = $request->input('site');
+            $siteName = $request->input('new_site_name');
+            $site->name = $siteName;
             $site->save();
+            $site_id = $site->id;
         }
-    
-        //Check if the location entered by the user is already created and connected to the same site
-        $site = Site::where('name', $request->input('site'))->first();
-        $locationExist = Location::where('name', $request->input('location'))->first();
-        if (!$locationExist || !$siteExist)
+        else
+        {
+            $site_id = $request->input('site');
+        }
+        
+        $locationNew = !empty($request->input('new_location_name'));
+        //Get the location id of the old or newly created location
+        if ($locationNew)
         {
             //Create a new location
             $location = new Location;
-            $location->name = $request->input('location');
-            $location->site_id = $site->id;
+            $locationName = $request->input('new_location_name');
+            $location->name = $locationName;
+            $location->site_id = $site_id;
             $location->save();
+            $location_id = $location->id;
+        }
+        else
+        {
+            $location_id = $request->input('location');
         }
         
         //Update the devices name and location_id
-        $location = Location::where('name', $request->input('location'))
-                                    ->where('site_id', $site->id)->first();
+        $location = Location::where('id', $location_id)
+                                    ->where('site_id', $site_id)->first();
         $device->location_id = $location->id;
         $device->name = $request->input('name');
         $device->save();
@@ -194,11 +239,21 @@ class DeviceController extends Controller
     private function removeUnusedSite($oldLocationID)
     {
         //Cleanup left over sites and locations
-        $deviceExist = Device::where('location_id', $oldLocationID)->first();
+        $deviceExist = Device::where('location_id', '=', $oldLocationID)->first();
         if (!$deviceExist && $oldLocationID != null)
         {
-            $oldLocation = Location::where('id', $oldLocationID)->firstOrFail()->site_id;
-            Site::where('id', $oldLocation)->delete();
+            $site_id = Location::where('id', '=', $oldLocationID)->firstOrFail()->site_id;
+            $locations = Location::where('site_id', '=', $site_id)->get();
+            if (sizeof($locations) == 1)
+            {
+                //Get the site connected to the location and delete it
+                Site::where('id', '=', $site_id)->delete();
+            }
+            else
+            {
+                //Delete the location that isn't used anymore
+                Location::where('id', '=', $oldLocationID)->delete();
+            }
         }
     }
 }

@@ -46,17 +46,7 @@ Route::get('user/{id}/remove', 'UserController@remove');
  *-----------------------*/
 Route::resource('device', 'DeviceController');
 Route::get('device/{id}/remove', 'DeviceController@remove');
-/* Auto route definitions for resource routes:
- * TYPE       URL                   METHOD   VIEW
- * ---------- --------------------- -------- -------------
- * GET	      /users                index    users.index
- * GET	      /users/create	        create   users.create
- * POST	      /users	            store	 users.store
- * GET	      /users/{id}           show     users.show
- * GET	      /users/{id}/edit      edit     users.edit
- * PUT/PATCH  /users/{id}           update   users.update
- * DELETE	  /users/{id}           destroy  users.destroy
- */
+Route::get('device/{site_id}/locations', 'DeviceController@locations');
 
 /*-----------------------*
  * Dashboard Controller  *

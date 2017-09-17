@@ -120,7 +120,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js" integrity="sha256-fzbeRFWxDKUq4+WF3Eyv1jhRcV2hrj5LJDn2asBF6/0=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-	<script src="{{ asset('js/dash_image.js') }}"></script>
+	@yield('scripts')
     @stack('scripts')
 </body>
 </html>
