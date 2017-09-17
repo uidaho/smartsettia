@@ -19,27 +19,42 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('site') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('site') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}">
                             {!! Form::label('site', 'Site', ['class' =>'col-sm-3 control-label']) !!}
                             <div class="col-sm-9">
-								@if ($site)
-									<input class="form-control" name="site" placeholder="eg: Sixth Street Greenhouse" value="{{ $site->name }}" id="site">
-								@else
-									<input class="form-control" name="site" placeholder="eg: Sixth Street Greenhouse" id="site">
+								@if ($sites)
+									<select class="form-control" name="site" id="site">
+										@if (!$locations)
+											<option value="-1">Choose a site</option>
+										@endif
+										@foreach($sites as $site)
+											<option value="{{ $site->id }}">{{ $site->name }}</option>
+										@endforeach
+											<option value="">Create new site</option>
+									</select>
 								@endif
+								<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
                                 <small class="text-danger">{{ $errors->first('site') }}</small>
+									<small class="text-danger">{{ $errors->first('new_site_name') }}</small>
                             </div>
                         </div>
 
-						<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
+						<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }} {{ $errors->has('new_location_name') ? ' has-error' : '' }}">
 							{!! Form::label('location', 'Location', ['class' => 'col-sm-3 control-label']) !!}
 							<div class="col-sm-9">
-								@if ($location)
-									<input class="form-control" name="location" placeholder="eg: Greenhouse 1A" value="{{ $location->name }}" id="location">
-								@else
-									<input class="form-control" name="location" placeholder="eg: Greenhouse 1A" id="location">
-								@endif
+								<select class="form-control" name="location" id="location">
+									@if ($locations)
+										@foreach($locations as $location)
+											<option value="{{ $location->id }}">{{ $location->name }}</option>
+										@endforeach
+											<option value="">Create new location</option>
+									@else
+										<option value="">Choose a site first</option>
+									@endif
+								</select>
+								<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
 								<small class="text-danger">{{ $errors->first('location') }}</small>
+									<small class="text-danger">{{ $errors->first('new_location_name') }}</small>
 							</div>
 						</div>
 
@@ -66,3 +81,7 @@
 @push('scripts')
 
 @endpush
+
+@section('scripts')
+	<script src="{{ asset('js/device_edit.js') }}"></script>
+@endsection
