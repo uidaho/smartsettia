@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Location extends Model
 {
@@ -31,5 +32,50 @@ class Location extends Model
     public function devices()
     {
         return $this->hasMany('App\Device');
+    }
+    
+    /**
+     * Get all the locations with the supplied site id
+     *
+     * @param int $site_id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getLocationsBasedOnSite($site_id)
+    {
+        return self::where('site_id', $site_id)->get();
+    }
+    
+    /**
+     * Get the locations that are related to the supplied site id and sort the locations
+     * starting with the supplied location id
+     *
+     * @param int $site_id
+     * @param int $location_id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function orderedSiteLocationsBy($site_id, $location_id)
+    {
+        $locations = self::query()->select(['id', 'name'])
+                                    ->where('site_id', '=', $site_id)
+                                    ->orderByRaw(DB::raw("(id = " . $location_id . ") DESC"))
+                                    ->get();
+        return $locations;
+    }
+    
+    /**
+     * Create a new location and return its id
+     *
+     * @param string $name
+     * @param int $site_id
+     * @return int $id
+     */
+    public function createLocation($name, $site_id)
+    {
+        $location = new Location;
+        $location->name = $name;
+        $location->site_id = $site_id;
+        $location->save();
+        
+        return $location->id;
     }
 }
