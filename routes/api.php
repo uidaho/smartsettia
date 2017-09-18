@@ -16,3 +16,23 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+/*-----------------------*
+ * api/register          *
+ *-----------------------*/
+Route::get('register', 'ApiController@index');
+Route::post('register', 'ApiController@register');
+
+
+/*-----------------------*
+ * api/update            *
+ *-----------------------*/
+Route::get('update', 'ApiController@index');
+Route::post('update', 'ApiController@update');
+
+/*-----------------------*
+ * api/show/{id}         *
+ *-----------------------*/
+ Route::get('show', 'ApiController@index');
+ Route::get('show/{device}', 'ApiController@show');
