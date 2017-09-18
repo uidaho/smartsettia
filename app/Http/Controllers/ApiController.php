@@ -150,7 +150,12 @@ class ApiController extends Controller
         //event(new Registered(true));
         
         // Return the new device info including the token.
-        return response()->json(['data' => $device->toArray()], 201);
+        return response()->json([ 'data' => [ 
+            'name' => $device->name,
+            'uuid' => $device->uuid,
+            'id' => $device->id,
+            'token' => $device->token,
+        ]], 201);
     }
 }
 
