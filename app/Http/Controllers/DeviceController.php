@@ -11,6 +11,10 @@ use App\Location;
 
 class DeviceController extends Controller
 {
+    private $device_m = null;
+    private $site_m = null;
+    private $location_m = null;
+    
     /**
      * Create a new controller instance.
      *
@@ -20,6 +24,10 @@ class DeviceController extends Controller
         $this->middleware('auth');
         // TODO: Setup logging
         // $this->middleware('log')->only('index');
+    
+        $this->device_m = new Device();
+        $this->site_m = new Site();
+        $this->location_m = new Location();
     }
 
     /**
@@ -46,13 +54,12 @@ class DeviceController extends Controller
     /**
      * Show the given device.
      *
-     * @param  Request  $request
      * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $device = Device::findOrFail($id);
+        $device = $this->device_m->findOrFail($id);
 
         return view('device.show', [ 'device' => $device ]);
     }
@@ -60,21 +67,39 @@ class DeviceController extends Controller
     /**
      * View the edit device page.
      *
-     * @param  Request  $request
      * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
-        $device = Device::findOrFail($id);
-        $location = Location::where('id', $device->location_id)->first();
-        if ($location) {
-                    $site = Site::where('id', $location->site_id)->first();
-        } else {
-                    $site = null;
+        $device = $this->device_m->findOrFail($id);
+        
+        $location = $this->location_m->find($device->location_id);
+        if ($location)
+        {
+            $sites = $this->site_m->orderedSitesBy($location->site_id);
+            $locations = $this->location_m->orderedSiteLocationsBy($location->site_id, $device->location_id);
+        }
+        else
+        {
+            $locations = null;
+            $sites = $this->site_m->all();
         }
 
-        return view('device.edit', [ 'device' => $device, 'location' => $location, 'site' => $site ]);
+        return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
+    }
+    
+    /**
+     * Get the locations with the given site id
+     *
+     * @param  string  $site_id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function locations($site_id)
+    {
+        $locations = $this->location_m->getLocationsBasedOnSite($site_id);
+    
+        return $locations;
     }
 
     /**
@@ -91,47 +116,52 @@ class DeviceController extends Controller
         // method_field helper can create this field for you:
         // {{ method_field('PUT') }}
 
-        $device = Device::findOrFail($id);
+        $device = $this->device_m->findOrFail($id);
         $oldLocationID = $device->location_id;
         $location = null;
         $site = null;
 
+        // TODO figure out way for unique location names for each specific site
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'site' => 'string|max:255',
-            'location' => 'string|max:255',
+            'site' => 'required_without:new_site_name|int|max:255|nullable',
+            'new_site_name' => 'required_without:site|unique:sites,name|nullable',
+            'location' => 'required_without:new_location_name|int|max:255|nullable',
+            'new_location_name' => 'required_without:location|unique:locations,name|string|max:255|nullable',
         ]);
         
         if ($validator->fails()) {
             return redirect('device/'.$id.'/edit')->withErrors($validator)->withInput();
         }
-    
-        //Check if the site entered by the user is already created
-        $siteExist = Site::where('name', $request->input('site'))->first();
-        if (!$siteExist)
+        
+        $siteNew = !empty($request->input('new_site_name'));
+        //Get the site id of the old or newly created site
+        if ($siteNew)
         {
             //Create a new site
-            $site = new Site;
-            $site->name = $request->input('site');
-            $site->save();
+            $siteName = $request->input('new_site_name');
+            $site_id = $this->site_m->createSite($siteName);
         }
-    
-        //Check if the location entered by the user is already created and connected to the same site
-        $site = Site::where('name', $request->input('site'))->first();
-        $locationExist = Location::where('name', $request->input('location'))->first();
-        if (!$locationExist || !$siteExist)
+        else
+        {
+            $site_id = $request->input('site');
+        }
+        
+        $locationNew = !empty($request->input('new_location_name'));
+        //Get the location id of the old or newly created location
+        if ($locationNew)
         {
             //Create a new location
-            $location = new Location;
-            $location->name = $request->input('location');
-            $location->site_id = $site->id;
-            $location->save();
+            $locationName = $request->input('new_location_name');
+            $location_id = $this->location_m->createLocation($locationName, $site_id);
+        }
+        else
+        {
+            $location_id = $request->input('location');
         }
         
         //Update the devices name and location_id
-        $location = Location::where('name', $request->input('location'))
-                                    ->where('site_id', $site->id)->first();
-        $device->location_id = $location->id;
+        $device->location_id = $location_id;
         $device->name = $request->input('name');
         $device->save();
 
@@ -144,28 +174,27 @@ class DeviceController extends Controller
     /**
      * Deletes a device.
      *
-     * @param  Request  $request
      * @param  string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $device = Device::findOrFail($id);
+        $device = $this->device_m->findOrFail($id);
 
         if ($device->trashed())
         {
-            // if the user was already deleted then permananetly delete it
-            Device::destroy($id);
-        } else
+            //If the user was already deleted then permanently delete it
+            $this->device_m->destroy($id);
+        }
+        else
         {
             //Remove the location from the device
             $oldLocation_id = $device->location_id;
-            $device->location_id = null;
-            $device->save();
+            $this->device_m->updateLocationID($id, null);
             //Remove unused location and site if applicable
             $this->removeUnusedSite($oldLocation_id);
             
-            // soft delete the user the first time
+            //Soft delete the user the first time
             $device->delete();
         }
 
@@ -175,30 +204,40 @@ class DeviceController extends Controller
     /**
      * Confirms deletion of a device.
      *
-     * @param  Request  $request
      * @param  string  $id
      * @return Response
      */
-    public function remove(Request $request, $id)
+    public function remove($id)
     {
-        $device = Device::findOrFail($id);
+        $device = $this->device_m->findOrFail($id);
         
         return view('device.remove', [ 'device' => $device ]);
     }
     
     /**
-     * If a site is not connected to a device then delete the site
+     * Delete the location with the supplied id if it is not used by any devices
      *
      * @param  int $oldLocationID
      */
     private function removeUnusedSite($oldLocationID)
     {
         //Cleanup left over sites and locations
-        $deviceExist = Device::where('location_id', $oldLocationID)->first();
-        if (!$deviceExist && $oldLocationID != null)
+        $noDevice = empty($this->device_m->getFirstDeviceBasedOnLocation($oldLocationID));
+        if ($noDevice && $oldLocationID != null)
         {
-            $oldLocation = Location::where('id', $oldLocationID)->firstOrFail()->site_id;
-            Site::where('id', $oldLocation)->delete();
+            $oldLocation = $this->location_m->findOrFail($oldLocationID);
+            $site_id = $oldLocation->site_id;
+            $locations = $this->location_m->getLocationsBasedOnSite($site_id);
+            if (sizeof($locations) == 1)
+            {
+                //Get the site connected to the location and delete it
+                $this->site_m->findOrFail($site_id)->delete();
+            }
+            else
+            {
+                //Delete the location that isn't used anymore
+                $oldLocation->delete();
+            }
         }
     }
 }
