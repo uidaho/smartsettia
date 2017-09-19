@@ -32,7 +32,7 @@ class Device extends Model
      * @var array
      */
     protected $fillable = [
-        'uuid', 'version', 'hostname', 'ip', 'mac_address', 'time', 
+        'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 'time', 
         'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
         'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity'
     ];
@@ -105,5 +105,16 @@ class Device extends Model
         $this->save();
         
         return $this->token;
+    }
+    
+    /**
+     * Get a device by uuid
+     *
+     * @param string $uuid
+     * @return Device|Illuminate\Database\Eloquent\Model
+     */
+    public function getDeviceByUUID($uuid)
+    {
+        return self::where('uuid', $uuid)->first();
     }
 }

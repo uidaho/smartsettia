@@ -64,7 +64,7 @@ class ApiController extends Controller
         }
         
         // Get the device record
-        $device = Device::where('uuid', $request->input('uuid'))->first();
+        $device = Device::getDeviceByUUID($request->input('uuid'));
         
         // If token doesnt match then send 401 unauthorized.
         if ($request->input('token') != $device->token) {
@@ -126,7 +126,7 @@ class ApiController extends Controller
         }
         
         // If the uuid already exists then just send them the record.
-        if ($device = Device::where('uuid', $request->input('uuid'))->first()) {
+        if ($device = Device::getDeviceByUUID($request->input('uuid'))) {
             return response()->json([ 'data' => [ 
                 'name' => $device->name,
                 'uuid' => $device->uuid,
