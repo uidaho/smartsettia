@@ -17,7 +17,7 @@ class DevicesTableSeeder extends Seeder
             'location_id' => 1,
         ]);
 
-        factory(App\Device::class, 50)->create([
+        factory(App\Device::class, 4)->create([
             'location_id' => 1,
         ]);
     }
