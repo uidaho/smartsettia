@@ -35,7 +35,9 @@ class DevicesDataTable extends DataTable
                             'devices.id as id',
                             'devices.name as name',
                             'locations.name as location',
-                            'sites.name as site'
+                            'sites.name as site',
+                            'open_time',
+                            'close_time',
                         ])
                         ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
                         ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
@@ -83,6 +85,8 @@ class DevicesDataTable extends DataTable
             'name',
             'location',
             'site',
+            'open_time',
+            'close_time',
             [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
     }
