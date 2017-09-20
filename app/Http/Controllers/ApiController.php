@@ -15,8 +15,7 @@ class ApiController extends Controller
      */    
     public function index()
     {
-        $devices = Device::all();
-        return response()->json($devices, 200);
+        return response()->json(['data' => 'SmartSettia API - Bad request type.'], 400);
     }
 
     /**
@@ -121,7 +120,7 @@ class ApiController extends Controller
         }
         
         // If challenge string doesnt match then send 401 unauthorized.
-        if ($request->input('challenge') != 'temppass') {
+        if ($request->input('challenge') != env('API_CHALLENGE', 'temppass')) {
             return response()->json(['data' => 'Bad challenge.'], 401);
         }
         
@@ -157,6 +156,7 @@ class ApiController extends Controller
             'token' => $device->token,
         ]], 201);
     }
+    
 }
 
 // HTTP STATUS CODES:
