@@ -113,7 +113,7 @@ class Device extends Model
      * @param string $uuid
      * @return Device|Illuminate\Database\Eloquent\Model
      */
-    public function getDeviceByUUID($uuid)
+    public static function getDeviceByUUID($uuid)
     {
         return self::where('uuid', $uuid)->first();
     }
