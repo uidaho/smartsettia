@@ -264,4 +264,5 @@
 
 @section('scripts')
 	<script src="{{ asset('js/dash_image.js') }}"></script>
+	<script src="{{ asset('js/dash_video.js') }}"></script>
 @endsection

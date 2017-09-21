@@ -35,7 +35,18 @@ class DashboardController extends Controller
     public function index()
     {
         //Todo use the users preferred device
-        $device = $this->device_m->findOrFail(3);
+        $device = $this->device_m->query()
+                                    ->select([
+                                        'devices.id as id',
+                                        'devices.name as name',
+                                        'devices.location_id',
+                                        'locations.name as location_name',
+                                        'locations.site_id',
+                                        'sites.name as site_name',
+                                    ])
+                                    ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                                    ->leftJoin('sites', 'locations.site_id', '=', 'sites.id')
+                                    ->where('devices.id' , '=', 3)->firstOrFail();
         $location = $this->location_m->findOrFail($device->location_id);
         
         $sites = $this->site_m->orderedSitesBy($location->site_id);

@@ -4,31 +4,43 @@
 
 @section('content')
 	<section class="testimonials" style="margin-bottom: 0">
-		<h2 class="text-center">Sixth Street Greenhouse</h2>
-		<select class="form-control" name="site" id="site">
-			<option value="-1">Change Site</option>
-			@foreach($sites as $site)
-				<option value="{{ $site->id }}">{{ $site->name }}</option>
-			@endforeach
-		</select>
+		<div class="text-center">
+			<h2 style="display: inline-block">{{ $default_device->site_name }}</h2>
+			<div style="display: inline-block">
+				<select class="form-control" name="site" id="site">
+					<option value="">Change Site</option>
+					@foreach($sites as $site)
+						<option value="{{ $site->id }}">{{ $site->name }}</option>
+					@endforeach
+				</select>
+			</div>
+		</div>
 		<blockquote style="margin-bottom: 0">
-			<p><b>Location: </b>Green House #1</p>
-			<select class="form-control" name="location" id="location">
-				<option value="">Change Location</option>
-				@foreach($locations as $location)
-					<option value="{{ $location->id }}">{{ $location->name }}</option>
-				@endforeach
-			</select>
-			<footer><b>Description: </b>Made up of 18 compartments covering 20,000 square feet.</footer>
+			<p style="display: inline-block"><b>Location: </b>{{ $default_device->location_name }}</p>
+			<div style="display: inline-block">
+				<select class="form-control" name="location" id="location">
+					<option value="">Change Location</option>
+					@foreach($locations as $location)
+						<option value="{{ $location->id }}">{{ $location->name }}</option>
+					@endforeach
+				</select>
+			</div>
 		</blockquote>
 	</section>
-
 	<div class="container">
-		<h3>{{ $default_device->name }}</h3>
-		<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space">42 C</span>
-		<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space">42 %</span>
-		<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space">42 cd</span>
-		<hr>
+		<div class="row" style="display: flex; align-items: center; position: relative;">
+			<div class="col-md-4 col-md-offset-4">
+
+			</div>
+		</div>
+
+		<div class="row">
+			<h3>{{ $default_device->name }}</h3>
+			<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space">42 C</span>
+			<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space">42 %</span>
+			<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space">42 cd</span>
+			<hr>
+		</div>
 		<div class="row product">
 			<div class="col-md-6 text-center">
 				<img class="border-simple img-responsive" src="{{ URL('image/device/1') }}" alt="Device Image" id="deviceImage">
@@ -49,9 +61,11 @@
 								<td>{{ $device->name }}</td>
 								<td>
 									<div class="btn-group" role="group">
-										<button class="btn btn-primary btn-info" style="width: 80px !important;" type="button" id="secondaryButton" onclick="playPause()"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
-										<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable/Lock</button>
-										<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#demo1"><i class="fa fa-line-chart" aria-hidden="true"></i> Graphs</button>
+										<button class="btn btn-primary" type="button"><i class="fa fa-video-camera"></i> View</button>
+										<button class="btn btn-primary btn-info" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
+										<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#demo1"><i class="fa fa-line-chart"></i> Graphs</button>
+										<button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-lock"></i> Disable</button>
+										<button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-edit"></i> Edit</button>
 									</div>
 								</td>
 							</tr>
