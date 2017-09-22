@@ -141,6 +141,8 @@ class DeviceController extends Controller
             'new_site_name' => 'required_without:site|unique:sites,name|nullable',
             'location' => 'required_without:new_location_name|int|max:255|nullable',
             'new_location_name' => 'required_without:location|unique:locations,name|string|max:255|nullable',
+            'open_time' => 'required|date_format:H:i',
+            'close_time' => 'required|date_format:H:i',
         ]);
         
         if ($validator->fails()) {
@@ -176,6 +178,8 @@ class DeviceController extends Controller
         //Update the devices name and location_id
         $device->location_id = $location_id;
         $device->name = $request->input('name');
+        $device->open_time = $request->input('open_time');
+        $device->close_time = $request->input('close_time');
         $device->save();
 
         //If the old site isn't connected to a device then remove it

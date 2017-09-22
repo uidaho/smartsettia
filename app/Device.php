@@ -11,14 +11,37 @@ class Device extends Model
     use SoftDeletes;
     
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'deleted_at'
+    ];
+    
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = ['token'];
+    
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'location_id'
+        'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 'time', 
+        'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
+        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity'
     ];
     
+    /**
+     * The attributes that are for timestamps.
+     *
+     * @var array
+     */
     public $timestamps = false;
     
     /**
@@ -71,5 +94,27 @@ class Device extends Model
     public function getFirstDeviceBasedOnLocation($location_id)
     {
         return self::where('location_id', $location_id)->first();
+    }
+    
+    /**
+     * Create a new API token for the device.
+     */
+    public function generateToken()
+    {
+        $this->token = str_random(60);
+        $this->save();
+        
+        return $this->token;
+    }
+    
+    /**
+     * Get a device by uuid
+     *
+     * @param string $uuid
+     * @return Device|Illuminate\Database\Eloquent\Model
+     */
+    public static function getDeviceByUUID($uuid)
+    {
+        return self::where('uuid', $uuid)->first();
     }
 }
