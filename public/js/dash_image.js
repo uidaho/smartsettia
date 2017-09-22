@@ -9,6 +9,6 @@ function refreshImage()
 {
 	deviceImage.src = deviceImageURL + "?" + Date.now();
 	if (keepRefreshing)
-		setTimeout("refreshImage();", 60000)
+		setTimeout("refreshImage();", 1000)
 }
 refreshImage();

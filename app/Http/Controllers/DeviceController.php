@@ -101,6 +101,19 @@ class DeviceController extends Controller
     
         return $locations;
     }
+    
+    /**
+     * Get the devices details
+     *
+     * @param  string  $site_id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function details($id)
+    {
+        $device = $this->device_m->findOrFail($id);
+        
+        return $device;
+    }
 
     /**
      * Update the given device.
@@ -168,7 +181,10 @@ class DeviceController extends Controller
         //If the old site isn't connected to a device then remove it
         $this->removeUnusedSite($oldLocationID);
         
-        return redirect('device');
+        if ($request->input('from') == 'modal')
+            return redirect()->back();
+        else
+            return redirect('device');
     }
 
     /**

@@ -35,15 +35,15 @@
 		</div>
 
 		<div class="row">
-			<h3>{{ $default_device->name }}</h3>
-			<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space">42 C</span>
-			<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space">42 %</span>
-			<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space">42 cd</span>
+			<h3 id="header_device">{{ $default_device->name }}</h3>
+			<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">42 C</span>
+			<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">42 %</span>
+			<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space" id="light">42 cd</span>
 			<hr>
 		</div>
 		<div class="row product">
 			<div class="col-md-6 text-center">
-				<img class="border-simple img-responsive" src="{{ URL('image/device/1') }}" alt="Device Image" id="deviceImage">
+				<img class="border-simple img-responsive" src="{{ URL('image/device') . '/' . $default_device->id }}" alt="Device Image" id="deviceImage">
 				<br>
 				<a class="no-style-link" href="{{ URL('image/device/1') }}" download="custom_name.jpg">
 					<button class="btn btn-primary">Download Image</button>
@@ -51,21 +51,21 @@
 			</div>
 			<div class="col-md-6">
 				<div class="table-bordered">
-					<table class="table table-striped table-responsive" style="margin-bottom: 0;">
+					<table class="table table-striped table-responsive" style="margin-bottom: 0;" id="device_table">
 						<tr>
 							<th>Name</th>
 							<th>Controls</th>
 						</tr>
 						@foreach ($devices as $device)
-							<tr>
+							<tr id="tr_{{ $device->id }}">
 								<td>{{ $device->name }}</td>
 								<td>
 									<div class="btn-group" role="group">
-										<button class="btn btn-primary" type="button"><i class="fa fa-video-camera"></i> View</button>
+										<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
 										<button class="btn btn-primary btn-info" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 										<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#demo1"><i class="fa fa-line-chart"></i> Graphs</button>
 										<button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-lock"></i> Disable</button>
-										<button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+										<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
 									</div>
 								</td>
 							</tr>
@@ -97,6 +97,8 @@
 			</div>
 		</div>
 	</div>
+
+	@include('dashboard.edit_modal')
 @endsection
 
 @section('scripts')
