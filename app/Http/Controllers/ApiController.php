@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use App\Device;
+use App\Deviceimage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
@@ -157,6 +160,47 @@ class ApiController extends Controller
         ]], 201);
     }
     
+    /**
+     * Updates the image for a device.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function image(Request $request) {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'uuid'          => 'required|string|max:255|exists:devices,uuid',
+            'token'         => 'required|string|max:60',
+            'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        
+        // If validation fails, send the validation error back with status 400.
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->toArray()], 400);
+        }
+        
+        // Get the device record.
+        $device = Device::getDeviceByUUID($request->input('uuid'));
+        
+        // If token doesnt match then send 401 unauthorized.
+        if ($request->input('token') != $device->token) {
+            return response()->json(['data' => 'Bad token.'], 401);
+        }
+        
+        // Save the image to disk.
+        $path = $request->file('image')->storeAs('deviceimage', $device['id'], 'private');
+        
+        // Update the url for the image
+        $deviceimage = Deviceimage::updateOrCreate(
+            ['device_id' => $device['id']],
+            ['url' => $path]
+        );
+        
+        return response()->json([ 'data' => [ 
+            'id' => $deviceimage['id'],
+            'url' => $path,
+        ]], 201);
+    }
 }
 
 // HTTP STATUS CODES:

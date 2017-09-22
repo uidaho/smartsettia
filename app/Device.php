@@ -117,4 +117,12 @@ class Device extends Model
     {
         return self::where('uuid', $uuid)->first();
     }
+    
+    /**
+     * Get the deviceimage record associated with the device.
+     */
+    public function image()
+    {
+        return $this->hasOne('App\Deviceimage');
+    }
 }

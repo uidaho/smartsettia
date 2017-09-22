@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image as Image;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -25,22 +27,17 @@ class ImageController extends Controller
      */
     public function show($device_id)
     {
-        $storagePath = storage_path('app/images/devices/');
-        $imagePath = glob($storagePath . $device_id . "*" . ".jpg");
-        
-        if (!empty($imagePath))
-            $image = Image::make($imagePath[0]);
-        else
-        {
-            $imagePath = public_path() . '/img/video_not_found.jpg';
-            $image = Image::make($imagePath);
+        if (Storage::disk('private')->exists('deviceimage/'.$device_id)) {
+            $image = Image::make(Storage::disk('private')->get('deviceimage/'.$device_id));
+        } else {
+            $image = Image::make(public_path() . '/img/video_not_found.jpg');
         }
         
         return $image->response();
     }
     
     /**
-     * Save an image's binary as a jpg to private storage
+     * Save an image to private storage
      *
      * @param int $device_id
      * @param string $binaryData
@@ -48,7 +45,7 @@ class ImageController extends Controller
      */
     public function store($device_id, $binaryData)
     {
-        $storagePath = storage_path('app/images/devices/') . $device_id . '.jpg';
+        $storagePath = storage_path('app/private/deviceimage/') . $device_id;
         $image = Image::make($binaryData);
         $image->save($storagePath, 75);
     }
