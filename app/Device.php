@@ -115,7 +115,7 @@ class Device extends Model
      */
     public static function getDeviceByUUID($uuid)
     {
-        return self::where('uuid', $uuid)->firstOrFail();
+        return self::where('uuid', $uuid)->first();
     }
     
     /**

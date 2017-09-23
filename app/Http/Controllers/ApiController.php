@@ -6,6 +6,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Device;
 use App\Deviceimage;
+use App\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -91,9 +92,6 @@ class ApiController extends Controller
         
         $device->save();
         
-        // Create an api token for the new device.
-        $device->generateToken();
-        
         // A 'Registered' event is created and will trigger any relevant
         // observers, such as sending a confirmation email or any 
         // code that needs to be run as soon as the device is created.
@@ -150,6 +148,7 @@ class ApiController extends Controller
         // observers, such as sending a confirmation email or any 
         // code that needs to be run as soon as the device is created.
         //event(new Registered(true));
+        Notification::send(User::managers(), new DeviceRegister($device));
         
         // Return the new device info including the token.
         return response()->json([ 'data' => [ 
