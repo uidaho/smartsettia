@@ -53,6 +53,8 @@ Route::get('device/{id}/details', 'DeviceController@details');
  * Dashboard Controller  *
  *-----------------------*/
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('dashboard/siteUpdate/{site_id}', 'DashboardController@siteUpdate');
+Route::get('dashboard/locationUpdate/{location_id}/{site_id}', 'DashboardController@locationUpdate');
 Route::get('dev_layout', 'DashboardController@dev_layout');
 
 // Placeholders for NYI stuff
