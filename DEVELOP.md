@@ -150,6 +150,7 @@ Generate an application encryption key and perform the database migration:
 ```bash
 php artisan key:generate
 php artisan migrate
+php artisan storage:link
 ```
 
 

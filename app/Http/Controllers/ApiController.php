@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use App\Device;
+use App\Deviceimage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
@@ -15,8 +18,7 @@ class ApiController extends Controller
      */    
     public function index()
     {
-        $devices = Device::all();
-        return response()->json($devices, 200);
+        return response()->json(['data' => 'SmartSettia API - Bad request type.'], 400);
     }
 
     /**
@@ -58,12 +60,12 @@ class ApiController extends Controller
             'humidity'      => 'nullable|numeric',
         ]);
         
-        // If validation fails, send the validation error back with status 400
+        // If validation fails, send the validation error back with status 400.
         if ($validator->fails()) {
-            return response()->json(['data' => $validator->toArray()], 400);
+            return response()->json(['data' => $validator->errors()], 400);
         }
         
-        // Get the device record
+        // Get the device record.
         $device = Device::getDeviceByUUID($request->input('uuid'));
         
         // If token doesnt match then send 401 unauthorized.
@@ -71,7 +73,7 @@ class ApiController extends Controller
             return response()->json(['data' => 'Bad token.'], 401);
         }
         
-        // Update the device
+        // Update the device.
         $device->version = $request->input('version');
         $device->hostname = $request->input('hostname');
         $device->ip = $request->input('ip');
@@ -109,19 +111,19 @@ class ApiController extends Controller
      */
     public function register(Request $request)
     {
-        // Validate the request
+        // Validate the request.
         $validator = Validator::make($request->all(), [
             'uuid' => 'required|string|max:255',
             'challenge' => 'required|string|min:6',
         ]);
         
-        // If validation fails, send the validation error back with status 400
+        // If validation fails, send the validation error back with status 400.
         if ($validator->fails()) {
-            return response()->json(['data' => $validator->toArray()], 400);
+            return response()->json(['data' => $validator->errors()], 400);
         }
         
         // If challenge string doesnt match then send 401 unauthorized.
-        if ($request->input('challenge') != 'temppass') {
+        if ($request->input('challenge') != env('API_CHALLENGE', 'temppass')) {
             return response()->json(['data' => 'Bad challenge.'], 401);
         }
         
@@ -135,7 +137,7 @@ class ApiController extends Controller
             ]], 200);
         }
         
-        // Create the new device
+        // Create the new device.
         $device = new Device;
         $device->name = 'New Device';
         $device->uuid = $request->input('uuid');
@@ -155,6 +157,51 @@ class ApiController extends Controller
             'uuid' => $device->uuid,
             'id' => $device->id,
             'token' => $device->token,
+        ]], 201);
+    }
+    
+    /**
+     * Updates the image for a device.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function image(Request $request) {
+        // Validate the request.
+        $validator = Validator::make($request->all(), [
+            'uuid'          => 'required|string|max:255|exists:devices,uuid',
+            'token'         => 'required|string|max:60',
+            'image'         => 'required|image|mimes:jpeg,jpg|max:2048',
+        ]);
+        
+        // If validation fails, send the validation error back with status 400.
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->errors()], 400);
+        }
+        
+        // Get the device record.
+        $device = Device::getDeviceByUUID($request->input('uuid'));
+        
+        // If token doesnt match then send 401 unauthorized.
+        if ($request->input('token') != $device->token) {
+            return response()->json(['data' => 'Bad token.'], 401);
+        }
+        
+        // Save the image to disk.
+        $path = $request->file('image')->storeAs('deviceimage', $device['id'], 'private');
+        
+        // Update the url for the image.
+        $deviceimage = Deviceimage::updateOrCreate(
+            ['device_id' => $device['id']],
+            ['url' => $path]
+        );
+        
+        // Force the updated_at timestamp to update as the url may not change.
+        $deviceimage->touch();
+        
+        return response()->json([ 'data' => [ 
+            'id' => $deviceimage['id'],
+            'url' => $path,
         ]], 201);
     }
 }

@@ -115,6 +115,14 @@ class Device extends Model
      */
     public static function getDeviceByUUID($uuid)
     {
-        return self::where('uuid', $uuid)->first();
+        return self::where('uuid', $uuid)->firstOrFail();
+    }
+    
+    /**
+     * Get the deviceimage record associated with the device.
+     */
+    public function image()
+    {
+        return $this->hasOne('App\Deviceimage');
     }
 }
