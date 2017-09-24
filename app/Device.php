@@ -117,4 +117,88 @@ class Device extends Model
     {
         return self::where('uuid', $uuid)->first();
     }
+    
+    /**
+     * Get the very first device and its location and site info based on location id and site id
+     *
+     * @param int $location_id
+     * @param int $site_id
+     * @return Device|Illuminate\Database\Eloquent\Model
+     */
+    public function getLocationUpdateDevice($location_id, $site_id)
+    {
+        return self::select(
+                'devices.id as id',
+                        'devices.name as name',
+                        'devices.location_id',
+                        'locations.name as location_name',
+                        'sites.id as site_id',
+                        'sites.name as site_name',
+                        'devices.temperature as temperature',
+                        'devices.humidity as humidity',
+                        'devices.light_in as light_in',
+                        DB::raw('DATE_FORMAT(open_time, "%H:%i") as open_time'),
+                        DB::raw('DATE_FORMAT(close_time, "%H:%i") as close_time')
+                    )
+                    ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                    ->leftJoin('sites', 'locations.site_id', '=', 'sites.id')
+                    ->where('sites.id', '=', $site_id)
+                    ->where('locations.id', '=', $location_id)
+                    ->orderBy('devices.id', 'ASC')
+                    ->firstOrFail();
+    }
+    
+    /**
+     * Get the very first device and its location and site info based on location id and site id
+     *
+     * @param int $site_id
+     * @return Device|Illuminate\Database\Eloquent\Model
+     */
+    public function getSiteUpdateDevice($site_id)
+    {
+        return self::select(
+                'devices.id as id',
+                        'devices.name as name',
+                        'devices.location_id',
+                        'locations.name as location_name',
+                        'sites.id as site_id',
+                        'sites.name as site_name',
+                        'devices.temperature as temperature',
+                        'devices.humidity as humidity',
+                        'devices.light_in as light_in',
+                        DB::raw('DATE_FORMAT(open_time, "%H:%i") as open_time'),
+                        DB::raw('DATE_FORMAT(close_time, "%H:%i") as close_time')
+                    )
+                    ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                    ->leftJoin('sites', 'locations.site_id', '=', 'sites.id')
+                    ->where('sites.id', '=', $site_id)
+                    ->orderBy('devices.id', 'ASC')
+                    ->firstOrFail();
+    }
+    
+    /**
+     * Get the very first device and its location and site info
+     *
+     * @return Device|Illuminate\Database\Eloquent\Model
+     */
+    public function getFirstDeviceLocSite()
+    {
+        return self::select(
+                'devices.id as id',
+                        'devices.name as name',
+                        'devices.location_id',
+                        'locations.name as location_name',
+                        'sites.id as site_id',
+                        'sites.name as site_name',
+                        'devices.temperature as temperature',
+                        'devices.humidity as humidity',
+                        'devices.light_in as light_in',
+                        DB::raw('DATE_FORMAT(open_time, "%H:%i") as open_time'),
+                        DB::raw('DATE_FORMAT(close_time, "%H:%i") as close_time')
+                    )
+                    ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                    ->leftJoin('sites', 'locations.site_id', '=', 'sites.id')
+                    ->orderBy('devices.id', 'ASC')
+                    ->firstOrFail();
+    }
 }

@@ -8,6 +8,7 @@ use App\DataTables\DevicesDataTable;
 use App\Device;
 use App\Site;
 use App\Location;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -92,7 +93,7 @@ class DeviceController extends Controller
     /**
      * Get the locations with the given site id
      *
-     * @param  string  $site_id
+     * @param  int $site_id
      * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function locations($site_id)
@@ -105,14 +106,45 @@ class DeviceController extends Controller
     /**
      * Get the devices details
      *
-     * @param  string  $site_id
+     * @param  int  $id
      * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function details($id)
     {
-        $device = $this->device_m->findOrFail($id);
+        $device = $this->device_m->select(['id', 'name', 'location_id', 'open_time', 'close_time'])
+                                    ->findOrFail($id);
         
         return $device;
+    }
+    
+    /**
+     * Get the device's details including the connected site and its connected locations
+     *
+     * @param  int  $id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function editDetails($id)
+    {
+        //Details of the device connected to the supplied device id
+        $device = $this->device_m->select(
+                                'id',
+                                        'name',
+                                        'location_id',
+                                        DB::raw('DATE_FORMAT(open_time, "%H:%i") as open_time'),
+                                        DB::raw('DATE_FORMAT(close_time, "%H:%i") as close_time')
+                                    )
+                                    ->findOrFail($id);
+        
+        //Get the device's site id
+        $site_id = $this->location_m->findOrFail($device->location_id)->site_id;
+        
+        //Get the sites with the given id
+        $sites = $this->site_m->orderedSitesBy($site_id);
+        
+        //Get the locations that are connected to the supplied site id
+        $locations = $this->location_m->orderedSiteLocationsBy($site_id, $device->location_id);
+        
+        return [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ];
     }
 
     /**
@@ -146,7 +178,10 @@ class DeviceController extends Controller
         ]);
         
         if ($validator->fails()) {
-            return redirect('device/'.$id.'/edit')->withErrors($validator)->withInput();
+            if ($request->input('from') == 'modal')
+                return response()->json(['errors'=>$validator->errors()], 422);
+            else
+                return redirect('device/'.$id.'/edit')->withErrors($validator)->withInput();
         }
         
         $siteNew = !empty($request->input('new_site_name'));
@@ -186,7 +221,7 @@ class DeviceController extends Controller
         $this->removeUnusedSite($oldLocationID);
         
         if ($request->input('from') == 'modal')
-            return redirect()->back();
+            return "Success";
         else
             return redirect('device');
     }

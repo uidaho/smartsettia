@@ -35,6 +35,20 @@ class Site extends Model
     }
     
     /**
+     * Get all the sites excluding the one with the supplied id
+     *
+     * @param int $id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getSitesExclude($id)
+    {
+        $sites = self::select(['id', 'name'])
+                        ->where('id', '!=', $id)
+                        ->orderBy('name')->get();
+        return $sites;
+    }
+    
+    /**
      * Get all the sites starting with the site with the id supplied and the rest sorted by their id in descending order
      *
      * @param int $id
