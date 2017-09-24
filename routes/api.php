@@ -36,3 +36,9 @@ Route::post('update', 'ApiController@update');
  *-----------------------*/
  Route::get('show', 'ApiController@index');
  Route::get('show/{device}', 'ApiController@show');
+ 
+ /*-----------------------*
+ * api/image            *
+ *-----------------------*/
+Route::get('image', 'ApiController@index');
+Route::post('image', 'ApiController@image');
