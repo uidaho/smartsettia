@@ -47,11 +47,16 @@ Route::get('user/{id}/remove', 'UserController@remove');
 Route::resource('device', 'DeviceController');
 Route::get('device/{id}/remove', 'DeviceController@remove');
 Route::get('device/{site_id}/locations', 'DeviceController@locations');
+Route::get('device/{id}/details', 'DeviceController@details');
+Route::get('device/{id}/edit/details', 'DeviceController@editDetails');
 
 /*-----------------------*
  * Dashboard Controller  *
  *-----------------------*/
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('dashboard/siteUpdate/{site_id}', 'DashboardController@siteUpdate');
+Route::get('dashboard/locationUpdate/{location_id}/{site_id}', 'DashboardController@locationUpdate');
+Route::get('dev_layout', 'DashboardController@dev_layout');
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');

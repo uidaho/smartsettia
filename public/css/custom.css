@@ -21,3 +21,10 @@ Dashboard
 {
 	margin-right: 10px;
 }
+
+/*
+*Used by the dash javascript for getting the dropdown elements
+ */
+.empty{}
+.site{}
+.location{}

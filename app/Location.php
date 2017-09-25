@@ -46,6 +46,21 @@ class Location extends Model
     }
     
     /**
+     * Get all the locations with the supplied site id except for the location with the supplied id
+     *
+     * @param int $site_id
+     * @param int $location_id
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getLocsBasedOnSiteExclude($site_id, $location_id)
+    {
+        return self::select(['id', 'name'])
+                        ->where('site_id', '=', $site_id)
+                        ->where('id', '!=', $location_id)
+                        ->orderBy('name')->get();
+    }
+    
+    /**
      * Get the locations that are related to the supplied site id and sort the locations
      * starting with the supplied location id
      *
