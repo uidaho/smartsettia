@@ -17,7 +17,7 @@
         "laravelcollective/html": "~5.4.0",
         "maatwebsite/excel": "^2.1",
         "nesbot/carbon": "^1.22",
-        "nexmo/client": "^0.4.0",
+        "nexmo/client": "^1.0",
         "predis/predis": "^1.1",
         "yajra/laravel-datatables-buttons": "^2.0",
         "yajra/laravel-datatables-html": "^2.0",

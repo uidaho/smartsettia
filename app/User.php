@@ -87,4 +87,15 @@ class User extends Authenticatable
     {
         return $this->role == 0;
     }
+    
+    
+    /**
+     * Returns a list of managers.
+     *
+     * @return Users
+     */
+    public function managers()
+    {
+        return $this->where('role', '>', 1)->get();
+    }
 }
