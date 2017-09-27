@@ -55,7 +55,7 @@
 			<div class="col-md-6 text-center">
 				<img class="border-simple img-responsive" src="{{ URL('image/device') . '/' . $default_device->id }}" alt="Device Image" id="deviceImage">
 				<br>
-				<a class="no-style-link" href="{{ URL('image/device/1') }}" download="custom_name.jpg">
+				<a class="no-style-link" href="{{ URL('image/device') . '/' . $default_device->id }}" download="custom_name.jpg" id="download_image_link">
 					<button class="btn btn-primary">Download Image</button>
 				</a>
 			</div>
