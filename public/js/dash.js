@@ -120,11 +120,9 @@ function updateActiveDeviceInfo(device_id, data)
 	//Change the photo being loaded
 	//deviceImageURL is a global variable in dash_image.js
 	deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device_id;
-	console.log("Already there: " + deviceImageURL);
 
 	//Change the photo download url to the new image
 	$downloadImageLink.attr('href', deviceImageURL);
-	console.log("New: " + $downloadImageLink);
 
 	//Change the header for the device
 	$headerDevice.html(data['name']);
