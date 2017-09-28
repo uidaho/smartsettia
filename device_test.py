@@ -1,9 +1,8 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 
 # requires: 
-#	sudo apt install fswebcam python-requests
-#	sudo pip install schedule
+#	sudo apt install fswebcam python3 python3-pip
+#   sudo pip3 install --upgrade pip requests schedule uuid wget call
 
 # to preserve the pi's SD card
 #   mkdir /cameratmp
@@ -21,17 +20,18 @@ import functools
 import uuid
 from subprocess import call, check_output
 
-VERSION = "0.2.8"
+VERSION = "0.3.9"
 #DOMAIN = "https://smartsettia.com/"
-DOMAIN = 'https://smartsettia-backburn.c9users.io/'
-MAC_ADDRESS = check_output(["ifconfig -a | grep -Po 'HWaddr \K.*$'"], shell=True)[:-1].replace(":", "")
+#DOMAIN = "http://httpbin.org/post"
+DOMAIN = "https://smartsettia-backburn.c9users.io/"
+MAC_ADDRESS = check_output(["ifconfig -a | grep -Po 'HWaddr \K.*$'"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
 TOKEN = ""
 NAME = "NO NAME"
 ARCH = platform.machine()
-IP = check_output(["ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"], shell=True)[:-1]
-HOSTNAME = check_output(["hostname"], shell=True)[:-1]
+IP = check_output(["ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"], shell=True)[:-1].decode('utf-8')
+HOSTNAME = check_output(["hostname"], shell=True)[:-1].decode('utf-8')
 IMAGE_RATE = 10
 SENSOR_RATE = 5
 UPDATE_RATE = 5
@@ -51,7 +51,7 @@ def api_register():
 	url = DOMAIN+"api/register"
 	data = {"uuid": UUID, "challenge": CHALLENGE}
 	headers = {"Content-type": "application/json", "Accept": "application/json"}
-	response = requests.post(url, data=json.dumps(data), headers=headers)
+	response = requests.post(url, json=data, headers=headers)
 	if response.status_code in [200, 201]:
 		response = response.json()
 		global TOKEN
@@ -60,6 +60,7 @@ def api_register():
 	else:
 		print(the_time()+": api/register failed with status_code "+str(response.status_code))
 		print("text: "+response.text)
+		quit()
 	return
 
 def api_update_job():
@@ -84,7 +85,7 @@ def api_update_job():
 		"humidity": humidity()
 	}
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	response = requests.post(url, data=json.dumps(data), headers=headers)
+	response = requests.post(url, json=data, headers=headers)
 	if response.status_code in [201]:
 		response = response.json()
 		global NAME, IMAGE_RATE, SENSOR_RATE, UPDATE_RATE
@@ -113,9 +114,10 @@ def api_image_job():
 	"""This sends the webcam image to the smartsettia API"""
 	webcam_capture()
 	url = DOMAIN+"api/image"
-	data = {"uuid": ("", UUID), "token": ("", TOKEN), "image": open(IMAGE_PATH,"rb")}
+	data = {"uuid": UUID, "token": TOKEN}
+	files = {"image": open(IMAGE_PATH,"rb")}
 	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	response = requests.post(url, files=data, headers=headers)
+	response = requests.post(url, files=files, data=data, headers=headers)
 	if response.status_code in [200, 201]:
 		print(the_time()+": api/image success")
 	else:
@@ -128,7 +130,7 @@ def webcam_capture():
 	device = "/dev/video0"
 	resolution = "1280x720"
 	title = NAME
-	subtitle = "cpu: "+str(cpu_temp())+" °C"
+	subtitle = "cpu: "+str(cpu_temp())+" C"
 	info = UUID
 	if os.path.lexists(device):
 		call(["fswebcam", "-S 3", "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
@@ -137,7 +139,7 @@ def webcam_capture():
 def cpu_temp():
 	"""Returns the CPU temerature based on architecture"""
 	if ARCH == "armv7l":
-		return check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1]
+		return check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1].decode('utf-8')
 	else:
 		return 0.0
 		
