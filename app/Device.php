@@ -32,9 +32,10 @@ class Device extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 'time', 
-        'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
-        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity'
+        'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
+        'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
+        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
+        'update_rate', 'image_rate', 'sensor_rate'
     ];
     
     /**
