@@ -175,6 +175,9 @@ class DeviceController extends Controller
             'new_location_name' => 'required_without:location|unique:locations,name|string|max:255|nullable',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
+            'update_rate' => 'required|int|max:255',
+            'image_rate' => 'required|int|max:255',
+            'sensor_rate' => 'required|int|max:255',
         ]);
         
         if ($validator->fails()) {
@@ -215,6 +218,9 @@ class DeviceController extends Controller
         $device->name = $request->input('name');
         $device->open_time = $request->input('open_time');
         $device->close_time = $request->input('close_time');
+        $device->update_rate = $request->input('update_rate');
+        $device->image_rate = $request->input('image_rate');
+        $device->sensor_rate = $request->input('sensor_rate');
         $device->save();
 
         //If the old site isn't connected to a device then remove it

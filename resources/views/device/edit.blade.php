@@ -73,6 +73,33 @@
 						</div>
 					</div>
 
+					<div class="form-group{{ $errors->has('update_rate') ? ' has-error' : '' }}">
+						{!! Form::label('update_rate', 'Update Rate', ['class' => 'col-sm-3 control-label']) !!}
+						<div class="col-sm-9">
+							{!! Form::number('update_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
+							<small class="text-danger">{{ $errors->first('update_rate') }}</small>
+							<small class="text-info">Interval the device posts and gets configuration data in seconds.</small>
+						</div>
+					</div>
+
+					<div class="form-group{{ $errors->has('image_rate') ? ' has-error' : '' }}">
+						{!! Form::label('image_rate', 'Image Rate', ['class' => 'col-sm-3 control-label']) !!}
+						<div class="col-sm-9">
+							{!! Form::number('image_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
+							<small class="text-danger">{{ $errors->first('image_rate') }}</small>
+							<small class="text-info">Interval the device posts images in seconds.</small>
+						</div>
+					</div>
+
+					<div class="form-group{{ $errors->has('sensor_rate') ? ' has-error' : '' }}">
+						{!! Form::label('sensor_rate', 'Sensor Rate', ['class' => 'col-sm-3 control-label']) !!}
+						<div class="col-sm-9">
+							{!! Form::number('sensor_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
+							<small class="text-danger">{{ $errors->first('sensor_rate') }}</small>
+							<small class="text-info">Interval the device posts sensor data in seconds.</small>
+						</div>
+					</div>
+					
 					<div class="form-group">
 						<div class="col-md-6 col-md-offset-4">
 							{!! Form::button('<i class="glyphicon glyphicon-ok"></i> Save', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}

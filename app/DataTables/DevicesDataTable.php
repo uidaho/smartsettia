@@ -38,6 +38,9 @@ class DevicesDataTable extends DataTable
                             'sites.name as site',
                             'open_time',
                             'close_time',
+                            'update_rate',
+                            'image_rate',
+                            'sensor_rate',
                         ])
                         ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
                         ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
@@ -87,6 +90,9 @@ class DevicesDataTable extends DataTable
             'site',
             'open_time',
             'close_time',
+            'update_rate',
+            'image_rate',
+            'sensor_rate',
             [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
     }
