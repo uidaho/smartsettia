@@ -23,4 +23,11 @@ class Deviceimage extends Model
     {
         return $this->belongsTo('App\Device');
     }
+    
+    /**
+     * Update the updated_at and created_at timestamps?
+     *
+     * @var array
+     */
+    public $timestamps = true;
 }
