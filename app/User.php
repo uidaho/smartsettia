@@ -37,6 +37,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+    /**
+     * Update the updated_at and created_at timestamps?
+     *
+     * @var array
+     */
+    public $timestamps = true;
 
     /**
      * Route notifications for the Nexmo channel.
