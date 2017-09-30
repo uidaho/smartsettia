@@ -16,7 +16,12 @@ class Site extends Model
         'name'
     ];
     
-    public $timestamps = false;
+    /**
+     * Update the updated_at and created_at timestamps?
+     *
+     * @var array
+     */
+    public $timestamps = true;
     
     /**
      * Get the locations for the site.

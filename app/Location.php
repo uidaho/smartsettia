@@ -16,7 +16,12 @@ class Location extends Model
         'name', 'site_id'
     ];
     
-    public $timestamps = false;
+    /**
+     * Update the updated_at and created_at timestamps?
+     *
+     * @var array
+     */
+    public $timestamps = true;
     
     /**
      * Get the site for the location

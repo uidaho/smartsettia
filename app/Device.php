@@ -39,11 +39,11 @@ class Device extends Model
     ];
     
     /**
-     * The attributes that are for timestamps.
+     * Update the updated_at and created_at timestamps?
      *
      * @var array
      */
-    public $timestamps = false;
+    public $timestamps = true;
     
     /**
      * Get the location for the device
