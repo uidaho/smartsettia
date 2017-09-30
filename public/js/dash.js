@@ -17,7 +17,15 @@ var $inputOpenTime = $('#open_time');
 var $inputCloseTime = $('#close_time');
 var $spanOpenTime = $('#span_open_time');
 var $spanCloseTime = $('#span_close_time');
+//Image Modal
+var $modalImage = $('#image_modal img');
+var $imageCaption = $('#image_caption');
+//Image Refresher
+var keepRefreshing = true;
+var deviceImage = document.getElementById("deviceImage");	//The element for the device image
+var deviceImageURL = deviceImage.src;						//The url for getting the image
 var $downloadImageLink = $('#download_image_link');
+//Helper Variables
 var hiddenViewBtn;
 var currentDeviceId;
 
@@ -115,14 +123,36 @@ function changeDevice(btn)
 	});
 }
 
+//Refresh device image after a set amount of time
+//1000 = 1 second
+function refreshImage()
+{
+	updateDeviceImage();
+
+	if (keepRefreshing)
+		setTimeout("refreshImage();", 1000)
+}
+refreshImage();
+
+//Update the device image url with the date to prevent the browser from caching
+function updateDeviceImage()
+{
+	var newImage = deviceImageURL + "?" + Date.now();
+	deviceImage.src = newImage;
+	$downloadImageLink.attr('href', newImage);
+	$modalImage.attr('src', newImage);
+}
+
 function updateActiveDeviceInfo(device_id, data)
 {
 	//Change the photo being loaded
-	//deviceImageURL is a global variable in dash_image.js
 	deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device_id;
 
-	//Change the photo download url to the new image
-	$downloadImageLink.attr('href', deviceImageURL);
+	//Update the device image url with the date to prevent the browser from caching
+	updateDeviceImage();
+
+	//Change the image caption to the name of the current device
+	$imageCaption.html(data['name']);
 
 	//Change the header for the device
 	$headerDevice.html(data['name']);
