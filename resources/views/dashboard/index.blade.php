@@ -53,7 +53,8 @@
 		</div>
 		<div class="row product">
 			<div class="col-md-6 text-center">
-				<img class="border-simple img-responsive" src="{{ URL('image/device') . '/' . $default_device->id }}" alt="Device Image" id="deviceImage">
+				<!-- Triggers the Image Modal -->
+				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $default_device->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>
 				<a class="no-style-link" href="{{ URL('image/device') . '/' . $default_device->id }}" download="custom_name.jpg" id="download_image_link">
 					<button class="btn btn-primary">Download Image</button>
@@ -112,21 +113,16 @@
 		</div>
 	</div>
 
+
 	<!-- Hidden buttons that hold the site id and the location id -->
 	<button class="hidden" value="{{ $default_device->site_id }}" id="current_site_id"></button>
 	<button class="hidden" value="{{ $default_device->location_id }}" id="current_location_id"></button>
 
 	@include('dashboard.edit_modal')
+	@include('dashboard.image_modal')
 @endsection
 
 @section('scripts')
-	<script>
-		//Check for device edit errors
-		@if (count($errors) > 0)
-			$('#editDeviceModal').modal('show');
-		@endif
-	</script>
-	<script src="{{ asset('js/dash_image.js') }}"></script>
 	<script src="{{ asset('js/dash.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>
 @endsection
