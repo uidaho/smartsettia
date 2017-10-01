@@ -141,6 +141,10 @@ class ApiController extends Controller
         $device->uuid = $request->input('uuid');
         $device->save();
         
+        //Update the new device's name with its id and the current time
+        $device->name = $device->name . "_". $device->id . '_' . date('h:ia-e');
+        $device->save();
+        
         // Create an api token for the new device.
         $device->generateToken();
         
