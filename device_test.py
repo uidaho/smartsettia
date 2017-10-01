@@ -18,9 +18,10 @@ import schedule
 import time
 import functools
 import uuid
+import threading
 from subprocess import call, check_output
 
-VERSION = "0.3.9"
+VERSION = "0.3.14"
 #DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
 DOMAIN = "https://smartsettia-backburn.c9users.io/"
@@ -46,6 +47,10 @@ def the_time():
 	"""Returns the current time in MYSQL format"""
 	return time.strftime('%Y-%m-%d %H:%M:%S')
 
+def run_threaded(job_func):
+	job_thread = threading.Thread(target=job_func)
+	job_thread.start()
+
 def api_register():
 	"""This registers with the smartsettia API and returns the token"""
 	url = DOMAIN+"api/register"
@@ -56,10 +61,9 @@ def api_register():
 		response = response.json()
 		global TOKEN
 		TOKEN = response['data']['token']
-		print(the_time()+": api/register success, got token: "+TOKEN)
+		print("{}: api/register success, got token {}".format(the_time(), TOKEN))
 	else:
-		print(the_time()+": api/register failed with status_code "+str(response.status_code))
-		print("text: "+response.text)
+		print("{}: api/register failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 		quit()
 	return
 
@@ -104,10 +108,9 @@ def api_update_job():
 			UPDATE_RATE = response['data']['update_rate']
 			schedule.clear('api_update_job')
 			schedule_api_update_job()
-		print(the_time()+": api/update success")
+		print("{}: api/update success".format(the_time()))
 	else:
-		print(the_time()+": api/update failed with status_code "+str(response.status_code))
-		print("text: "+response.text)
+		print("{}: api/update failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	return
 
 def api_image_job():
@@ -119,21 +122,21 @@ def api_image_job():
 	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
 	response = requests.post(url, files=files, data=data, headers=headers)
 	if response.status_code in [200, 201]:
-		print(the_time()+": api/image success")
+		print("{}: api/image success".format(the_time()))
 	else:
-		print(the_time()+": api/image failed with status_code "+str(response.status_code))
-		print("text: "+response.text)
+		print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	return
 	
 def webcam_capture():
 	"""Saves an image from the first connected webcam"""
+	compression = "95"
 	device = "/dev/video0"
 	resolution = "1280x720"
 	title = NAME
-	subtitle = "cpu: "+str(cpu_temp())+" C"
+	subtitle = "cpu: {} C".format(cpu_temp())
 	info = UUID
 	if os.path.lexists(device):
-		call(["fswebcam", "-S 3", "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
+		call(["fswebcam", "-S 3", "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
 	return 
 
 def cpu_temp():
@@ -153,16 +156,16 @@ def cover_status():
 	return COVER_STATUS
 
 def schedule_api_update_job():
-	print(the_time()+": Scheduling api/update every "+str(UPDATE_RATE)+" seconds.")
+	print("{}: Scheduling api/update every {} seconds".format(the_time(), UPDATE_RATE))
 	schedule.every(UPDATE_RATE).seconds.do(api_update_job).tag('api_update_job')
 	
 def schedule_api_sensors_job():
-	print(the_time()+": Scheduling api/sensors every "+str(SENSOR_RATE)+" seconds")
-	#schedule.every(SENSOR_RATE).seconds.do(api_sensors_job).tag('api_sensors_job')
+	print("{}: Scheduling api/sensors every {} seconds".format(the_time(), SENSOR_RATE))
+	#schedule.every(SENSOR_RATE).seconds.do(run_threaded, api_sensors_job).tag('api_sensors_job')
 
 def schedule_api_image_job():
-	print(the_time()+": Scheduling api/image every "+str(IMAGE_RATE)+" seconds.")
-	schedule.every(IMAGE_RATE).seconds.do(api_image_job).tag('api_image_job')
+	print("{}: Scheduling api/image every {} seconds".format(the_time(), IMAGE_RATE))
+	schedule.every(IMAGE_RATE).seconds.do(run_threaded, api_image_job).tag('api_image_job')
 
 # register first
 print(the_time()+": Registering with "+DOMAIN)
@@ -172,6 +175,7 @@ api_register()
 schedule_api_update_job()
 schedule_api_sensors_job()
 schedule_api_image_job()
+schedule.run_all(1)
 
 # main/scheduler loop
 while True:
