@@ -40,14 +40,15 @@ class Location extends Model
     }
     
     /**
-     * Get all the locations with the supplied site id
+     * Scope a query to only include locations belonging to a given site
      *
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int $site_id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getLocationsBasedOnSite($site_id)
+    public function scopeBySite($query, $site_id)
     {
-        return self::where('site_id', $site_id)->get();
+        return $query->where('site_id', $site_id);
     }
     
     /**

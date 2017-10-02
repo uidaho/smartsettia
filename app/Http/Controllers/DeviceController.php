@@ -73,9 +73,13 @@ class DeviceController extends Controller
      */
     public function edit($id)
     {
+        //Get the device with the given id
         $device = $this->device_m->findOrFail($id);
         
-        $location = $this->location_m->find($device->location_id);
+        //Get the devices location
+        $location = $device->location;
+        dd($location);
+        
         if ($location)
         {
             $sites = $this->site_m->orderedSitesBy($location->site_id);
@@ -98,7 +102,7 @@ class DeviceController extends Controller
      */
     public function locations($site_id)
     {
-        $locations = $this->location_m->getLocationsBasedOnSite($site_id);
+        $locations = $this->location_m->bySite($site_id);
     
         return $locations;
     }
@@ -288,7 +292,7 @@ class DeviceController extends Controller
         {
             $oldLocation = $this->location_m->findOrFail($oldLocationID);
             $site_id = $oldLocation->site_id;
-            $locations = $this->location_m->getLocationsBasedOnSite($site_id);
+            $locations = $this->location_m->bySite($site_id);
             if (sizeof($locations) == 1)
             {
                 //Get the site connected to the location and delete it

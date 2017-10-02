@@ -36,7 +36,7 @@ class Site extends Model
      */
     public function devices()
     {
-        return $this->hasManyThrough('App\Device', 'App\Location', 'device_id', 'location_id', 'id');
+        return $this->hasManyThrough('App\Device', 'App\Location');
     }
     
     /**

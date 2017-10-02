@@ -26,7 +26,7 @@ var deviceImage = document.getElementById("deviceImage");	//The element for the 
 var deviceImageURL = deviceImage.src;						//The url for getting the image
 var $downloadImageLink = $('#download_image_link');
 //Helper Variables
-var hiddenViewBtn;
+var $disabledViewBtn;
 var currentDeviceId;
 
 //Change Location
@@ -38,7 +38,7 @@ $('#location_change, #site_change').on('click', '.empty', function()
 		//Used for changing locations
 		location_id = $(this).val();
 		site_id = $currentSiteId.val();
-		myURL = '/dashboard/locationUpdate/' + location_id + '/' + site_id;
+		myURL = '/dashboard/locationUpdate/' + location_id;
 	}
 	else
 	{
@@ -59,12 +59,12 @@ function updateDashboardData(myURL)
 		success: function(data)
 		{
 			//Change the site and location names
-			$headerSite.html(data['default_device']['site_name']);
-			$headerLocation.html('<b>Location: </b>' + data['default_device']['location_name']);
+			$headerSite.html(data['site']['name']);
+			$headerLocation.html('<b>Location: </b>' + data['location']['name']);
 
 			//Change the site and location IDs stored in the hidden buttons
-			$currentSiteId.val(data['default_device']['site_id']);
-			$currentLocationId.val(data['default_device']['location_id']);
+			$currentSiteId.val(data['site']['id']);
+			$currentLocationId.val(data['location']['id']);
 
 			//Update the site dropdown list
 			updateSiteDropdown(data['sites']);
@@ -76,10 +76,10 @@ function updateDashboardData(myURL)
 			updateDeviceTable(data['devices']);
 
 			//Hide the view button of the active device
-			hideFirstViewBtn();
+			disableFirstViewBtn();
 
 			//Set the device image url, sensor values, and the device header name
-			updateActiveDeviceInfo(data['default_device']['id'], data['default_device']);
+			updateActiveDeviceInfo(data['devices'][0]['id'], data['devices'][0]);
 		},
 		error: function(data)
 		{
@@ -88,15 +88,15 @@ function updateDashboardData(myURL)
 	});
 }
 
-function hideFirstViewBtn()
+function disableFirstViewBtn()
 {
 	var tr_id = $('#device_table tr').eq(1).attr('id');
 	var device_id = tr_id.substring(tr_id.indexOf('_') + 1);
 	currentDeviceId = device_id;
-	hiddenViewBtn = $('#btn_view_' + device_id);
-	hiddenViewBtn.css('visibility','hidden');
+	$disabledViewBtn = $('#btn_view_' + device_id);
+	$disabledViewBtn.prop("disabled", true);
 }
-hideFirstViewBtn();
+disableFirstViewBtn();
 
 //Change the selected device for the page
 function changeDevice(btn)
@@ -115,10 +115,10 @@ function changeDevice(btn)
 		{
 			updateActiveDeviceInfo(device_id, data);
 
-			//Hide the view button
-			$(btn).css('visibility','hidden');
-			hiddenViewBtn.css('visibility','visible');
-			hiddenViewBtn = $(btn);
+			//Disable the selected view button and enable the previously disabled view button
+			$(btn).prop("disabled", true);
+			$disabledViewBtn.prop("disabled", false);
+			$disabledViewBtn = $(btn);
 		}
 	});
 }
@@ -180,7 +180,7 @@ function updateDeviceModal(btn)
 	resetEditDeviceModal();
 
 	//Update form route
-	$formEditDevice.attr('action', 'https://smartsettia.com/device/' + editDeviceID);
+	$formEditDevice.attr('action', '/device/' + editDeviceID);
 
 	$.ajax({
 		type: 'GET',
@@ -193,10 +193,10 @@ function updateDeviceModal(btn)
 
 			//Update the site dropdown
 			$siteDropDown.empty();
-			if (data['sites'].length > 0)
+			if (Object.keys(data['sites']).length > 0)
 			{
 				var siteString = "";
-				for (i = 0; i < data['sites'].length; i++)
+				for (i = 0; i < Object.keys(data['sites']).length; i++)
 				{
 					siteString += '<option value="' + data["sites"][i]["id"] + '">' + data["sites"][i]["name"] + '</option>'
 				}
@@ -207,9 +207,9 @@ function updateDeviceModal(btn)
 			//Update the location dropdown
 			$locationDropDown.empty();
 			var locationString = "";
-			if (data['locations'].length > 0)
+			if (Object.keys(data['locations']).length > 0)
 			{
-				for (i = 0; i < data['locations'].length; i++)
+				for (i = 0; i < Object.keys(data['locations']).length; i++)
 				{
 					locationString += '<option value="' + data["locations"][i]["id"] + '">' + data["locations"][i]["name"] + '</option>'
 				}
@@ -286,7 +286,7 @@ $formEditDevice.on('submit', function(e)
 		{
 			//Update the entire page using the current site
 			var site_id = $currentSiteId.val();
-			var myURL = '/dashboard/siteUpdate/' + site_id;
+			var myURL = 'http://localhost:8000/dashboard/siteUpdate/' + site_id;
 			updateDashboardData(myURL);
 
 			//Close the edit device modal
@@ -344,10 +344,10 @@ $formEditDevice.on('submit', function(e)
 function updateSiteDropdown(sites)
 {
 	$siteList.empty();
-	if (sites.length > 0)
+	if (Object.keys(sites).length > 0)
 	{
 		var siteString = "";
-		for (i = 0; i < sites.length; i++)
+		for (i = 0; i < Object.keys(sites).length; i++)
 		{
 			siteString += '<li class="empty site" value="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
 		}
@@ -364,10 +364,11 @@ function updateSiteDropdown(sites)
 function updateLocationDropdown(locations)
 {
 	$locationList.empty();
-	if (locations.length > 0)
+
+	if (Object.keys(locations).length > 0)
 	{
 		var locationString = "";
-		for (i = 0; i < locations.length; i++)
+		for (i = 0; i < Object.keys(locations).length; i++)
 		{
 			locationString += '<li class="empty location" value="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
 		}
@@ -387,7 +388,7 @@ function updateDeviceTable(devices)
 	$tableBody.empty();
 	var tableDevicesString = "";
 	//Add the devices to the table
-	for (i = 0; i < devices.length; i++)
+	for (i = 0; i < Object.keys(devices).length; i++)
 	{
 		tableDevicesString += '<tr id="tr_' + devices[i]["id"] + '">' +
 			'<td>' + devices[i]["name"] + '</td>' +
@@ -411,13 +412,13 @@ function updateDeviceTable(devices)
 			'</ul>' +
 			'<div class="tab-content">' +
 			'<div class="tab-pane active" role="tabpanel" id="tab_1_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="https://smartsettia.com/img/temp-graph.png"></p>' +
+			'<p><img class="img-responsive" src="/img/temp-graph.png"></p>' +
 			'</div>' +
 			'<div class="tab-pane" role="tabpanel" id="tab_2_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="https://smartsettia.com/img/humidity-graph.png"></p>' +
+			'<p><img class="img-responsive" src="/img/humidity-graph.png"></p>' +
 			'</div>' +
 			'<div class="tab-pane" role="tabpanel" id="tab_3_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="https://smartsettia.com/img/light-graph.png"></p>' +
+			'<p><img class="img-responsive" src="/img/light-graph.png"></p>' +
 			'</div>' +
 			'</div>' +
 			'</div>' +
