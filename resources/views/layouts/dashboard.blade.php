@@ -101,7 +101,7 @@
     @yield('content')
 
     <!-- Footer -->
-	<footer class="site-footer" style="position:fixed;bottom:0;left:0;right:0;">
+	<footer class="site-footer">
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
