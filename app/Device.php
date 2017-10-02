@@ -74,31 +74,6 @@ class Device extends Model
     }
     
     /**
-     * Update the device with the matching id with a new location id
-     *
-     * @param int $id
-     * @param int $location_id
-     */
-    public function updateLocationID($id, $location_id)
-    {
-        
-        $device = $this->findOrFail($id);
-        $device->location_id = $location_id;
-        $device->save();
-    }
-    
-    /**
-     * Get the first device with the supplied location id
-     *
-     * @param int $location_id
-     * @return Device|Illuminate\Database\Eloquent\Model
-     */
-    public function getFirstDeviceBasedOnLocation($location_id)
-    {
-        return self::where('location_id', $location_id)->first();
-    }
-    
-    /**
      * Create a new API token for the device.
      */
     public function generateToken()

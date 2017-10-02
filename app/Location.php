@@ -52,51 +52,19 @@ class Location extends Model
     }
     
     /**
-     * Get all the locations with the supplied site id except for the location with the supplied id
-     *
-     * @param int $site_id
-     * @param int $location_id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function getLocsBasedOnSiteExclude($site_id, $location_id)
-    {
-        return self::select(['id', 'name'])
-                        ->where('site_id', '=', $site_id)
-                        ->where('id', '!=', $location_id)
-                        ->orderBy('name')->get();
-    }
-    
-    /**
-     * Get the locations that are related to the supplied site id and sort the locations
-     * starting with the supplied location id
-     *
-     * @param int $site_id
-     * @param int $location_id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function orderedSiteLocationsBy($site_id, $location_id)
-    {
-        $locations = self::query()->select(['id', 'name'])
-                                    ->where('site_id', '=', $site_id)
-                                    ->orderByRaw(DB::raw("(id = " . $location_id . ") DESC"))
-                                    ->get();
-        return $locations;
-    }
-    
-    /**
-     * Create a new location and return its id
+     * Create a new location and return it
      *
      * @param string $name
      * @param int $site_id
-     * @return int $id
+     * @return Model $location
      */
-    public function createLocation($name, $site_id)
+    public static function createLocation($name, $site_id)
     {
         $location = new Location;
         $location->name = $name;
         $location->site_id = $site_id;
         $location->save();
         
-        return $location->id;
+        return $location;
     }
 }
