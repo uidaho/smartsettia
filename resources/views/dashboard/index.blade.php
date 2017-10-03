@@ -6,7 +6,7 @@
 
 	<section class="testimonials" style="margin-bottom: 0">
 		<div class="text-center">
-			<h2 style="display: inline-block" id="header_site">{{ $default_device->site_name }}</h2>
+			<h2 style="display: inline-block" id="header_site">{{ $default_device->location->site->name }}</h2>
 			<div style="display: inline-block">
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_site">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<blockquote style="margin-bottom: 0">
-			<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $default_device->location_name }}</p>
+			<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $default_device->location->name }}</p>
 			<div class="btn-group" style="display: inline-block">
 				<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_loc">
 					Change <span class="caret"></span>
@@ -74,7 +74,7 @@
 							<tr id="tr_{{ $device->id }}">
 								<td>{{ $device->name }}</td>
 								<td>
-									<div class="btn-group" role="group">
+									<div class="btn-group-sm" role="group" style="display: block">
 										<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
 										<button class="btn btn-primary btn-info" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 										<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}"><i class="fa fa-line-chart"></i> Graphs</button>
@@ -115,8 +115,9 @@
 
 
 	<!-- Hidden buttons that hold the site id and the location id -->
-	<button class="hidden" value="{{ $default_device->site_id }}" id="current_site_id"></button>
-	<button class="hidden" value="{{ $default_device->location_id }}" id="current_location_id"></button>
+	<button class="hidden" value="{{ $default_device->location->site->id }}" id="current_site_id"></button>
+	<button class="hidden" value="{{ $default_device->location->id }}" id="current_location_id"></button>
+	<button class="hidden" value="{{ url('/') }}" id="website_base_url"></button>
 
 	@include('dashboard.edit_modal')
 	@include('dashboard.image_modal')

@@ -60,7 +60,7 @@
 					<div class="form-group{{ $errors->has('open_time') ? ' has-error' : '' }}">
 						{!! Form::label('open_time', 'Open Time', ['class' => 'col-sm-3 control-label']) !!}
 						<div class="col-sm-9">
-							<input class="form-control" required="required" name="open_time" type="time" value="{{ date("H:i", strtotime($device->open_time)) }}" id="open_time">
+							<input class="form-control" required="required" name="open_time" type="time" value="{{ $device->open_time }}" id="open_time">
 							<small class="text-danger">{{ $errors->first('open_time') }}</small>
 						</div>
 					</div>
@@ -68,7 +68,7 @@
 					<div class="form-group{{ $errors->has('close_time') ? ' has-error' : '' }}">
 						{!! Form::label('close_time', 'Close Time', ['class' => 'col-sm-3 control-label']) !!}
 						<div class="col-sm-9">
-							<input class="form-control" required="required" name="close_time" type="time" value="{{ date("H:i", strtotime($device->close_time)) }}" id="close_time">
+							<input class="form-control" required="required" name="close_time" type="time" value="{{ $device->close_time }}" id="close_time">
 							<small class="text-danger">{{ $errors->first('close_time') }}</small>
 						</div>
 					</div>

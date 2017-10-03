@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Device;
+use App\Site;
 use Yajra\Datatables\Services\DataTable;
 
 class DevicesDataTable extends DataTable

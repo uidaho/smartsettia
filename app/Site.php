@@ -36,49 +36,21 @@ class Site extends Model
      */
     public function devices()
     {
-        return $this->hasManyThrough('App\Device', 'App\Location', 'device_id', 'location_id', 'id');
+        return $this->hasManyThrough('App\Device', 'App\Location');
     }
     
     /**
-     * Get all the sites excluding the one with the supplied id
-     *
-     * @param int $id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function getSitesExclude($id)
-    {
-        $sites = self::select(['id', 'name'])
-                        ->where('id', '!=', $id)
-                        ->orderBy('name')->get();
-        return $sites;
-    }
-    
-    /**
-     * Get all the sites starting with the site with the id supplied and the rest sorted by their id in descending order
-     *
-     * @param int $id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function orderedSitesBy($id)
-    {
-        $sites = self::query()->select(['id', 'name'])
-                                ->orderByRaw(DB::raw("(id = " . $id . ") DESC"))
-                                ->get();
-        return $sites;
-    }
-    
-    /**
-     * Create a new site and return its id
+     * Create a new site and return it
      *
      * @param string $name
-     * @return int $id
+     * @return Model $site
      */
-    public function createSite($name)
+    public static function createSite($name)
     {
         $site = new Site;
         $site->name = $name;
         $site->save();
         
-        return $site->id;
+        return $site;
     }
 }
