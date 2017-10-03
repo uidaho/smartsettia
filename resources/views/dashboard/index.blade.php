@@ -72,9 +72,9 @@
 						<tbody>
 						@foreach ($devices as $device)
 							<tr id="tr_{{ $device->id }}">
-								<td style="width: 0%; white-space: nowrap;">{{ $device->name }}</td>
-								<td style="width: 100%; white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;">
-									<div class="btn-group" role="group">
+								<td>{{ $device->name }}</td>
+								<td>
+									<div class="btn-group-sm" role="group" style="display: block">
 										<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
 										<button class="btn btn-primary btn-info" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 										<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}"><i class="fa fa-line-chart"></i> Graphs</button>
