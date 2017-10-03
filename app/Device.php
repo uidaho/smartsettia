@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class Device extends Model
 {
@@ -59,6 +59,30 @@ class Device extends Model
     public function site()
     {
         return $this->location->site;
+    }
+    
+    /**
+     * Accessor: Get the open time of the device converted to hours and minutes
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function getOpenTimeAttribute($value)
+    {
+        $time = new Carbon($value);
+        return $time->format('H:i');
+    }
+    
+    /**
+     * Accessor: Get the close time of the device converted to hours and minutes
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function getCloseTimeAttribute($value)
+    {
+        $time = new Carbon($value);
+        return $time->format('H:i');
     }
     
     /**
