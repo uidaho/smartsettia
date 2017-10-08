@@ -21,11 +21,11 @@ import uuid
 import threading
 from subprocess import call, check_output
 
-VERSION = "0.3.14"
-#DOMAIN = "https://smartsettia.com/"
+VERSION = "0.3.16"
+DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
-DOMAIN = "https://smartsettia-backburn.c9users.io/"
-MAC_ADDRESS = check_output(["ifconfig -a | grep -Po 'HWaddr \K.*$'"], shell=True)[:-1].decode('utf8').replace(":", "")
+#DOMAIN = "https://smartsettia-backburn.c9users.io/"
+MAC_ADDRESS = check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
 TOKEN = ""
@@ -56,7 +56,10 @@ def api_register():
 	url = DOMAIN+"api/register"
 	data = {"uuid": UUID, "challenge": CHALLENGE}
 	headers = {"Content-type": "application/json", "Accept": "application/json"}
-	response = requests.post(url, json=data, headers=headers)
+	try:
+		response = requests.post(url, json=data, headers=headers)
+	except requests.exceptions.ConnectionError:
+		response.status_code = "Connection refused"
 	if response.status_code in [200, 201]:
 		response = response.json()
 		global TOKEN
@@ -89,7 +92,10 @@ def api_update_job():
 		"humidity": humidity()
 	}
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	response = requests.post(url, json=data, headers=headers)
+	try:
+		response = requests.post(url, json=data, headers=headers)
+	except requests.exceptions.ConnectionError:
+		response.status_code = "Connection refused"
 	if response.status_code in [201]:
 		response = response.json()
 		global NAME, IMAGE_RATE, SENSOR_RATE, UPDATE_RATE
@@ -120,7 +126,10 @@ def api_image_job():
 	data = {"uuid": UUID, "token": TOKEN}
 	files = {"image": open(IMAGE_PATH,"rb")}
 	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	response = requests.post(url, files=files, data=data, headers=headers)
+	try:
+		response = requests.post(url, files=files, data=data, headers=headers)
+	except requests.exceptions.ConnectionError:
+		response.status_code = "Connection refused"
 	if response.status_code in [200, 201]:
 		print("{}: api/image success".format(the_time()))
 	else:
@@ -136,7 +145,7 @@ def webcam_capture():
 	subtitle = "cpu: {} C".format(cpu_temp())
 	info = UUID
 	if os.path.lexists(device):
-		call(["fswebcam", "-S 3", "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
+		call(["fswebcam", "-S 10", "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
 	return 
 
 def cpu_temp():
