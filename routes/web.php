@@ -60,8 +60,7 @@ Route::get('dev_layout', 'DashboardController@dev_layout');
 Route::get('dashboard/change/site/{site_id}', 'DashboardController@siteChange');
 Route::get('dashboard/change/location/{location_id}', 'DashboardController@locationChange');
 Route::get('dashboard/refresh/full', 'DashboardController@ajaxRefreshAll');
-Route::put('dashboard/{device}/command', 'DashbaordController@updateCommand');
-Route::put('dashboard/{device}/disable', 'DashbaordController@disable');
+Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');

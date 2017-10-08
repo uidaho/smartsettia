@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Validator;
 use Illuminate\Http\Request;
+use Validator;
 use App\Device;
 use App\Site;
 use App\Location;
@@ -181,9 +181,9 @@ class DashboardController extends Controller
     public function updateCommand(Request $request, Device $device)
     {
         Validator::make($request->all(), [
-            'command' => 'required|int|max:1',
+            'command' => 'required|string|max:1',
         ])->validate();
-    
+        
         //Check that device isn't currently in use or has an error
         if ($device->cover_status === 'opening' || $device->cover_status === 'closing' || $device->cover_status === 'error')
             return response()->json("Device is currently in use.", 403);
@@ -200,13 +200,11 @@ class DashboardController extends Controller
             case 3:
                 $device->cover_command = $this->disableCommand($device);
                 break;
-            default:
-            
         }
         
         $device->save();
         
-        return response()->json([ 'Success' ]);
+        return response()->json("Success");
     }
     
     /**
@@ -235,16 +233,5 @@ class DashboardController extends Controller
             $command =  'lock';
         
         return $command;
-    }
-    
-    /**
-     * Open or close the given device
-     *
-     * @param Device $device
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function disable(Device $device)
-    {
-        return response()->json("Success");
     }
 }

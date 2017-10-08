@@ -28,7 +28,10 @@ var deviceStatusEnum = {
 	locked: 5,
 	error: 6
 };
-
+//Update rates
+var dashUpdateRate = 5000;
+var imageUpdateRate = 30000;
+var imageUpdateTimeout;
 //Lock Ajax calls
 var lock = false;
 
@@ -71,6 +74,9 @@ function updateDashboardData(keepUpdating)
 				//Set the device image url, sensor values, and the device header name
 				updateActiveDeviceInfo(activeDevice['id'], activeDevice);
 
+				//Set the rate for the image to be updated at
+				setImageUpdateRate(activeDevice['image_rate']);
+
 				//Change the stored active site and location IDs
 				currentSiteId = activeSite['id'];
 				currentLocationId = activeLocation['id'];
@@ -87,7 +93,7 @@ function updateDashboardData(keepUpdating)
 	}
 
 	if (keepUpdating)
-		setTimeout("updateDashboardData(true);", 5000)
+		setTimeout("updateDashboardData(true);", dashUpdateRate)
 }
 
 //Update the site dropdown list
@@ -148,7 +154,7 @@ function updateDeviceTable(devices)
 			'<td>' +
 			'<div class="btn-group btn-group-sm" role="group">' +
 			'<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
-			getCommandStatusButton(status) +
+			getCommandStatusButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
 			getLockButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
@@ -318,9 +324,9 @@ function getDeviceStatus(device)
 }
 
 //Get the devices command status button as html
-function getCommandStatusButton(status)
+function getCommandStatusButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" ';
+	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" ';
 
 	switch(status)
 	{
@@ -351,7 +357,7 @@ function getCommandStatusButton(status)
 //Get the devices lock button as html
 function getLockButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="lockDevice(this);" id="btn_lock_' + device_id + '">';
+	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" value="3">';
 
 	if (status === deviceStatusEnum.locked)
 		buttonHtml += '<i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
@@ -381,4 +387,26 @@ function getFormattedTime(time)
 	formattedTime = hours + ':' + mins + period;
 
 	return formattedTime;
+}
+
+//If the update rate has changed cancel the ongoing setTimeout(),
+// convert the image update rate, and call the new setTimeout()
+function setImageUpdateRate(time)
+{
+	var formattedTime;
+
+	formattedTime = parseInt(time) * 1000;
+
+	//If the time is less then a second then set it to 30 seconds
+	if (formattedTime < 1000)
+		formattedTime = 30000;
+
+	if (imageUpdateRate !== formattedTime)
+	{
+		clearTimeout(imageUpdateTimeout);
+		imageUpdateRate = formattedTime;
+		refreshImage()
+	}
+	else
+		imageUpdateRate = formattedTime;
 }

@@ -14,7 +14,7 @@ function refreshImage()
 	updateDeviceImage();
 
 	if (keepRefreshingImage)
-		setTimeout("refreshImage();", 30000)
+		imageUpdateTimeout = setTimeout("refreshImage();", imageUpdateRate)
 }
 refreshImage();
 

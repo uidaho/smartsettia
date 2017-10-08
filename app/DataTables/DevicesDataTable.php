@@ -31,21 +31,6 @@ class DevicesDataTable extends DataTable
      */
     public function query()
     {
-        /*$query = Site::devices()->query()
-                        ->select([
-                            'devices.id as id',
-                            'devices.name as name',
-                            //'locations.name as location',
-                            //'sites.name as site',
-                            'open_time',
-                            'close_time',
-                            'update_rate',
-                            'image_rate',
-                            'sensor_rate',
-                        ])
-                        ->selectRaw('CONCAT(update_rate, "/", image_rate, "/", sensor_rate) as rates');
-                        //->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
-                        //->leftJoin('sites', 'locations.site_id', '=', 'sites.id');*/
         $query = Device::with("location", "location.site")
                         ->select([
                             'id',

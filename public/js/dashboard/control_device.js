@@ -45,34 +45,3 @@ function updateDeviceCommand(btn)
 		});
 	}
 }
-
-//Open, close, or lock the selected device
-function lockDevice(btn)
-{
-	if (!lock)
-	{
-		lock = true;
-		var device_id = 3;
-
-		$.ajax({
-			type: 'POST',
-			url: '/dashboard/' + device_id + '/disable',
-			data: {_method: 'put'},
-			dataType: "json",
-			success: function (data)
-			{
-				console.log("It worked");
-				lock = false;
-
-				//Update the page
-				//updateDashboardData(false);
-			},
-			error: function (data)
-			{
-				console.log("Unknown error in lockDevice()");
-				lock = false;
-			}
-
-		});
-	}
-}
