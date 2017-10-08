@@ -59,19 +59,14 @@ class DashboardController extends Controller
      */
     public function ajaxRefreshAll(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'site_id' => 'required|int|max:255',
             'location_id' => 'required|int|max:255',
             'device_id' => 'required|int|max:255',
-        ]);
-        
-        if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], 422);
-        }
+        ])->validate();
         
         //Todo limit the amount of queries based on if there is changes
         //Check for changes in database since last update
-        //where('created_at', '>=', Carbon::now()->subDay())->get();
     
         //Get the given site
         $site = Site::select('id', 'name')->find($request->site_id);
