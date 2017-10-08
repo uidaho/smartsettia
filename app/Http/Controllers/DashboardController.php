@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Http\Request;
 use App\Device;
 use App\Site;
 use App\Location;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -53,7 +55,7 @@ class DashboardController extends Controller
      * Refresh all the data on the dashboard except the image and sensor graphs
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function ajaxRefreshAll(Request $request)
     {
@@ -109,7 +111,7 @@ class DashboardController extends Controller
      * Return database data about devices, sites, and locations
      *
      * @param int $site_id
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function siteChange($site_id)
     {
@@ -129,7 +131,7 @@ class DashboardController extends Controller
      * Return database data about devices, sites, and locations
      *
      * @param int $location_id
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function locationChange($location_id)
     {
@@ -167,5 +169,82 @@ class DashboardController extends Controller
         $active_device = collect([$device, $location, $site]);
         
         return collect([$active_device, $devices, $locations, $sites]);
+    }
+    
+    /**
+     * Open or close the given device
+     *
+     * @param  Request  $request
+     * @param Device $device
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function updateCommand(Request $request, Device $device)
+    {
+        Validator::make($request->all(), [
+            'command' => 'required|int|max:1',
+        ])->validate();
+    
+        //Check that device isn't currently in use or has an error
+        if ($device->cover_status === 'opening' || $device->cover_status === 'closing' || $device->cover_status === 'error')
+            return response()->json("Device is currently in use.", 403);
+        
+        //1 = open, 2 = close, 3 = lock
+        switch($request->command)
+        {
+            case 1:
+                $device->cover_command = 'open';
+                break;
+            case 2:
+                $device->cover_command = 'close';
+                break;
+            case 3:
+                $device->cover_command = $this->disableCommand($device);
+                break;
+            default:
+            
+        }
+        
+        $device->save();
+        
+        return response()->json([ 'Success' ]);
+    }
+    
+    /**
+     * Get the devices command based on the device being locked or unlocked
+     *
+     * @param Device $device
+     * @return string
+     */
+    public function disableCommand(Device $device)
+    {
+        //Check if the device is already locked or not
+        if ($device->cover_command === 'lock')
+        {
+            //Get the open, close, and current time in the users timezone
+            $open_time = new Carbon($device->open_time, Auth::user()->timezone);
+            $close_time = new Carbon($device->close_time, Auth::user()->timezone);
+            $time_now = Carbon::now(Auth::user()->timezone);
+            
+            //Check if the current time is during the open schedule or not
+            if (($time_now > $open_time) && ($time_now < $close_time))
+                $command =  'open';
+            else
+                $command =  'close';
+        }
+        else
+            $command =  'lock';
+        
+        return $command;
+    }
+    
+    /**
+     * Open or close the given device
+     *
+     * @param Device $device
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function disable(Device $device)
+    {
+        return response()->json("Success");
     }
 }

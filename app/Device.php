@@ -70,7 +70,8 @@ class Device extends Model
      */
     public function getOpenTimeAttribute($value)
     {
-        $time = new Carbon($value, Auth::user()->timezone);
+        $time = new Carbon($value, 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
         return $time->format('H:i');
     }
     
@@ -82,7 +83,8 @@ class Device extends Model
      */
     public function getCloseTimeAttribute($value)
     {
-        $time = new Carbon($value, Auth::user()->timezone);
+        $time = new Carbon($value, 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
         return $time->format('H:i');
     }
     
@@ -94,7 +96,9 @@ class Device extends Model
      */
     public function setOpenTimeAttribute($value)
     {
-        $this->attributes['open_time'] = new Carbon($value, 'UTC');
+        $time = new Carbon($value, Auth::user()->timezone);
+        $time = $time->setTimezone('UTC');
+        $this->attributes['open_time'] = $time;
     }
     
     /**
@@ -105,7 +109,9 @@ class Device extends Model
      */
     public function setCloseTimeAttribute($value)
     {
-        $this->attributes['close_time'] = new Carbon($value, 'UTC');
+        $time = new Carbon($value, Auth::user()->timezone);
+        $time = $time->setTimezone('UTC');
+        $this->attributes['close_time'] = $time;
     }
     
     /**

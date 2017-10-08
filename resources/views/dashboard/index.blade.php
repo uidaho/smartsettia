@@ -3,7 +3,6 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
 	<section class="testimonials" style="margin-bottom: 0">
 		<div class="text-center">
 			<h2 style="display: inline-block" id="header_site">{{ $active_device[2]->name }}</h2>
@@ -79,7 +78,7 @@
 										<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
 										<button class="btn btn-primary" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
 										<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}" disabled><i class="fa fa-line-chart"></i> Graphs</button>
-										<button class="btn btn-primary" type="button"><i class="glyphicon glyphicon-lock"></i> Disable</button>
+										<button class="btn btn-primary" type="button" onclick="lockDevice(this);" id="btn_lock_{{ $device->id }}"><i class="glyphicon glyphicon-lock"></i> Disable</button>
 										<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
 									</div>
 								</td>
@@ -131,6 +130,7 @@
 	<script src="{{ asset('js/dashboard/update_sensors.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_active_device.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_site_loc.js') }}"></script>
+	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>
 @endsection
