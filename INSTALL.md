@@ -72,16 +72,21 @@ su smartsettia
 
 ### Install Composer
 ```
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install curl php5-cli git
+sudo apt update
+sudo apt upgrade
+sudo apt install curl php5-cli git
 curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 ```
 
 ### Install MySQL, Nginx and PHP5-FPM
 ```
 sudo mysql_secure_installation
-sudo apt-get install nginx php5-fpm php5-cli php5-mcrypt git lrzsz unzip zip
+sudo apt install nginx php5-fpm php5-cli php5-mcrypt git lrzsz unzip zip
+```
+
+### Install wkhtmltopdf for pdf generation
+```
+sudo apt install wkhtmltopdf
 ```
 
 ## Configuration
