@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Traits\LogsActivity;
+//use Spatie\Activitylog\Traits\CausesActivity;
 
 class Device extends Model
 {
     use SoftDeletes;
+    use LogsActivity;
+    //use CausesActivity;
     
     /**
      * The attributes that should be mutated to dates.
@@ -38,6 +42,32 @@ class Device extends Model
         'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
         'update_rate', 'image_rate', 'sensor_rate'
     ];
+    
+    /**
+     * The attributes to ignore in the Activity Log
+     *
+     * @var array
+     */
+    protected static $ignoreChangedAttributes = ['updated_at'];
+    
+    /**
+     * The attributes to log in the Activity Log
+     *
+     * @var array
+     */
+    protected static $logAttributes = [
+        'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
+        'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
+        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
+        'update_rate', 'image_rate', 'sensor_rate'
+    ];
+    
+    /**
+     * Only log those that have actually changed after the update.
+     *
+     * @var array
+     */
+    protected static $logOnlyDirty = true;
     
     /**
      * Update the updated_at and created_at timestamps?
