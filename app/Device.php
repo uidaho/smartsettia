@@ -112,11 +112,13 @@ class Device extends Model
     {
         //If the user is logged in then use there preferred timezone
         if (Auth::check())
+        {
             $time = new Carbon($value, Auth::user()->timezone);
+            $time = $time->setTimezone('UTC');
+        }
         else
             $time = new Carbon($value, 'UTC');
         
-        $time = $time->setTimezone('UTC');
         $this->attributes['open_time'] = $time;
     }
     
@@ -132,11 +134,13 @@ class Device extends Model
     {
         //If the user is logged in then use there preferred timezone
         if (Auth::check())
+        {
             $time = new Carbon($value, Auth::user()->timezone);
+            $time = $time->setTimezone('UTC');
+        }
         else
             $time = new Carbon($value, 'UTC');
         
-        $time = $time->setTimezone('UTC');
         $this->attributes['close_time'] = $time;
     }
     
