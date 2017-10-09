@@ -30,19 +30,17 @@ class DevicesDataTable extends DataTable
      */
     public function query()
     {
-        $query = Device::with("location", "location.site")
-                        ->select([
-                            'id',
-                            'name',
-                            'location_id',
+        $query = Device::select([
+                            'devices.id as id',
+                            'devices.name as name',
+                            'locations.name as location',
+                            'sites.name as site',
                             'open_time',
                             'close_time',
-                            'update_rate',
-                            'image_rate',
-                            'sensor_rate',
-                            ])
-                        ->selectRaw('CONCAT(update_rate, "/", image_rate, "/", sensor_rate) as rates');
-    
+                        ])
+                        ->selectRaw('CONCAT(update_rate, "/", image_rate, "/", sensor_rate) as rates')
+                        ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
+                        ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
     
         return $this->applyScopes($query);
     }
@@ -80,12 +78,12 @@ class DevicesDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id',
-            [ 'name' => 'name', 'data' => 'name', 'title' => 'Name', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'location.name', 'data' => 'location.name', 'title' => 'Location', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'site', 'data' => 'location.site.name', 'title' => 'Site', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            'open_time',
-            'close_time',
+            [ 'name' => 'id', 'data' => 'id', 'title' => 'ID', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'name', 'data' => 'name', 'title' => 'Name', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'location', 'data' => 'location', 'title' => 'Location', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'site', 'data' => 'site', 'title' => 'Site', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'open_time', 'data' => 'open_time', 'title' => 'Open Time', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'close_time', 'data' => 'close_time', 'title' => 'Close Time', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
             [ 'name' => 'rates', 'data' => 'rates', 'title' => 'U/I/S Rates', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
             [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
