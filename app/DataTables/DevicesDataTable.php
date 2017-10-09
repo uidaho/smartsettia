@@ -4,19 +4,18 @@ namespace App\DataTables;
 
 use App\Device;
 use App\Site;
-use Yajra\Datatables\Services\DataTable;
+use Yajra\DataTables\Services\DataTable;
 
 class DevicesDataTable extends DataTable
 {
     /**
      * Build DataTable class.
      *
-     * @return \Yajra\Datatables\Engines\BaseEngine
+     * @return \Yajra\DataTables\Engines\BaseEngine
      */
-    public function dataTable()
+    public function dataTable($query)
     {
-        return $this->datatables
-            ->eloquent($this->query())
+        return datatables($query)
             ->addColumn('action', 'device.action')
             ->blacklist([ 'action'])
             ->setRowClass(function($device) {
@@ -49,7 +48,7 @@ class DevicesDataTable extends DataTable
     /**
      * Optional method if you want to use html builder.
      *
-     * @return \Yajra\Datatables\Html\Builder
+     * @return \Yajra\DataTables\Html\Builder
      */
     public function html()
     {

@@ -5,11 +5,15 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+//use Spatie\Activitylog\Traits\CausesActivity;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use LogsActivity;
+    //use CausesActivity;
 
     /**
      * The attributes that should be mutated to dates.
@@ -28,6 +32,29 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'role', 'phone'
     ];
+    
+    /**
+     * The attributes to ignore in the Activity Log
+     *
+     * @var array
+     */
+    protected static $ignoreChangedAttributes = ['updated_at'];
+    
+    /**
+     * The attributes to log in the Activity Log
+     *
+     * @var array
+     */
+    protected static $logAttributes = [
+        'name', 'email', 'password', 'role', 'phone'
+    ];
+    
+    /**
+     * Only log those that have actually changed after the update.
+     *
+     * @var array
+     */
+    protected static $logOnlyDirty = true;
 
     /**
      * The attributes that should be hidden for arrays.
