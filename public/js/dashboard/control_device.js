@@ -32,10 +32,12 @@ function updateDeviceCommand(btn)
 			{
 				if (data.status === 422)
 				{
-					console.log("Validation of command failed in updateDeviceCommand()");
+					window.alert("The given command was invalid.");
 				}
 				else if (data.status === 403)
+				{
 					console.log("Error device is currently in use updateDeviceCommand()");
+				}
 				else
 					console.log("Unknown error in updateDeviceCommand()");
 

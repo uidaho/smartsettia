@@ -101,7 +101,8 @@ function updateDeviceModal(btn)
 
 				lock = false;
 			},
-			error: function (data) {
+			error: function (data)
+			{
 				console.log("Error in updateDeviceModal() " + data);
 				//Close the edit device modal
 				$editDeviceModal.modal('hide');
@@ -140,7 +141,11 @@ $formEditDevice.on('submit', function(e)
 				$editDeviceModal.modal('hide');
 			},
 			error: function (data) {
-				if (data.status === 422)
+				if (data.status === 404)
+				{
+					window.alert("Device not found, try again later.");
+				}
+				else if (data.status === 422)
 				{
 					var errors = data.responseJSON;
 
@@ -201,23 +206,22 @@ $formEditDevice.on('submit', function(e)
 						$errorSensorRate.html(errors['sensor_rate'][0]);
 						$formGroupSensorRate.addClass('has-error');
 					}
-
-					lock = false;
 				}
 				else if (data.status === 403)
 				{
-					console.log("User does not have permission to edit devices");
+					window.alert("Sorry, you do not have permission to edit this device.");
+
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
-					lock = false;
 				}
 				else
 				{
 					console.log("Uncaught error in device edit form submit");
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
-					lock = false;
 				}
+
+				lock = false;
 			}
 		});
 	}

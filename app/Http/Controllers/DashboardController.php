@@ -29,8 +29,13 @@ class DashboardController extends Controller
     public function index()
     {
         //Todo use the users preferred device
-        //Get the very first device
-        $device = Device::publicDashData()->first();
+        //Get the first device that doesn't have a null location_id
+        $device = Device::publicDashData()->where('location_id', '!=', 'null')->orderBy('id', 'ASC')->first();
+        
+        //If no device is found then redirect the user to the home page and display a message about registering a device
+        if (empty($device))
+            return redirect('home')->with('no_devices', 'To access the dashboard page there must be at least one registered device assigned to a location.');
+        
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->firstOrFail();
         //Get the devices site
@@ -78,7 +83,12 @@ class DashboardController extends Controller
         if (empty($site))                 //Check if the site still exists
         {
             //Get the first site and if no sites exist throw an error
-            $site = Site::select('id', 'name')->firstOrFail();
+            $site = Site::select('id', 'name')->first();
+    
+            //If no site is found then redirect the user to the home page and display a message about registering a device
+            if (empty($site))
+                return redirect('home')->with('no_devices', 'To access the dashboard page there must be at least one registered device assigned to a location.');
+            
             //Get the first location from the site
             $location = $site->locations()->select('id', 'name', 'site_id')->firstOrFail();
             //Get the first device from the location
@@ -176,7 +186,7 @@ class DashboardController extends Controller
     public function updateCommand(Request $request, Device $device)
     {
         Validator::make($request->all(), [
-            'command' => 'required|string|max:1',
+            'command' => 'required|string|max:1|in:1,2,3',
         ])->validate();
         
         //Check that device isn't currently in use or has an error
