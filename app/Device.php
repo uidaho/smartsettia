@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Device extends Model
 {
@@ -69,7 +70,8 @@ class Device extends Model
      */
     public function getOpenTimeAttribute($value)
     {
-        $time = new Carbon($value);
+        $time = new Carbon($value, 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
         return $time->format('H:i');
     }
     
@@ -81,8 +83,35 @@ class Device extends Model
      */
     public function getCloseTimeAttribute($value)
     {
-        $time = new Carbon($value);
+        $time = new Carbon($value, 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
         return $time->format('H:i');
+    }
+    
+    /**
+     * Set the open time to UTC
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setOpenTimeAttribute($value)
+    {
+        $time = new Carbon($value, Auth::user()->timezone);
+        $time = $time->setTimezone('UTC');
+        $this->attributes['open_time'] = $time;
+    }
+    
+    /**
+     * Set the close time to UTC
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setCloseTimeAttribute($value)
+    {
+        $time = new Carbon($value, Auth::user()->timezone);
+        $time = $time->setTimezone('UTC');
+        $this->attributes['close_time'] = $time;
     }
     
     /**
@@ -95,6 +124,33 @@ class Device extends Model
     public function scopeByLocation($query, $location_id)
     {
         return $query->where('location_id', $location_id);
+    }
+    
+    /**
+     * Scope a query to limit the included columns to only include what is publicly needed to be displayed on the
+     * dashboard
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublicDashData($query)
+    {
+        return $query->select([
+                            'id',
+                            'name',
+                            'location_id',
+                            'cover_command',
+                            'cover_status',
+                            'temperature',
+                            'humidity',
+                            'light_in',
+                            'open_time',
+                            'close_time',
+                            'update_rate',
+                            'image_rate',
+                            'sensor_rate',
+                            'cpu_temp',
+                        ]);
     }
     
     /**

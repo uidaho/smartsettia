@@ -46,17 +46,21 @@ Route::get('user/{id}/remove', 'UserController@remove');
  *-----------------------*/
 Route::resource('device', 'DeviceController');
 Route::get('device/{id}/remove', 'DeviceController@remove');
+//Ajax calls
 Route::get('device/{site_id}/locations', 'DeviceController@locations');
 Route::get('device/{id}/details', 'DeviceController@details');
-Route::get('device/{id}/edit/details', 'DeviceController@editDetails');
+
 
 /*-----------------------*
  * Dashboard Controller  *
  *-----------------------*/
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-Route::get('dashboard/siteUpdate/{site_id}', 'DashboardController@siteUpdate');
-Route::get('dashboard/locationUpdate/{location_id}', 'DashboardController@locationUpdate');
 Route::get('dev_layout', 'DashboardController@dev_layout');
+//Ajax calls
+Route::get('dashboard/change/site/{site_id}', 'DashboardController@siteChange');
+Route::get('dashboard/change/location/{location_id}', 'DashboardController@locationChange');
+Route::get('dashboard/refresh/full', 'DashboardController@ajaxRefreshAll');
+Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');
