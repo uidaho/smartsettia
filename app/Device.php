@@ -64,6 +64,8 @@ class Device extends Model
     
     /**
      * Accessor: Get the open time of the device converted to hours and minutes
+     * If it is a device accessing the time use UTC
+     * If it is a user accessing the time use their preferred timezone
      *
      * @param  string $value
      * @return string
@@ -71,12 +73,18 @@ class Device extends Model
     public function getOpenTimeAttribute($value)
     {
         $time = new Carbon($value, 'UTC');
-        $time = $time->setTimezone(Auth::user()->timezone);
+        
+        //If the user is logged in then use there preferred timezone
+        if (Auth::check())
+            $time = $time->setTimezone(Auth::user()->timezone);
+
         return $time->format('H:i');
     }
     
     /**
      * Accessor: Get the close time of the device converted to hours and minutes
+     * If it is a device accessing the time use UTC
+     * If it is a user accessing the time use their preferred timezone
      *
      * @param  string $value
      * @return string
@@ -84,32 +92,50 @@ class Device extends Model
     public function getCloseTimeAttribute($value)
     {
         $time = new Carbon($value, 'UTC');
-        $time = $time->setTimezone(Auth::user()->timezone);
+    
+        //If the user is logged in then use there preferred timezone
+        if (Auth::check())
+            $time = $time->setTimezone(Auth::user()->timezone);
+        
         return $time->format('H:i');
     }
     
     /**
      * Set the open time to UTC
+     * If it is a device saving the time use UTC
+     * If it is a user saving the time use their preferred timezone
      *
      * @param  string  $value
      * @return void
      */
     public function setOpenTimeAttribute($value)
     {
-        $time = new Carbon($value, Auth::user()->timezone);
+        //If the user is logged in then use there preferred timezone
+        if (Auth::check())
+            $time = new Carbon($value, Auth::user()->timezone);
+        else
+            $time = new Carbon($value, 'UTC');
+        
         $time = $time->setTimezone('UTC');
         $this->attributes['open_time'] = $time;
     }
     
     /**
      * Set the close time to UTC
+     * If it is a device saving the time use UTC
+     * If it is a user saving the time use their preferred timezone
      *
      * @param  string  $value
      * @return void
      */
     public function setCloseTimeAttribute($value)
     {
-        $time = new Carbon($value, Auth::user()->timezone);
+        //If the user is logged in then use there preferred timezone
+        if (Auth::check())
+            $time = new Carbon($value, Auth::user()->timezone);
+        else
+            $time = new Carbon($value, 'UTC');
+        
         $time = $time->setTimezone('UTC');
         $this->attributes['close_time'] = $time;
     }
