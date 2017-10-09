@@ -3,10 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
 	<section class="testimonials" style="margin-bottom: 0">
 		<div class="text-center">
-			<h2 style="display: inline-block" id="header_site">{{ $default_device->location->site->name }}</h2>
+			<h2 style="display: inline-block" id="header_site">{{ $active_device[2]->name }}</h2>
 			<div style="display: inline-block">
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_site">
@@ -21,7 +20,7 @@
 			</div>
 		</div>
 		<blockquote style="margin-bottom: 0">
-			<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $default_device->location->name }}</p>
+			<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $active_device[1]->name }}</p>
 			<div class="btn-group" style="display: inline-block">
 				<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_loc">
 					Change <span class="caret"></span>
@@ -43,20 +42,21 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<h3 id="header_device">{{ $default_device->name }}</h3>
-				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $default_device->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $default_device->close_time }}</span></p>
-				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $default_device->temperature }}C</span>
-				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $default_device->humidity }}%</span>
-				<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space" id="light">{{ $default_device->light_in }}%</span>
+				<h3 id="header_device">{{ $active_device[0]->name }}</h3>
+				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_device[0]->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_device[0]->close_time }}</span></p>
+				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_device[0]->temperature }}C</span>
+				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $active_device[0]->humidity }}%</span>
+				<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space" id="light">{{ $active_device[0]->light_in }}%</span>
+				<i class="fa fa-empire" aria-hidden="true"></i> CPU Temp <span class="badge trialing-space" id="cpu_temp">{{ $active_device[0]->cpu_temp }}C</span>
 				<hr>
 			</div>
 		</div>
 		<div class="row product">
 			<div class="col-md-6 text-center">
 				<!-- Triggers the Image Modal -->
-				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $default_device->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
+				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $active_device[0]->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>
-				<a class="no-style-link" href="{{ URL('image/device') . '/' . $default_device->id }}" download="custom_name.jpg" id="download_image_link">
+				<a class="no-style-link" href="{{ URL('image/device') . '/' . $active_device[0]->id }}" download="custom_name.jpg" id="download_image_link">
 					<button class="btn btn-primary">Download Image</button>
 				</a>
 			</div>
@@ -74,12 +74,12 @@
 							<tr id="tr_{{ $device->id }}">
 								<td>{{ $device->name }}</td>
 								<td>
-									<div class="btn-group-sm" role="group" style="display: block">
+									<div class="btn-group btn-group-sm" role="group" style="display: block">
 										<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
-										<button class="btn btn-primary btn-info" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
-										<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}"><i class="fa fa-line-chart"></i> Graphs</button>
-										<button class="btn btn-warning" type="button"><i class="glyphicon glyphicon-lock"></i> Disable</button>
-										<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+										<button class="btn btn-primary" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
+										<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}" disabled><i class="fa fa-line-chart"></i> Graphs</button>
+										<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_{{ $device->id }}" value="3"><i class="fa fa-lock" aria-hidden="true"></i> Lock</button>
+										<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
 									</div>
 								</td>
 							</tr>
@@ -114,9 +114,10 @@
 	</div>
 
 
-	<!-- Hidden buttons that hold the site id and the location id -->
-	<button class="hidden" value="{{ $default_device->location->site->id }}" id="current_site_id"></button>
-	<button class="hidden" value="{{ $default_device->location->id }}" id="current_location_id"></button>
+	<!-- Hidden buttons -->
+	<button class="hidden" value="{{ $active_device[2]->id }}" id="active_site_id"></button>
+	<button class="hidden" value="{{ $active_device[1]->id }}" id="active_location_id"></button>
+	<button class="hidden" value="{{ $active_device[0]->id }}" id="active_device_id"></button>
 	<button class="hidden" value="{{ url('/') }}" id="website_base_url"></button>
 
 	@include('dashboard.edit_modal')
@@ -124,6 +125,13 @@
 @endsection
 
 @section('scripts')
-	<script src="{{ asset('js/dash.js') }}"></script>
+	<script src="{{ asset('js/dashboard/update_page.js') }}"></script>
+	<script src="{{ asset('js/dashboard/update_image.js') }}"></script>
+	<script src="{{ asset('js/dashboard/update_sensors.js') }}"></script>
+	<script src="{{ asset('js/dashboard/change_active_device.js') }}"></script>
+	<script src="{{ asset('js/dashboard/change_site_loc.js') }}"></script>
+	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
+	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
+	<script src="{{ asset('js/dashboard/control_device.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>
 @endsection

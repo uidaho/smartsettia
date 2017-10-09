@@ -18,7 +18,7 @@ class DevicesDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'device.action')
-            ->blacklist([ 'action' ])
+            ->blacklist([ 'action'])
             ->setRowClass(function($device) {
                 return $device->trashed() ? 'alert-danger' : "";
             });
@@ -31,20 +31,18 @@ class DevicesDataTable extends DataTable
      */
     public function query()
     {
-        $query = Device::query()
+        $query = Device::with("location", "location.site")
                         ->select([
-                            'devices.id as id',
-                            'devices.name as name',
-                            'locations.name as location',
-                            'sites.name as site',
+                            'id',
+                            'name',
+                            'location_id',
                             'open_time',
                             'close_time',
                             'update_rate',
                             'image_rate',
                             'sensor_rate',
-                        ])
-                        ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
-                        ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
+                            ])
+                        ->selectRaw('CONCAT(update_rate, "/", image_rate, "/", sensor_rate) as rates');
     
     
         return $this->applyScopes($query);
@@ -59,8 +57,6 @@ class DevicesDataTable extends DataTable
     {
         return $this->builder()
                     ->columns($this->getColumns())
-                    //->minifiedAjax('')
-                    //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
                         'order'   => [ [ 0, 'asc' ] ],
@@ -86,14 +82,12 @@ class DevicesDataTable extends DataTable
     {
         return [
             'id',
-            'name',
-            'location',
-            'site',
+            [ 'name' => 'name', 'data' => 'name', 'title' => 'Name', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'location.name', 'data' => 'location.name', 'title' => 'Location', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'site', 'data' => 'location.site.name', 'title' => 'Site', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
             'open_time',
             'close_time',
-            'update_rate',
-            'image_rate',
-            'sensor_rate',
+            [ 'name' => 'rates', 'data' => 'rates', 'title' => 'U/I/S Rates', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
             [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
         ];
     }

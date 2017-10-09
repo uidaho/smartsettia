@@ -5,8 +5,6 @@ var $tableBody = $('#device_table tbody');
 var $tempNum = $('#temperature');
 var $humidityNum = $('#humidity');
 var $lightNum = $('#light');
-var $currentSiteId = $("#current_site_id");
-var $currentLocationId = $("#current_location_id");
 var $siteList = $('#site_change');
 var $locationList = $('#location_change');
 var $btnChangeSite = $('#btn_change_site');
@@ -56,6 +54,7 @@ function updateDashboardData(myURL)
 		type: 'GET',
 		url: myURL,
 		data: '',
+		dataType:"json",
 		success: function(data)
 		{
 			//Change the site and location names
@@ -111,6 +110,7 @@ function changeDevice(btn)
 		type: 'GET',
 		url: '/device/' + device_id + '/details',
 		data: '',
+		dataType:"json",
 		success: function(data)
 		{
 			updateActiveDeviceInfo(device_id, data);
@@ -171,7 +171,7 @@ function updateActiveDeviceInfo(device_id, data)
 	$spanCloseTime.html('<b>Close Time: </b>' + data['close_time']);
 }
 
-//Edit Device
+//Update the edit device modal with the current devices info
 function updateDeviceModal(btn)
 {
 	var editDeviceID = btn.id.substring(btn.id.lastIndexOf('_') + 1);
@@ -184,8 +184,9 @@ function updateDeviceModal(btn)
 
 	$.ajax({
 		type: 'GET',
-		url: '/device/' + editDeviceID + '/edit/details',
+		url: '/device/' + editDeviceID + '/edit/modal',
 		data: '',
+		dataType:"json",
 		success: function(data)
 		{
 			//Update input box for the device name
@@ -282,6 +283,7 @@ $formEditDevice.on('submit', function(e)
 		url: $this.prop('action'),
 		method: 'POST',
 		data: $this.serialize(),
+		dataType:"json",
 		success: function(data)
 		{
 			//Update the entire page using the current site
