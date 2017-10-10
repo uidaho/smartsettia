@@ -32,6 +32,10 @@ var deviceStatusEnum = {
 var dashUpdateRate = 5000;
 var imageUpdateRate = 30000;
 var imageUpdateTimeout;
+//Alert dialog
+var $alertImage = $('#alert_image');
+//Stores if the user exited teh stale image alert
+var userExitedImageAlert = false;
 //Lock Ajax calls
 var lock = false;
 
@@ -76,6 +80,12 @@ function updateDashboardData(keepUpdating)
 
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
+
+				//Show the user an alert that the image they are viewing is stale
+				if (data['isImageStale'] && !userExitedImageAlert)
+					$alertImage.show();
+				else if (!data['isImageStale'])
+					$alertImage.hide();
 
 				//Change the stored active site and location IDs
 				currentSiteId = activeSite['id'];
@@ -409,4 +419,11 @@ function setImageUpdateRate(time)
 	}
 	else
 		imageUpdateRate = formattedTime;
+}
+
+//Hides the image alert message
+function hideImageAlert()
+{
+	$alertImage.hide();
+	userExitedImageAlert = true;
 }

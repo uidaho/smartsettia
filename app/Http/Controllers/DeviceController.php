@@ -121,8 +121,11 @@ class DeviceController extends Controller
     public function details($id)
     {
         $device = Device::publicDashData()->findOrFail($id);
+    
+        //Check if the active device's image is stale by at least 10 minutes
+        $isImageStale = $device->image()->isStale();
         
-        return response()->json($device);
+        return response()->json([$device, $isImageStale]);
     }
 
     /**

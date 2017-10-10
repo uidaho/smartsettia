@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Carbon\Carbon;
 
 class Deviceimage extends Model
 {
@@ -56,4 +57,23 @@ class Deviceimage extends Model
      * @var array
      */
     public $timestamps = true;
+    
+    /**
+     * Check if the active device's image is stale by at least 10 minutes and return true if so
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return boolean
+     */
+    public function scopeIsStale($query)
+    {
+        //Check if the device has an uploaded image on the server and if it is fresh
+        $staleImage = $query->where('updated_at', '<=', Carbon::now()->subMinute(10))->first();
+        
+        if (empty($staleImage))
+            $isImageStale = false;
+        else
+            $isImageStale = true;
+        
+        return $isImageStale;
+    }
 }
