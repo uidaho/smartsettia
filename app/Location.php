@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Location extends Model
 {
+    use LogsActivity;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -15,6 +18,29 @@ class Location extends Model
     protected $fillable = [
         'name', 'site_id'
     ];
+    
+    /**
+     * The attributes to ignore in the Activity Log
+     *
+     * @var array
+     */
+    protected static $ignoreChangedAttributes = ['updated_at'];
+    
+    /**
+     * The attributes to log in the Activity Log
+     *
+     * @var array
+     */
+    protected static $logAttributes = [
+        'name', 'site_id'
+    ];
+    
+    /**
+     * Only log those that have actually changed after the update.
+     *
+     * @var array
+     */
+    protected static $logOnlyDirty = true;
     
     /**
      * Update the updated_at and created_at timestamps?
