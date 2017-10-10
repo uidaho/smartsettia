@@ -67,9 +67,17 @@ function updateDashboardSiteLoc(myURL)
 
 				lock = false;
 			},
-			error: function (data) {
-				//location.reload();
-				console.log("Error in updateDashboardSiteLoc() site/location " + data);
+			error: function (data)
+			{
+				if (data.status === 404)
+				{
+					window.alert("The selected site or location was not found, try again later.");
+				}
+				else
+				{
+					console.log("Uncaught error in updateDashboardSiteLoc() site/location");
+				}
+
 				lock = false;
 			}
 		});
