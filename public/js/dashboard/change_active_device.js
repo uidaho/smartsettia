@@ -26,8 +26,17 @@ function changeDevice(btn)
 
 				lock = false;
 			},
-			error: function (data) {
-				console.log("Error in changeDevice()");
+			error: function (data)
+			{
+				if (data.status === 404)
+				{
+					window.alert("Device not found, try again later.");
+				}
+				else
+				{
+					console.log("Uncaught error in changeDevice()");
+				}
+
 				lock = false;
 			}
 

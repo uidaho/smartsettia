@@ -70,10 +70,10 @@ class DeviceController extends Controller
         $device = Device::publicDashData()->findOrFail($id);
         
         //Get the devices location
-        $location = $device->location()->select('id', 'name', 'site_id')->firstOrFail();
+        $location = $device->location()->select('id', 'name', 'site_id')->first();
         
         //Check if the selected device has a location
-        if ($location)
+        if (!empty($location))
         {
             //Get all the sites except for the current site ordered by name
             $sites = Site::select('id', 'name')->orderBy('name', 'ASC')->get()->except($location->site->id);
@@ -101,6 +101,7 @@ class DeviceController extends Controller
     
     /**
      * Get the locations with the given site id
+     * Return null if the site does not have any locations
      *
      * @param  int $site_id
      * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
@@ -108,14 +109,18 @@ class DeviceController extends Controller
     public function locations($site_id)
     {
         $locations = Location::bySite($site_id)->select('id', 'name', 'site_id')->get();
+        
+        if ($locations->isEmpty())
+            $locations = null;
     
         return response()->json($locations);
     }
     
     /**
      * Get the devices details
+     * Return 404 error if the device is not found
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function details($id)
@@ -151,6 +156,9 @@ class DeviceController extends Controller
         {
             $site_id = $request->input('site');
         }
+    
+        //Verify the site with the given site id actually exists
+        Site::findOrFail($site_id);
         
         //Get the location id of the old or newly created location
         if (!empty($request->input('new_location_name')))
@@ -163,6 +171,9 @@ class DeviceController extends Controller
         {
             $location_id = $request->input('location');
         }
+        
+        //Verify the location with the given location id actually exists
+        Location::findOrFail($location_id);
         
         //Update the devices name and location_id
         $device->location_id = $location_id;

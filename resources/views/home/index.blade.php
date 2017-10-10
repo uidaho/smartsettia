@@ -3,6 +3,12 @@
 @section('title', 'Home')
 
 @section('content')
+	@if (session('no_devices'))
+		<div class="alert alert-danger">
+			{{ session('no_devices') }}
+		</div>
+	@endif
+
 	<div class="jumbotron hero">
 		<div class="container">
 			<div class="row">
