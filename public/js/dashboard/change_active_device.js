@@ -13,8 +13,20 @@ function changeDevice(btn)
 			url: '/device/' + device_id + '/details',
 			data: '',
 			dataType: "json",
-			success: function (data) {
-				updateActiveDeviceInfo(device_id, data);
+			success: function (data)
+			{
+				var device = data[0];
+				var isImageStale = data[1];
+
+				//Show the user an alert that the image they are viewing is stale
+				if (isImageStale)
+					$alertImage.show();
+				else
+					$alertImage.hide();
+				//Reset the exited image alert flag
+				userExitedImageAlert = false;
+
+				updateActiveDeviceInfo(device_id, device);
 
 				//Disable the selected view button and enable the previously disabled view button
 				$(btn).prop("disabled", true);

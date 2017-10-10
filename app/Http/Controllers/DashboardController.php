@@ -118,7 +118,10 @@ class DashboardController extends Controller
         
         $data = $this->dashData($site, $location, $device);
         
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
+        //Check if the active device's image is stale by at least 10 minutes
+        $isImageStale = $device->image()->isStale();
+        
+        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3], 'isImageStale' => $isImageStale ]);
     }
     
     /**
@@ -137,8 +140,11 @@ class DashboardController extends Controller
         $device = Device::publicDashData()->where('location_id', '=', $location->id)->firstOrFail();
         
         $data = $this->dashData($site, $location, $device);
+    
+        //Check if the active device's image is stale by at least 10 minutes
+        $isImageStale = $device->image()->isStale();
         
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
+        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3], 'isImageStale' => $isImageStale ]);
     }
     
     /**
@@ -157,8 +163,11 @@ class DashboardController extends Controller
         $device = Device::publicDashData()->where('location_id', '=', $location_id)->firstOrFail();
         
         $data = $this->dashData($site, $location, $device);
+    
+        //Check if the active device's image is stale by at least 10 minutes
+        $isImageStale = $device->image()->isStale();
         
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
+        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3], 'isImageStale' => $isImageStale ]);
     }
     
     /**

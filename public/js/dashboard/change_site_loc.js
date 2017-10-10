@@ -33,6 +33,14 @@ function updateDashboardSiteLoc(myURL)
 				var activeLocation = data['active_device'][1];
 				var activeSite = data['active_device'][2];
 
+				//Show the user an alert that the image they are viewing is stale
+				if (data['isImageStale'])
+					$alertImage.show();
+				else
+					$alertImage.hide();
+				//Reset the exited image alert flag
+				userExitedImageAlert = false;
+
 				//Change the active site and location names
 				$headerSite.html(activeSite['name']);
 				$headerLocation.html('<b>Location: </b>' + activeLocation['name']);
