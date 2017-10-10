@@ -66,7 +66,7 @@ class Deviceimage extends Model
      */
     public function scopeIsStale($query)
     {
-        //Check if the device has an uploaded image on the server and if it is fresh
+        //Check if the device has an uploaded image on the server and if it is stale
         $staleImage = $query->where('updated_at', '<=', Carbon::now()->subMinute(10))->first();
         
         if (empty($staleImage))
