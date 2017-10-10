@@ -53,7 +53,7 @@
 		</div>
 		<div class="row product">
 			<div class="col-md-6 text-center relative">
-				<div class="alert alert-warning alert-dismissible alert-image-stale" role="alert" id="alert_image">
+				<div class="alert alert-warning alert-dismissible alert-image-stale" role="alert" id="alert_image" hidden>
 					<button type="button" class="close" aria-label="Close" onclick="hideImageAlert()"><span aria-hidden="true">&times;</span></button>
 					<strong>Warning!</strong> Image is over 10 mins old.
 				</div>
