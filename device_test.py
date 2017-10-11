@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # requires: 
-#	sudo apt install fswebcam python3 python3-pip
+#	sudo apt install fswebcam python3 python3-pip streamer
 #   sudo pip3 install --upgrade pip requests schedule uuid wget call
 
 # to preserve the pi's SD card
@@ -21,7 +21,7 @@ import uuid
 import threading
 from subprocess import call, check_output
 
-VERSION = "0.3.16"
+VERSION = "0.3.22"
 DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
 #DOMAIN = "https://smartsettia-backburn.c9users.io/"
@@ -58,8 +58,9 @@ def api_register():
 	headers = {"Content-type": "application/json", "Accept": "application/json"}
 	try:
 		response = requests.post(url, json=data, headers=headers)
-	except requests.exceptions.ConnectionError:
-		response.status_code = "Connection refused"
+	except requests.exceptions.RequestException as e:
+		print("{}: api/register request failed: {}".format(the_time(), e))
+		return
 	if response.status_code in [200, 201]:
 		response = response.json()
 		global TOKEN
@@ -94,8 +95,9 @@ def api_update_job():
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
 	try:
 		response = requests.post(url, json=data, headers=headers)
-	except requests.exceptions.ConnectionError:
-		response.status_code = "Connection refused"
+	except requests.exceptions.RequestException as e:
+		print("{}: api/update request failed: {}".format(the_time(), e))
+		return
 	if response.status_code in [201]:
 		response = response.json()
 		global NAME, IMAGE_RATE, SENSOR_RATE, UPDATE_RATE
@@ -117,6 +119,7 @@ def api_update_job():
 		print("{}: api/update success".format(the_time()))
 	else:
 		print("{}: api/update failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
+		time.sleep(60)
 	return
 
 def api_image_job():
@@ -128,10 +131,12 @@ def api_image_job():
 	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
 	try:
 		response = requests.post(url, files=files, data=data, headers=headers)
-	except requests.exceptions.ConnectionError:
-		response.status_code = "Connection refused"
+	except requests.exceptions.RequestException as e:
+		print("{}: api/image request failed: {}".format(the_time(), e))
+		return
 	if response.status_code in [200, 201]:
 		print("{}: api/image success".format(the_time()))
+		return
 	else:
 		print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	return
@@ -141,12 +146,17 @@ def webcam_capture():
 	compression = "95"
 	device = "/dev/video0"
 	resolution = "1280x720"
+	fps = "10" # Our cam supports: YUYV 4:2:2 1280x720 @ 10, 960x720 @ 15, 800x600 @ 20, 640x480 @ 30
 	title = NAME
 	subtitle = "cpu: {} C".format(cpu_temp())
 	info = UUID
 	if os.path.lexists(device):
-		call(["fswebcam", "-S 10", "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
-	return 
+		call(["fswebcam", "--fps", fps, "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
+		#call(["streamer", "-s 1280x720 -c /dev/video0 -b 16 -o "+IMAGE_PATH])
+		#call(["/usr/bin/v4lctl -c /dev/video0 snap jpeg 1280x720 "+IMAGE_PATH], shell=True)
+	else:
+		print("{}: capture failed, no webcam".format(the_time()))
+	return
 
 def cpu_temp():
 	"""Returns the CPU temerature based on architecture"""
