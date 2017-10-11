@@ -21,7 +21,7 @@ import uuid
 import threading
 from subprocess import call, check_output
 
-VERSION = "0.3.22"
+VERSION = "0.3.24"
 DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
 #DOMAIN = "https://smartsettia-backburn.c9users.io/"
@@ -143,15 +143,15 @@ def api_image_job():
 	
 def webcam_capture():
 	"""Saves an image from the first connected webcam"""
-	compression = "95"
+	quality = "50"
 	device = "/dev/video0"
 	resolution = "640x480"
-	fps = "30" # Our cam supports: YUYV 4:2:2 1280x720 @ 10, 960x720 @ 15, 800x600 @ 20, 640x480 @ 30
+	fps = "10" # Our cam supports: YUYV 4:2:2 1280x720 @ 10, 960x720 @ 15, 800x600 @ 20, 640x480 @ 30
 	title = NAME
 	subtitle = "cpu: {} C".format(cpu_temp())
 	info = UUID
 	if os.path.lexists(device):
-		call(["fswebcam", "--fps", fps, "--jpeg", compression, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
+		call(["fswebcam", "--fps", fps, "--jpeg", quality, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
 		#call(["streamer", "-s 1280x720 -c /dev/video0 -b 16 -o "+IMAGE_PATH])
 		#call(["/usr/bin/v4lctl -c /dev/video0 snap jpeg 1280x720 "+IMAGE_PATH], shell=True)
 	else:
