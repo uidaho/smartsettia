@@ -5,7 +5,8 @@ var $tableBody = $('#device_table tbody');
 //Spans under device name
 var $tempNum = $('#temperature');
 var $humidityNum = $('#humidity');
-var $lightNum = $('#light');
+var $lightInNum = $('#light_in');
+var $lightOutNum = $('#light_out');
 var $cpuTempNum = $('#cpu_temp');
 //
 var $siteList = $('#site_change');
@@ -225,11 +226,14 @@ function updateActiveDeviceInfo(device_id, data)
 	//Change the humidity value
 	$humidityNum.text(getHumidity(data['humidity']));
 
-	//Change the light value
-	$lightNum.text(getLight(data['light_in']));
+	//Change the inside light value
+	$lightInNum.text(getLight(data['light_in']));
+
+	//Change the outside light value
+	$lightOutNum.text(getLight(data['light_out']));
 
 	//Change the cpu temp value
-	$cpuTempNum.text(getCpuTemp(data['light_in']));
+	$cpuTempNum.text(getCpuTemp(data['cpu_temp']));
 
 	//Update the open and close times
 	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(data['open_time']));
@@ -334,13 +338,13 @@ function getCommandStatusButton(status, device_id)
 			buttonHtml += 'value="2"><i class="glyphicon glyphicon-resize-small"></i> Close';
 			break;
 		case deviceStatusEnum.opening:
-			buttonHtml += 'disabled><i class=\"fa fa-spinner\" aria-hidden=\"true\"></i> Opening';
+			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Opening';
 			break;
 		case deviceStatusEnum.closed:
 			buttonHtml += 'value="1"><i class="glyphicon glyphicon-resize-full"></i> Open';
 			break;
 		case deviceStatusEnum.closing:
-			buttonHtml += 'disabled><i class=\"fa fa-spinner\" aria-hidden=\"true\"></i> Closing';
+			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Closing';
 			break;
 		case deviceStatusEnum.locked:
 			buttonHtml += 'disabled><i class="fa fa-lock" aria-hidden="true"></i> Locked';
