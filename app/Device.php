@@ -204,6 +204,7 @@ class Device extends Model
                             'temperature',
                             'humidity',
                             'light_in',
+                            'light_out',
                             'open_time',
                             'close_time',
                             'update_rate',

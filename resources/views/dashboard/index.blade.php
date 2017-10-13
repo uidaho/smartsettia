@@ -46,7 +46,8 @@
 				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_device[0]->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_device[0]->close_time }}</span></p>
 				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_device[0]->temperature }}C</span>
 				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $active_device[0]->humidity }}%</span>
-				<i class="glyphicon glyphicon-adjust"></i> Light <span class="badge trialing-space" id="light">{{ $active_device[0]->light_in }}%</span>
+				<i class="fa fa-adjust"></i> Inside Light <span class="badge trialing-space" id="light_in">{{ $active_device[0]->light_in }}%</span>
+				<i class="fa fa-adjust fa-flip-horizontal"></i> Outside Light <span class="badge trialing-space" id="light_out">{{ $active_device[0]->light_out }}%</span>
 				<i class="fa fa-empire" aria-hidden="true"></i> CPU Temp <span class="badge trialing-space" id="cpu_temp">{{ $active_device[0]->cpu_temp }}C</span>
 				<hr>
 			</div>
