@@ -19,20 +19,20 @@ import time
 import functools
 import uuid
 import threading
-from subprocess import call, check_output
+import subprocess
 
 VERSION = "0.3.24"
 DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
 #DOMAIN = "https://smartsettia-backburn.c9users.io/"
-MAC_ADDRESS = check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
+MAC_ADDRESS = subprocess.check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
 TOKEN = ""
 NAME = "NO NAME"
 ARCH = platform.machine()
-IP = check_output(["ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"], shell=True)[:-1].decode('utf-8')
-HOSTNAME = check_output(["hostname"], shell=True)[:-1].decode('utf-8')
+IP = subprocess.check_output(["ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"], shell=True)[:-1].decode('utf-8')
+HOSTNAME = subprocess.check_output(["hostname"], shell=True)[:-1].decode('utf-8')
 IMAGE_RATE = 10
 SENSOR_RATE = 5
 UPDATE_RATE = 5
@@ -140,7 +140,7 @@ def api_image_job():
 	else:
 		print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	return
-	
+
 def webcam_capture():
 	"""Saves an image from the first connected webcam"""
 	quality = "50"
@@ -151,9 +151,8 @@ def webcam_capture():
 	subtitle = "cpu: {} C".format(cpu_temp())
 	info = UUID
 	if os.path.lexists(device):
-		call(["fswebcam", "--fps", fps, "--jpeg", quality, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
-		#call(["streamer", "-s 1280x720 -c /dev/video0 -b 16 -o "+IMAGE_PATH])
-		#call(["/usr/bin/v4lctl -c /dev/video0 snap jpeg 1280x720 "+IMAGE_PATH], shell=True)
+		subprocess.call(["v4lctl", "-c", device, "snap", "jpeg", resolution, IMAGE_PATH])
+		#subprocess.call(["fswebcam", "--fps", fps, "--jpeg", quality, "-d", device, "-r", resolution, "--title", title, "--subtitle", subtitle, "--info", info, IMAGE_PATH])
 	else:
 		print("{}: capture failed, no webcam".format(the_time()))
 	return
@@ -161,10 +160,10 @@ def webcam_capture():
 def cpu_temp():
 	"""Returns the CPU temerature based on architecture"""
 	if ARCH == "armv7l":
-		return check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1].decode('utf-8')
+		return subprocess.check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1].decode('utf-8')
 	else:
 		return 0.0
-		
+
 def humidity():
 	return 99.0
 
