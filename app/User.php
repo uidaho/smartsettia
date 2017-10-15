@@ -38,7 +38,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected static $ignoreChangedAttributes = ['updated_at'];
+    protected static $ignoreChangedAttributes = [
+        'updated_at', 'remember_token'
+    ];
     
     /**
      * The attributes to log in the Activity Log
@@ -131,5 +133,16 @@ class User extends Authenticatable
     public function managers()
     {
         return $this->where('role', '>', 1)->get();
+    }
+    
+    /**
+     * Returns the users role as a string.
+     *
+     * @return Users
+     */
+    public function roleString()
+    {
+        $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
+        return $role_en[ $this->role ] . ' (' . $this->role . ')';
     }
 }

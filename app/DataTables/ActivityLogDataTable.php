@@ -11,26 +11,31 @@ class ActivityLogDataTable extends DataTable
     /**
      * Build DataTable class.
      *
-     * @param mixed $query Results from query() method.
      * @return \Yajra\DataTables\DataTableAbstract
      */
     public function dataTable($query)
     {
-        return datatables($query);
-            //->addColumn('action', 'activitylog.action');
+        return datatables($query)
+            ->editColumn('causer_id', function ($activity) {
+                return ($activity->causer_id ? '<a href="/' . ($activity->causer_type == "App\User" ? 'user' : 'device') . '/' . $activity->causer_id . '">' . (is_object($activity->causer) ? $activity->causer->name : '') . '</a>' : 'App');
+            })
+            ->editColumn('subject_id', function ($activity) {
+                return ($activity->subject_id ? '<a href="/' . ($activity->subject_type == "App\User" ? 'user' : 'device') . '/' . $activity->subject_id . '">' . (is_object($activity->subject) ? $activity->subject->name : '') . '</a>' : 'App');
+            })
+            ->editColumn('properties', function ($activity) {
+                return $activity->properties;
+            })
+            ->rawColumns(['causer_id', 'subject_id', 'properties']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\User $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(User $model)
+    public function query()
     {
-        //return $model->newQuery()->select($this->getColumns());
-        $query = Activity::all();
-        
+        $query = Activity::query();
         return $this->applyScopes($query);
     }
 
@@ -42,10 +47,9 @@ class ActivityLogDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->addAction(['width' => '80px'])
-                    ->parameters($this->getBuilderParameters());
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->parameters($this->getBuilderParameters());
     }
 
     /**
@@ -56,16 +60,11 @@ class ActivityLogDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id',
-            'log_name',
-            'description',
-            'subject_id',
-            'subject_type',	
-            'causer_id',
-            'causer_type',
-            'properties',
-            'created_at', 
-            'updated_at'
+            'created_at',
+            [ 'name' => 'causer_id', 'data' => 'causer_id', 'title' => 'Actor', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'description', 'data' => 'description', 'title' => 'Action', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'subject_id', 'data' => 'subject_id', 'title' => 'Subject', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
+            [ 'name' => 'properties', 'data' => 'properties', 'title' => 'Changes', 'render' => null, 'searchable' => true, 'orderable' => false, 'exportable' => true, 'printable' => true, 'footer' => '' ]
         ];
     }
     
@@ -78,7 +77,7 @@ class ActivityLogDataTable extends DataTable
     {
         return [
             'dom'     => 'Bfrtip',
-            'order'   => [ [ 0, 'asc' ] ],
+            'order'   => [ [ 0, 'desc' ] ],
             'buttons' => [
                 'export',
                 'print',

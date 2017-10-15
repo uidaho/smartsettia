@@ -40,7 +40,7 @@ class Device extends Model
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
         'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
         'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
-        'update_rate', 'image_rate', 'sensor_rate'
+        'update_rate', 'image_rate', 'sensor_rate', 'open_time', 'close_time'
     ];
     
     /**
@@ -59,7 +59,7 @@ class Device extends Model
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
         'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
         'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
-        'update_rate', 'image_rate', 'sensor_rate'
+        'update_rate', 'image_rate', 'sensor_rate', 'open_time', 'close_time'
     ];
     
     /**
