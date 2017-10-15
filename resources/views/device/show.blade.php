@@ -28,7 +28,7 @@
                                 <tbody>
                                 <tr>
                                     <td>Location:</td>
-                                    <td>{{ $device->location_id }}</td>
+                                    <td>{{ (is_object($device->location) ? $device->location->name : '') }}</td>
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
