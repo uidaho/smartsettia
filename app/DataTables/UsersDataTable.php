@@ -17,9 +17,7 @@ class UsersDataTable extends DataTable
         return datatables($query)
             ->addColumn('action', 'user.action')
             ->blacklist([ 'action' ])
-            ->editColumn('role', function(User $user) {
-                    $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
-                    return $role_en[ $user->role ].' ('.$user->role.')'; })
+            ->editColumn('role', function(User $user) { return $user->roleString(); })
             ->setRowClass(function($user) {
                     return $user->trashed() ? 'alert-danger' : "";
             })

@@ -27,8 +27,8 @@
                             <table class="table table-user-information">
                                 <tbody>
                                 <tr>
-                                    <td>User level:</td>
-                                    <td>{{ $user->role }}</td>
+                                    <td>User role:</td>
+                                    <td>{{ $user->roleString() }}</td>
                                 </tr>
                                 <tr>
                                     <td>Registered since:</td>
