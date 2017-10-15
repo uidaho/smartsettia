@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Prune the activity log for entries older than a year, each day.
-        $schedule->command('activitylog:clean')->daily()
+        // Prune the activity log for entries older than 30 days.
+        $schedule->command('activitylog:clean')->daily();
     }
 
     /**
