@@ -38,7 +38,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected static $ignoreChangedAttributes = ['updated_at'];
+    protected static $ignoreChangedAttributes = [
+        'updated_at', 'remember_token'
+    ];
     
     /**
      * The attributes to log in the Activity Log
