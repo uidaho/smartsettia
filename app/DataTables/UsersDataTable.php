@@ -54,6 +54,7 @@ class UsersDataTable extends DataTable
     {
         return $this->builder()
                     ->columns($this->getColumns())
+                    ->minifiedAjax()
                     //->addAction(['width' => '160px'])
                     ->parameters([
                         'dom'     => 'Bfrtip',
