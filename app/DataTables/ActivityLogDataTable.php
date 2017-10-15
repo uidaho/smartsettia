@@ -17,18 +17,10 @@ class ActivityLogDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('causer_id', function ($activity) {
-                if ($activity->causer_id) {
-                    return '<a href="/' . ($activity->causer_type == "App\User" ? 'user' : 'device') . '/' . $activity->causer_id . '">' . $activity->causer->name . '</a>';
-                } else {
-                    return 'Application';
-                }
+                return ($activity->causer_id ? '<a href="/' . ($activity->causer_type == "App\User" ? 'user' : 'device') . '/' . $activity->causer_id . '">' . (is_object($activity->causer) ? $activity->causer->name : '') . '</a>' : 'App');
             })
             ->editColumn('subject_id', function ($activity) {
-                if ($activity->subject_id) {
-                    return '<a href="/' . ($activity->subject_type == "App\User" ? 'user' : 'device') . '/' . $activity->subject_id . '">' . $activity->subject->name . '</a>';
-                } else {
-                    return 'None';
-                }
+                return ($activity->subject_id ? '<a href="/' . ($activity->subject_type == "App\User" ? 'user' : 'device') . '/' . $activity->subject_id . '">' . (is_object($activity->subject) ? $activity->subject->name : '') . '</a>' : 'App');
             })
             ->editColumn('properties', function ($activity) {
                 return $activity->properties;
