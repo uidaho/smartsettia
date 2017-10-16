@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Device;
 use App\Deviceimage;
 use App\User;
+use App\Sensor;
+use App\SensorData;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -91,6 +93,69 @@ class ApiController extends Controller
         $device->humidity = $request->input('humidity');
         
         $device->save();
+        
+        // A 'Registered' event is created and will trigger any relevant
+        // observers, such as sending a confirmation email or any 
+        // code that needs to be run as soon as the device is created.
+        //event(new Registered(true));
+        
+        // Return the new device info including the token.
+        return response()->json(['data' => $device->toArray()], 201);
+    }
+    
+    /**
+     * Updates the sensors of a device.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function sensor(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'uuid'          => 'required|string|max:255|exists:devices,uuid',
+            'token'         => 'required|string|max:60',
+            'sensor_data.*.name'   => 'required',
+            'sensor_data.*.type'   => 'required',
+            'sensor_data.*.value'  => 'required',
+        ]);
+        
+        // If validation fails, send the validation error back with status 400.
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->errors()], 400);
+        }
+        
+        // Get the device record.
+        $device = Device::getDeviceByUUID($request->input('uuid'));
+        
+        // If token doesnt match then send 401 unauthorized.
+        if ($request->input('token') != $device->token) {
+            return response()->json(['data' => 'Bad token.'], 401);
+        }
+        
+        // Update the device.
+// 		"sensor_data": {
+// 			{ "name": "cpu", "type": "cpu_temperature", "value": cpu_temp() },
+// 			{ "name": "temperature", "type": "temperature", "value": temperature() },
+// 			{ "name": "humidity", "type": "humidity", "value": humidity() },
+// 			{ "name": "moisture_01", "type": "moisture", "value": 0.00 },
+// 			{ "name": "moisture_02", "type": "moisture", "value": 0.00 },
+// 			{ "name": "light_in", "type": "light", "value": 0.00 },
+// 			{ "name": "light_out", "type": "light", "value": 0.00 }
+// 		}
+        $sensor_datas = $request->input('sensor_data');
+        foreach ($sensor_datas as $sensor_data) {
+            $sensor = Sensor::firstOrCreate([
+                "device_id" => $device->id,
+                "name" => $sensor_data['name'], 
+                "type" => $sensor_data['type']
+            ]);
+            
+            SensorData::create([
+                "sensor_id" => $sensor->id,
+                "value" => $sensor_data['value']
+            ]);
+        }
         
         // A 'Registered' event is created and will trigger any relevant
         // observers, such as sending a confirmation email or any 

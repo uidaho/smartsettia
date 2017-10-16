@@ -66,6 +66,17 @@ Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
  *-----------------------*/
 Route::get('logs', 'ActivityLogController@index')->name('logs');
 
+/*-----------------------*
+ * Sensor Controller *
+ *-----------------------*/
+Route::resource('sensor', 'SensorController');
+
+/*-----------------------*
+ * SensorData Controller *
+ *-----------------------*/
+Route::resource('sensordata', 'SensorDataController');
+
+
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');
 Route::get('admin', 'DashboardController@index')->name('admin');

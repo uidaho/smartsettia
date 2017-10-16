@@ -32,6 +32,12 @@ Route::get('update', 'ApiController@index');
 Route::post('update', 'ApiController@update');
 
 /*-----------------------*
+ * api/sensor            *
+ *-----------------------*/
+Route::get('sensor', 'ApiController@index');
+Route::post('sensor', 'ApiController@sensor');
+
+/*-----------------------*
  * api/show/{id}         *
  *-----------------------*/
  Route::get('show', 'ApiController@index');

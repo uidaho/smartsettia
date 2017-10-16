@@ -53,8 +53,7 @@ class DeviceController extends Controller
      */
     public function show($id)
     {
-        $device = Device::publicDashData()->findOrFail($id);
-
+        $device = Device::findOrFail($id);
         return view('device.show', [ 'device' => $device ]);
     }
 

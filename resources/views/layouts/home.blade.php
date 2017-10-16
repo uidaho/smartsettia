@@ -59,6 +59,8 @@
                                         <a href="{{ route('manage-groups') }}"><i class="fa fa-group"></i> Manage Groups</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('device.index') }}"><i class="fa fa-microchip"></i> Manage Devices</a></li>
+                                    <li class="{{ Route::currentRouteNamed('sensor.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('sensor.index') }}"><i class="fa fa-line-chart"></i> Manage Sensors</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('logs') }}"><i class="fa fa-history"></i> View Logs</a></li>
                                 </ul>

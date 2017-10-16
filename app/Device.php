@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Traits\LogsActivity;
 //use Spatie\Activitylog\Traits\CausesActivity;
+use App\Sensor;
+use App\SensorData;
 
 class Device extends Model
 {
@@ -39,8 +41,8 @@ class Device extends Model
     protected $fillable = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
         'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
-        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
-        'update_rate', 'image_rate', 'sensor_rate', 'open_time', 'close_time'
+        'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
+        'open_time', 'close_time'
     ];
     
     /**
@@ -58,8 +60,8 @@ class Device extends Model
     protected static $logAttributes = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
         'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
-        'light_in', 'light_out', 'cpu_temp', 'temperature', 'humidity', 
-        'update_rate', 'image_rate', 'sensor_rate', 'open_time', 'close_time'
+        'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
+        'open_time', 'close_time'
     ];
     
     /**
@@ -196,22 +198,22 @@ class Device extends Model
     public function scopePublicDashData($query)
     {
         return $query->select([
-                            'id',
-                            'name',
-                            'location_id',
-                            'cover_command',
-                            'cover_status',
-                            'temperature',
-                            'humidity',
-                            'light_in',
-                            'light_out',
-                            'open_time',
-                            'close_time',
-                            'update_rate',
-                            'image_rate',
-                            'sensor_rate',
-                            'cpu_temp',
-                        ]);
+            'id',
+            'name',
+            'location_id',
+            'cover_command',
+            'cover_status',
+            'temperature',
+            'humidity',
+            'light_in',
+            'light_out',
+            'open_time',
+            'close_time',
+            'update_rate',
+            'image_rate',
+            'sensor_rate',
+            'cpu_temp',
+        ]);
     }
     
     /**
@@ -242,5 +244,22 @@ class Device extends Model
     public function image()
     {
         return $this->hasOne('App\Deviceimage');
+    }
+    
+
+    /**
+     * Get the sensors associated with the device.
+     */
+    public function sensors()
+    {
+        return $this->hasMany('App\Sensor');
+    }
+    
+    /**
+     * Get the sensor data associated with the device.
+     */
+    public function data()
+    {
+        return $this->hasManyThrough('App\SensorData', 'App\Sensor');
     }
 }

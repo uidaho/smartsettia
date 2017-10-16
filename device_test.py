@@ -21,10 +21,10 @@ import uuid
 import threading
 import subprocess
 
-VERSION = "0.3.24"
-DOMAIN = "https://smartsettia.com/"
+VERSION = "0.3.29"
+#DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
-#DOMAIN = "https://smartsettia-backburn.c9users.io/"
+DOMAIN = "https://smartsettia-backburn.c9users.io/"
 MAC_ADDRESS = subprocess.check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
@@ -88,9 +88,6 @@ def api_update_job():
 		"limitsw_closed": 1,
 		"light_in": 0,
 		"light_out": 100,
-		"cpu_temp": cpu_temp(),
-		"temperature": temperature(),
-		"humidity": humidity()
 	}
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
 	try:
@@ -110,8 +107,8 @@ def api_update_job():
 			schedule_api_image_job()
 		if SENSOR_RATE != response['data']['sensor_rate']:
 			SENSOR_RATE = response['data']['sensor_rate']
-			schedule.clear('api_sensors_job')
-			schedule_api_sensors_job()
+			schedule.clear('api_sensor_job')
+			schedule_api_sensor_job()
 		if UPDATE_RATE != response['data']['update_rate']:
 			UPDATE_RATE = response['data']['update_rate']
 			schedule.clear('api_update_job')
@@ -119,6 +116,35 @@ def api_update_job():
 		print("{}: api/update success".format(the_time()))
 	else:
 		print("{}: api/update failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
+		time.sleep(60)
+	return
+
+def api_sensor_job():
+	"""This sends a status update to the smartsettia API and returns the status code"""
+	url = DOMAIN+"api/sensor"
+	data = {
+		"uuid": UUID,
+		"token": TOKEN,
+		"sensor_data": [
+			{ "name": "cpu", "type": "cpu_temperature", "value": cpu_temp() },
+			{ "name": "light_in", "type": "light", "value": "0.00" },
+			{ "name": "light_out", "type": "light", "value": "0.00" },
+			{ "name": "temperature", "type": "temperature", "value": temperature() },
+			{ "name": "humidity", "type": "humidity", "value": humidity() },
+			{ "name": "moisture_01", "type": "moisture", "value": "0.00" },
+			{ "name": "moisture_02", "type": "moisture", "value": "0.00" },
+		]
+	}
+	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
+	try:
+		response = requests.post(url, json=data, headers=headers)
+	except requests.exceptions.RequestException as e:
+		print("{}: api/sensor request failed: {}".format(the_time(), e))
+		return
+	if response.status_code in [201]:
+		print("{}: api/sensor success".format(the_time()))
+	else:
+		print("{}: api/sensor failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 		time.sleep(60)
 	return
 
@@ -177,9 +203,9 @@ def schedule_api_update_job():
 	print("{}: Scheduling api/update every {} seconds".format(the_time(), UPDATE_RATE))
 	schedule.every(UPDATE_RATE).seconds.do(api_update_job).tag('api_update_job')
 	
-def schedule_api_sensors_job():
-	print("{}: Scheduling api/sensors every {} seconds".format(the_time(), SENSOR_RATE))
-	#schedule.every(SENSOR_RATE).seconds.do(run_threaded, api_sensors_job).tag('api_sensors_job')
+def schedule_api_sensor_job():
+	print("{}: Scheduling api/sensor every {} seconds".format(the_time(), SENSOR_RATE))
+	schedule.every(SENSOR_RATE).seconds.do(run_threaded, api_sensor_job).tag('api_sensor_job')
 
 def schedule_api_image_job():
 	print("{}: Scheduling api/image every {} seconds".format(the_time(), IMAGE_RATE))
@@ -191,7 +217,7 @@ api_register()
 
 # start schedules
 schedule_api_update_job()
-schedule_api_sensors_job()
+schedule_api_sensor_job()
 schedule_api_image_job()
 schedule.run_all(1)
 
