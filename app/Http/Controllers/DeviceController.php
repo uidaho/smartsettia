@@ -100,34 +100,20 @@ class DeviceController extends Controller
     }
     
     /**
-     * Get the locations with the given site id
+     * Get the locations belonging to the given site
      * Return null if the site does not have any locations
      *
-     * @param  int $site_id
+     * @param  Site $site
      * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function locations($site_id)
+    public function locations(Site $site)
     {
-        $locations = Location::bySite($site_id)->select('id', 'name', 'site_id')->get();
+        $locations = $site->locations;
         
         if ($locations->isEmpty())
             $locations = null;
     
         return response()->json($locations);
-    }
-    
-    /**
-     * Get the devices details
-     * Return 404 error if the device is not found
-     *
-     * @param  int $id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function details($id)
-    {
-        $device = Device::publicDashData()->findOrFail($id);
-        
-        return response()->json($device);
     }
 
     /**

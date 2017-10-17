@@ -26,15 +26,15 @@ class EditDevice extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'site' => 'required_without:new_site_name|int|max:255|nullable',
+            'site' => 'required_without:new_site_name|int|digits_between:1,7|nullable',
             'new_site_name' => 'required_without:site|unique:sites,name|nullable',
-            'location' => 'required_without:new_location_name|int|max:255|nullable',
+            'location' => 'required_without:new_location_name|int|digits_between:1,7|nullable',
             'new_location_name' => 'required_without:location|unique:locations,name|string|max:255|nullable',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
-            'update_rate' => 'required|int|max:255',
-            'image_rate' => 'required|int|max:255',
-            'sensor_rate' => 'required|int|max:255',
+            'update_rate' => 'required|int|digits_between:1,7',
+            'image_rate' => 'required|int|digits_between:1,7',
+            'sensor_rate' => 'required|int|digits_between:1,7',
         ];
     }
     

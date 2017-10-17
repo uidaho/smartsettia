@@ -143,7 +143,7 @@ $formEditDevice.on('submit', function(e)
 			error: function (data) {
 				if (data.status === 404)
 				{
-					window.alert("Device not found, try again later.");
+					alertBarActivate("Device not found, try again later.");
 				}
 				else if (data.status === 422)
 				{
@@ -209,14 +209,14 @@ $formEditDevice.on('submit', function(e)
 				}
 				else if (data.status === 403)
 				{
-					window.alert("Sorry, you do not have permission to edit this device.");
+					alertBarActivate("Sorry, you do not have permission to edit this device.");
 
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
 				}
 				else
 				{
-					console.log("Uncaught error in device edit form submit");
+					alertBarActivate("Uncaught error in device edit form submit");
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
 				}

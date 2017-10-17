@@ -67,12 +67,12 @@ class DashboardController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function ajaxRefreshAll(Request $request)
+    public function refreshPage(Request $request)
     {
         Validator::make($request->all(), [
-            'site_id' => 'required|int|max:255',
-            'location_id' => 'required|int|max:255',
-            'device_id' => 'required|int|max:255',
+            'site_id' => 'required|int|digits_between:1,7',
+            'location_id' => 'required|int|digits_between:1,7',
+            'device_id' => 'required|int|digits_between:1,7',
         ])->validate();
         
         //Todo limit the amount of queries based on if there is changes
@@ -131,10 +131,10 @@ class DashboardController extends Controller
     {
         //Get the given site
         $site = Site::select('id', 'name')->findOrFail($site_id);
-        //Get the given location
-        $location = Location::select('id', 'name', 'site_id')->where('site_id', '=', $site->id)->firstOrFail();
-        //Get the given device if it is still at the same location
-        $device = Device::publicDashData()->where('location_id', '=', $location->id)->firstOrFail();
+        //Get the first location alphabetically at the given location
+        $location = Location::select('id', 'name', 'site_id')->where('site_id', '=', $site->id)->orderBy('name', 'ASC')->firstOrFail();
+        //Get the first device alphabetically at the given location
+        $device = Device::publicDashData()->where('location_id', '=', $location->id)->orderBy('name', 'ASC')->firstOrFail();
         
         $data = $this->dashData($site, $location, $device);
         
@@ -151,14 +151,28 @@ class DashboardController extends Controller
     {
         //Get the given location
         $location = Location::select('id', 'name', 'site_id')->findOrFail($location_id);
-        //Get the given site
+        //Get the locations site
         $site = $location->site()->select('id', 'name')->firstOrFail();
-        //Get the given device if it is still at the same location
-        $device = Device::publicDashData()->where('location_id', '=', $location_id)->firstOrFail();
+        //Get the first device alphabetically at the given location
+        $device = Device::publicDashData()->where('location_id', '=', $location->id)->orderBy('name', 'ASC')->firstOrFail();
         
         $data = $this->dashData($site, $location, $device);
         
         return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
+    }
+    
+    /**
+     * Return database data about the given device
+     * Return 404 error if the device is not found
+     *
+     * @param int $device_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deviceChange($device_id)
+    {
+        $device = Device::publicDashData()->findOrFail($device_id);
+        
+        return response()->json($device);
     }
     
     /**

@@ -20,6 +20,8 @@ var $disabledViewBtn;
 var currentDeviceId;
 var currentLocationId;
 var currentSiteId;
+//Error/Alert Bar
+var $alertBar = $('#alert_bar');
 //Device status enum
 var deviceStatusEnum = {
 	open: 1,
@@ -47,7 +49,7 @@ function updateDashboardData(keepUpdating)
 		lock = true;
 		$.ajax({
 			type: 'GET',
-			url: '/dashboard/refresh/full',
+			url: '/dashboard/refresh',
 			data: { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId },
 			dataType: "json",
 			success: function (data)
@@ -87,7 +89,8 @@ function updateDashboardData(keepUpdating)
 			},
 			error: function (data)
 			{
-				console.log("Error in updateDashboardData()");
+				alertBarActivate("Error in updateDashboardData()");
+				console.log(data);
 				lock = false;
 			}
 		});
@@ -361,12 +364,14 @@ function getCommandStatusButton(status, device_id)
 //Get the devices lock button as html
 function getLockButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" value="3">';
+	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" value="3"';
 
 	if (status === deviceStatusEnum.locked)
-		buttonHtml += '<i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
+		buttonHtml += '><i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
+	else if (status === deviceStatusEnum.open || status === deviceStatusEnum.closed)
+		buttonHtml += '><i class="fa fa-lock" aria-hidden="true"></i> Lock';
 	else
-		buttonHtml += '<i class="fa fa-lock" aria-hidden="true"></i> Lock';
+		buttonHtml += 'disabled><i class="fa fa-lock" aria-hidden="true"></i> Lock';
 
 	buttonHtml += '</button>';
 
@@ -413,4 +418,12 @@ function setImageUpdateRate(time)
 	}
 	else
 		imageUpdateRate = formattedTime;
+}
+
+//Display the alert bar with the given message
+function alertBarActivate(message)
+{
+	$alertBar.html('<button type="button" class="close" aria-label="Close" onclick="$alertBar.hide()"><span aria-hidden="true">&times;</span></button>' +
+		'<strong>Alert!</strong> ' + message);
+	$alertBar.show();
 }

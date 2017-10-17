@@ -32,14 +32,14 @@ function updateDeviceCommand(btn)
 			{
 				if (data.status === 422)
 				{
-					window.alert("The given command was invalid.");
+					alertBarActivate("The given command was invalid.");
 				}
 				else if (data.status === 403)
 				{
-					console.log("Error device is currently in use updateDeviceCommand()");
+					alertBarActivate("Error device is currently in use updateDeviceCommand()");
 				}
 				else
-					console.log("Unknown error in updateDeviceCommand()");
+					alertBarActivate("Uncaught error in updateDeviceCommand()");
 
 				lock = false;
 			}

@@ -10,7 +10,7 @@ function changeDevice(btn)
 		//Get device info
 		$.ajax({
 			type: 'GET',
-			url: '/device/' + device_id + '/details',
+			url: '/dashboard/change/device/' + device_id,
 			data: '',
 			dataType: "json",
 			success: function (data) {
@@ -30,11 +30,11 @@ function changeDevice(btn)
 			{
 				if (data.status === 404)
 				{
-					window.alert("Device not found, try again later.");
+					alertBarActivate("Device not found, try again later.");
 				}
 				else
 				{
-					console.log("Uncaught error in changeDevice()");
+					alertBarActivate("Uncaught error in changeDevice()");
 				}
 
 				lock = false;

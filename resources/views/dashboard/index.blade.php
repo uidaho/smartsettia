@@ -3,6 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
+	<div class="alert alert-danger alert-dismissible" role="alert" id="alert_bar" hidden>
+		<button type="button" class="close" aria-label="Close" onclick="hideAlert(this)"><span aria-hidden="true">&times;</span></button>
+	</div>
 	<section class="testimonials" style="margin-bottom: 0">
 		<div class="text-center">
 			<h2 style="display: inline-block" id="header_site">{{ $active_device[2]->name }}</h2>

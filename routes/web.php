@@ -48,7 +48,6 @@ Route::resource('device', 'DeviceController');
 Route::put('device/{id}/restore', 'DeviceController@restore')->name('device.restore');
 // Ajax calls
 Route::get('device/{site_id}/locations', 'DeviceController@locations');
-Route::get('device/{id}/details', 'DeviceController@details');
 
 /*-----------------------*
  * Dashboard Controller  *
@@ -58,7 +57,8 @@ Route::get('dev_layout', 'DashboardController@dev_layout');
 // Ajax calls
 Route::get('dashboard/change/site/{site_id}', 'DashboardController@siteChange');
 Route::get('dashboard/change/location/{location_id}', 'DashboardController@locationChange');
-Route::get('dashboard/refresh/full', 'DashboardController@ajaxRefreshAll');
+Route::get('dashboard/change/device/{device_id}', 'DashboardController@deviceChange');
+Route::get('dashboard/refresh', 'DashboardController@refreshPage');
 Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
 
 /*-----------------------*
