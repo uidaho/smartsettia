@@ -46,7 +46,7 @@ class ApiController extends Controller
         // Validate the request
         $validator = Validator::make($request->all(), [
             'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60',
+            'token'         => 'required|string|max:60|exists:devices,token',
             'version'       => 'nullable|string|max:32',
             'hostname'      => 'nullable|string|max:255',
             'ip'            => 'nullable|ip',
@@ -61,20 +61,10 @@ class ApiController extends Controller
             'cpu_temp'      => 'nullable|numeric',
             'temperature'   => 'nullable|numeric',
             'humidity'      => 'nullable|numeric',
-        ]);
-        
-        // If validation fails, send the validation error back with status 400.
-        if ($validator->fails()) {
-            return response()->json(['data' => $validator->errors()], 400);
-        }
+        ])->validate();
         
         // Get the device record.
         $device = Device::getDeviceByUUID($request->input('uuid'));
-        
-        // If token doesnt match then send 401 unauthorized.
-        if ($request->input('token') != $device->token) {
-            return response()->json(['data' => 'Bad token.'], 401);
-        }
         
         // Update the device.
         $device->version = $request->input('version');
@@ -114,24 +104,14 @@ class ApiController extends Controller
         // Validate the request
         $validator = Validator::make($request->all(), [
             'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60',
-            'sensor_data.*.name'   => 'required|string|max:190',
-            'sensor_data.*.type'   => 'required|string|max:190',
-            'sensor_data.*.value'  => 'required|string|max:190',
-        ]);
-        
-        // If validation fails, send the validation error back with status 400.
-        if ($validator->fails()) {
-            return response()->json(['data' => $validator->errors()], 400);
-        }
+            'token'         => 'required|string|max:60|exists:devices,token',
+            'sensor_data.*.name'   => 'required|max:190',
+            'sensor_data.*.type'   => 'required|max:190',
+            'sensor_data.*.value'  => 'required|max:190',
+        ])->validate();
         
         // Get the device record.
         $device = Device::getDeviceByUUID($request->input('uuid'));
-        
-        // If token doesnt match then send 401 unauthorized.
-        if ($request->input('token') != $device->token) {
-            return response()->json(['data' => 'Bad token.'], 401);
-        }
         
         // Update the device.
 // 		"sensor_data": {
@@ -178,12 +158,7 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'uuid' => 'required|string|max:255',
             'challenge' => 'required|string|min:6',
-        ]);
-        
-        // If validation fails, send the validation error back with status 400.
-        if ($validator->fails()) {
-            return response()->json(['data' => $validator->errors()], 400);
-        }
+        ])->validate();
         
         // If challenge string doesnt match then send 401 unauthorized.
         if ($request->input('challenge') != env('API_CHALLENGE', 'temppass')) {
@@ -234,22 +209,12 @@ class ApiController extends Controller
         // Validate the request.
         $validator = Validator::make($request->all(), [
             'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60',
-            'image'         => 'required|image|mimes:jpeg,jpg|max:2048',
-        ]);
-        
-        // If validation fails, send the validation error back with status 400.
-        if ($validator->fails()) {
-            return response()->json(['data' => $validator->errors()], 400);
-        }
+            'token'         => 'required|string|max:60|exists:devices,token',
+            'image'         => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
+        ])->validate();
         
         // Get the device record.
         $device = Device::getDeviceByUUID($request->input('uuid'));
-        
-        // If token doesnt match then send 401 unauthorized.
-        if ($request->input('token') != $device->token) {
-            return response()->json(['data' => 'Bad token.'], 401);
-        }
         
         // Save the image to disk.
         $path = $request->file('image')->storeAs('deviceimage', $device['id'], 'private');
