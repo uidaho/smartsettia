@@ -115,9 +115,9 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'uuid'          => 'required|string|max:255|exists:devices,uuid',
             'token'         => 'required|string|max:60',
-            'sensor_data.*.name'   => 'required',
-            'sensor_data.*.type'   => 'required',
-            'sensor_data.*.value'  => 'required',
+            'sensor_data.*.name'   => 'required|string|max:190',
+            'sensor_data.*.type'   => 'required|string|max:190',
+            'sensor_data.*.value'  => 'required|string|max:190',
         ]);
         
         // If validation fails, send the validation error back with status 400.
