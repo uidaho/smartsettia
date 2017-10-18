@@ -10,39 +10,7 @@
                 <div class="panel-heading">Edit User</div>
                 <div class="panel-body">
                     {!! Form::model($user, ['route' => ['user.update', $user->id], 'method' => 'put', 'class' => 'form-horizontal']) !!}
-
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            {!! Form::label('name', 'Name', ['class' => 'col-sm-3 control-label']) !!}
-                            <div class="col-sm-9">
-                                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
-                                <small class="text-danger">{{ $errors->first('name') }}</small>
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            {!! Form::label('email', 'Email address', ['class' =>'col-sm-3 control-label']) !!}
-                            <div class="col-sm-9">
-                                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: foo@bar.com']) !!}
-                                <small class="text-danger">{{ $errors->first('email') }}</small>
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
-                            {!! Form::label('phone', 'Phone number', ['class' => 'col-sm-3 control-label']) !!}
-                            <div class="col-sm-9">
-                                {!! Form::text('phone', null, ['class' => 'form-control']) !!}
-                                <small class="text-danger">{{ $errors->first('phone') }}</small>
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-                            {!! Form::label('role', 'User Role', ['class' => 'col-sm-3 control-label']) !!}
-                                <div class="col-sm-9">
-                                    {!! Form::select('role', [0 => 'Registered - No access', 1 => 'User - Can control units', 2 => 'Manager - Can modify units and users', 3 => 'Admin - Can create managers'], null, ['placeholder' => 'Pick a role...', 'class' => 'form-control', 'name' => 'role', 'required' => 'required']) !!}
-                                    <small class="text-danger">{{ $errors->first('role') }}</small>
-                                </div>
-                        </div>
-
+                        @include('user.form')
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 {!! Form::button('<i class="glyphicon glyphicon-ok"></i> Save', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
