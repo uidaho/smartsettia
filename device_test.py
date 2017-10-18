@@ -21,7 +21,7 @@ import uuid
 import threading
 import subprocess
 
-VERSION = "0.3.29"
+VERSION = "0.3.31"
 #DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
 DOMAIN = "https://smartsettia-backburn.c9users.io/"
@@ -151,20 +151,23 @@ def api_sensor_job():
 def api_image_job():
 	"""This sends the webcam image to the smartsettia API"""
 	webcam_capture()
-	url = DOMAIN+"api/image"
-	data = {"uuid": UUID, "token": TOKEN}
-	files = {"image": open(IMAGE_PATH,"rb")}
-	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	try:
-		response = requests.post(url, files=files, data=data, headers=headers)
-	except requests.exceptions.RequestException as e:
-		print("{}: api/image request failed: {}".format(the_time(), e))
-		return
-	if response.status_code in [200, 201]:
-		print("{}: api/image success".format(the_time()))
-		return
+	if os.path.lexists(IMAGE_PATH):
+		url = DOMAIN+"api/image"
+		data = {"uuid": UUID, "token": TOKEN}
+		files = {"image": open(IMAGE_PATH,"rb")}
+		headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
+		try:
+			response = requests.post(url, files=files, data=data, headers=headers)
+		except requests.exceptions.RequestException as e:
+			print("{}: api/image request failed: {}".format(the_time(), e))
+			return
+		if response and response.status_code in [200, 201]:
+			print("{}: api/image success".format(the_time()))
+			return
+		else:
+			print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	else:
-		print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
+		print("{}: api/image skipped, no camera".format(the_time()))
 	return
 
 def webcam_capture():

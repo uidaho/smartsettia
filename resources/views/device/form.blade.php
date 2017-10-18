@@ -3,6 +3,7 @@
 	<div class="col-sm-9">
 		{!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'id' => 'input_device_name']) !!}
 		<small class="text-danger" id="error_device_name">{{ $errors->first('name') }}</small>
+		<span class="help-block">Name that will identify the device.</span>
 	</div>
 </div>
 
@@ -22,6 +23,7 @@
 		@endif
 		<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
 		<small class="text-danger" id="error_site">{{ $errors->first('site') }}{{ $errors->first('new_site_name') }}</small>
+		<span class="help-block">Single site the device belongs to.</span>
 	</div>
 </div>
 
@@ -40,6 +42,7 @@
 		</select>
 		<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
 		<small class="text-danger" id="error_location">{{ $errors->first('location') }}{{ $errors->first('new_location_name') }}</small>
+		<span class="help-block">Single location the device belongs to.</span>
 	</div>
 </div>
 
@@ -48,6 +51,7 @@
 	<div class="col-sm-9">
 		<input class="form-control" required="required" name="open_time" type="time" value="{{ $device->open_time }}" id="open_time">
 		<small class="text-danger" id="error_open_time">{{ $errors->first('open_time') }}</small>
+		<span class="help-block">Local time the device should open each day.</span>
 	</div>
 </div>
 
@@ -56,6 +60,7 @@
 	<div class="col-sm-9">
 		<input class="form-control" required="required" name="close_time" type="time" value="{{ $device->close_time }}" id="close_time">
 		<small class="text-danger" id="error_close_time">{{ $errors->first('close_time') }}</small>
+		<span class="help-block">Local time the device should close each day.</span>
 	</div>
 </div>
 
@@ -64,7 +69,7 @@
 	<div class="col-sm-9">
 		{!! Form::number('update_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
 		<small class="text-danger" id="error_update_rate">{{ $errors->first('update_rate') }}</small>
-		<small class="text-info">Interval the device posts and gets configuration data in seconds.</small>
+		<span class="help-block">Interval the device posts and gets configuration data in seconds.</span>
 	</div>
 </div>
 
@@ -73,7 +78,7 @@
 	<div class="col-sm-9">
 		{!! Form::number('image_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
 		<small class="text-danger" id="error_image_rate">{{ $errors->first('image_rate') }}</small>
-		<small class="text-info">Interval the device posts images in seconds.</small>
+		<span class="help-block">Interval the device posts images in seconds.</span>
 	</div>
 </div>
 
@@ -82,6 +87,6 @@
 	<div class="col-sm-9">
 		{!! Form::number('sensor_rate', null, ['class' => 'form-control', 'required' => 'required']) !!}
 		<small class="text-danger" id="error_sensor_rate">{{ $errors->first('sensor_rate') }}</small>
-		<small class="text-info">Interval the device posts sensor data in seconds.</small>
+		<span class="help-block">Interval the device posts sensor data in seconds.</span>
 	</div>
 </div>
