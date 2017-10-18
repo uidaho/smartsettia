@@ -224,19 +224,6 @@ class DeviceController extends Controller
     }
     
     /**
-     * Confirms deletion of a device.
-     *
-     * @param  string  $id
-     * @return Response
-     */
-    public function remove($id)
-    {
-        $device = Device::findOrFail($id);
-        
-        return view('device.remove', [ 'device' => $device ]);
-    }
-    
-    /**
      * Delete all unused sites and locations
      */
     private function RemoveUnusedSiteLoc()

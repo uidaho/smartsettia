@@ -66,8 +66,8 @@ class Sensor extends Model
     /**
      * Get the latest sensor data entry associated with the sensor.
      */
-    public function latestData()
+    public function getLatestDataAttribute()
     {
-        return $this->hasOne('App\SensorData')->latest();
+        return $this->hasOne('App\SensorData')->latest()->first() ?? (object)[];
     }
 }

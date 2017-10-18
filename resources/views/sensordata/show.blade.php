@@ -13,7 +13,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
-                            <strong>{{ $sensordata->sensor->name }}</strong><br>
+                            <strong>{{ $sensordata->sensor->name ?? 'null' }}</strong><br>
                             <table class="table table-user-information">
                                 <tbody>
                                 <tr>
@@ -28,16 +28,26 @@
                                     <td>Value:</td>
                                     <td>{{ $sensordata->value }}</td>
                                 </tr>
+                                <tr>
+                                    <td>Updated At:</td>
+                                    <td>{{ $sensordata->updated_at }} GMT</td>
+                                </tr>
+                                <tr>
+                                    <td>Created At:</td>
+                                    <td>{{ $sensordata->created_at }} GMT</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <a class="btn btn-sm btn-primary" type="button" title="E-mail this sensor data" href="mailto:{{ $sensordata->email }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                    <a class="btn btn-sm btn-primary" type="button" title="Go back" href="{{ route('sensor.show', $sensordata->sensor_id) }}"><i class="glyphicon glyphicon-arrow-left"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="\user\{{ $sensordata->id }}\edit"><i class="glyphicon glyphicon-edit"></i></a>
-                        <a class="btn btn-sm btn-danger" type="button" title="Remove this sensor data" href="\user\{{ $sensordata->id }}\remove"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="{{ route('sensordata.edit', $sensordata->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                            {!! Form::open(['method' => 'DELETE', 'route' => ['sensordata.destroy', $sensordata->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+                                {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this sensor data']) !!}
+                            {!! Form::close() !!}
                     </span>
                 </div>
             </div>

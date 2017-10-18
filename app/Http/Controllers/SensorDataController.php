@@ -21,6 +21,7 @@ class SensorDataController extends Controller
     /**
     * Display a listing of the resource.
     *
+    * @param SensorDataDataTable $dataTable
     * @return Response
     */
     public function index(SensorDataDataTable $dataTable)
@@ -45,12 +46,21 @@ class SensorDataController extends Controller
     */
     public function store()
     {
-    
+        request()->validate([
+            'sensor_id' => 'required|integer|exists:sensors,id',
+            'value' => 'required|string|max:190'
+        ]);
+
+        $query = SensorData::create($request->all());
+
+        return redirect()->route('sensordata.show', $query->id)
+            ->with('success', 'SensorData created successfully');
     }
 
     /**
     * Display the specified resource.
     *
+    * @param  Request  $request
     * @param  int  $id
     * @return Response
     */
@@ -82,7 +92,13 @@ class SensorDataController extends Controller
     */
     public function update($id)
     {
-    
+        request()->validate([
+            'sensor_id' => 'required|integer|exists:sensors,id',
+            'value' => 'required|string|max:190'
+        ]);
+        $query = SensorData::findOrFail($id)->update($request->all());
+        return redirect()->route('sensordata.show', $id)
+            ->with('success', 'SensorData updated successfully');    
     }
 
     /**
@@ -93,7 +109,9 @@ class SensorDataController extends Controller
     */
     public function destroy($id)
     {
-    
+        SensorData::find($id)->delete();
+        return redirect()->route('sensordata.index')
+            ->with('success','SensorData deleted successfully');
     }
 
 }

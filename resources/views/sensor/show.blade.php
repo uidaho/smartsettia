@@ -22,7 +22,7 @@
                                 </tr>
                                 <tr>
                                     <td>Device ID:</td>
-                                    <td>{{ $sensor->device_id }}</td>
+                                    <td><a href="{{ route('device.show', $sensor->device_id) }}">{{ $sensor->device->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Type:</td>
@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <td>Latest Value:</td>
-                                    <td>{{ $sensor->latestData->value }}</td>
+                                    <td>{{ $sensor->latest_data->value ?? 'null' }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -38,10 +38,12 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <a class="btn btn-sm btn-primary" type="button" title="E-mail this sensor data" href="mailto:{{ $sensor->email }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                    <a class="btn btn-sm btn-primary" type="button" title="Go back" href="{{ route('device.show', $sensor->device_id) }}"><i class="glyphicon glyphicon-arrow-left"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="\sensor\{{ $sensor->id }}\edit"><i class="glyphicon glyphicon-edit"></i></a>
-                        <a class="btn btn-sm btn-danger" type="button" title="Remove this sensor data" href="\sensor\{{ $sensor->id }}\remove"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="{{ route('sensor.edit', $sensor->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                            {!! Form::open(['method' => 'DELETE', 'route' => ['sensor.destroy', $sensor->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+                                {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this sensor']) !!}
+                            {!! Form::close() !!}
                     </span>
                 </div>
             </div>

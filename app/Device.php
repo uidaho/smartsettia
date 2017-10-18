@@ -87,11 +87,11 @@ class Device extends Model
     }
     
     /**
-     * Get the site for the device
+     * Get the site for the device using model accessor
      */
-    public function site()
+    public function getSiteAttribute()
     {
-        return $this->location->site;
+        return $this->location->site ?? (object)[];
     }
     
     /**

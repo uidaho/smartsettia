@@ -9,24 +9,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Create Sensor</div>
                 <div class="panel-body">
-					{!! Form::open(array('route' => 'sensor.store', 'method' => 'POST')) !!}
-						<ul>
-							<li>
-								{!! Form::label('device_id', 'Device_id:') !!}
-								{!! Form::text('sensor_id') !!}
-							</li>
-							<li>
-								{!! Form::label('name', 'Name:') !!}
-								{!! Form::text('name') !!}
-							</li>
-							<li>
-								{!! Form::label('type', 'Type:') !!}
-								{!! Form::text('type') !!}
-							</li>
-							<li>
-								{!! Form::submit() !!}
-							</li>
-						</ul>
+					{!! Form::open(array('route' => 'sensor.store', 'method' => 'POST', 'class' => 'form-horizontal')) !!}
+						@include('sensor.form')
+						<div class="form-group">
+							<div class="col-md-6 col-md-offset-4">
+								{!! Form::button('<i class="glyphicon glyphicon-ok"></i> Create', ['type' => 'submit', 'class' => 'btn btn-info pull-right']) !!}
+								<a href="{{ route('sensor.index') }}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-remove"></i> Cancel</a>
+							</div>
+						</div>
 					{!! Form::close() !!}
                 </div>
             </div>

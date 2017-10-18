@@ -127,12 +127,12 @@ def api_sensor_job():
 		"token": TOKEN,
 		"sensor_data": [
 			{ "name": "cpu", "type": "cpu_temperature", "value": cpu_temp() },
-			{ "name": "light_in", "type": "light", "value": "0.00" },
-			{ "name": "light_out", "type": "light", "value": "0.00" },
+			{ "name": "light_in", "type": "light", "value": "99.00" },
+			{ "name": "light_out", "type": "light", "value": "99.00" },
 			{ "name": "temperature", "type": "temperature", "value": temperature() },
 			{ "name": "humidity", "type": "humidity", "value": humidity() },
-			{ "name": "moisture_01", "type": "moisture", "value": "0.00" },
-			{ "name": "moisture_02", "type": "moisture", "value": "0.00" },
+			{ "name": "moisture_01", "type": "moisture", "value": "99.00" },
+			{ "name": "moisture_02", "type": "moisture", "value": "99.00" },
 		]
 	}
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
@@ -188,13 +188,13 @@ def cpu_temp():
 	if ARCH == "armv7l":
 		return subprocess.check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1].decode('utf-8')
 	else:
-		return 0.0
+		return "0.00"
 
 def humidity():
-	return 99.0
+	return "99.00"
 
 def temperature():
-	return 99.0
+	return "99.00"
 
 def cover_status():
 	return COVER_STATUS

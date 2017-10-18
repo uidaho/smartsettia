@@ -5,20 +5,20 @@
 @section('content')
 <div class="container">
 	<div class="page-header">
-		<h3>Sensor Data</h3>
+		<h3>Sensor</h3>
 	</div>
 	<p>A list of all sensor data.</p>
 	<div class="table-responsive">
 		<div class="tabs">
 		    <ul class="nav nav-tabs">
 		        <li class="active">
-		            <a href="#sensor_data" role="tab" data-toggle="tab">
-		                <icon class="fa fa-user"></icon> Sensor Data
+		            <a href="#sensordata" role="tab" data-toggle="tab">
+		                <icon class="fa fa-line-chart"></icon> Sensor Data
 		            </a>
 		        </li>
 		    </ul>
 		    <div class="tab-content">
-		        <div class="tab-pane fade active in" id="sensor_data">
+		        <div class="tab-pane fade active in" id="sensordata">
 		            {!! $dataTable->table(['class' => 'table table-bordered table-striped table-condensed'], true) !!}
 		        </div>
 		    </div>

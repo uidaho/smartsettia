@@ -27,8 +27,12 @@
                             <table class="table table-device-information">
                                 <tbody>
                                 <tr>
+                                    <td>Site:</td>
+                                    <td><a href="{{-- TODO route('site.show', $device->site->id) --}}">{{ $device->site->name ?? 'null' }}</a></td>
+                                </tr>
+                                <tr>
                                     <td>Location:</td>
-                                    <td>{{ (is_object($device->location) ? $device->location->name : '') }}</td>
+                                    <td><a href="{{-- TODO route('location.show', $device->location_id) --}}">{{ $device->location->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
@@ -104,11 +108,11 @@
                                 </tr>
                                 <tr>
                                     <td>Open Time:</td>
-                                    <td>{{ $device->open_time }} GMT</td>
+                                    <td>{{ $device->open_time }}</td>
                                 </tr>
                                 <tr>
                                     <td>Close Time:</td>
-                                    <td>{{ $device->close_time }} GMT</td>
+                                    <td>{{ $device->close_time }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -116,10 +120,12 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <a class="btn btn-sm btn-primary" type="button" title="E-mail this device" href="mailto:{{ $device->email }}"><i class="glyphicon glyphicon-envelope"></i></a>
+                    <a class="btn btn-sm btn-primary" type="button" title="Go back" href="{{ route('device.index') }}"><i class="glyphicon glyphicon-arrow-left"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="\device\{{ $device->id }}\edit"><i class="glyphicon glyphicon-edit"></i></a>
-                        <a class="btn btn-sm btn-danger" type="button" title="Remove this device" href="\device\{{ $device->id }}\remove"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="{{ route('device.edit', $device->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                        {!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $device->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+                            {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this device']) !!}
+                        {!! Form::close() !!}
                     </span>
                 </div>
             </div>
@@ -138,19 +144,19 @@
                             <table class="table table-device-sensors">
                                 <thead>
                                     <tr>
-                                        <td>ID:</td>
                                         <td>Name:</td>
                                         <td>Type:</td>
-                                        <td>Latest Value:</td>
+                                        <td>Value:</td>
+                                        <td>Updated At:</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($device->sensors as $sensor)
                                     <tr>
-                                        <td>{{ $sensor->id }}</td>
-                                        <td>{{ $sensor->name }}</td>
+                                        <td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
                                         <td>{{ $sensor->type }}</td>
-                                        <td>{{ $sensor->latestData->value }}</td>
+                                        <td><a href="{{ route('sensordata.show', $sensor->latest_data->id ?? 0) }}">{{ $sensor->latest_data->value ?? 'null' }}</a></td>
+                                        <td>{{ $sensor->latest_data->updated_at ?? 'null' }} GMT</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

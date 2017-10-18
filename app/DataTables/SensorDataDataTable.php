@@ -16,7 +16,7 @@ class SensorDataDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('sensor_id', function ($sensordata) {
-                return '<a href="/sensor/' . $sensordata->sensor_id . '">'. $sensordata->sensor->name . '</a>';
+                return '<a href="/sensor/' . $sensordata->sensor_id . '">'. ($sensordata->sensor->name ?? '') . '</a>';
             })
             ->addColumn('action', 'sensordata.action')
             ->blacklist([ 'action'])

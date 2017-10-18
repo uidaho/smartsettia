@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Sensor;
 use App\DataTables\SensorDataTable;
 use Illuminate\Http\Request;
+use Validator;
 
 class SensorController extends Controller 
 {
@@ -21,6 +22,7 @@ class SensorController extends Controller
     /**
     * Display a listing of the resource.
     *
+    * @param  SensorDataTable   $dataTable
     * @return Response
     */
     public function index(SensorDataTable $dataTable)
@@ -41,16 +43,27 @@ class SensorController extends Controller
     /**
     * Store a newly created resource in storage.
     *
+    * @param Request $request
     * @return Response
     */
-    public function store()
+    public function store(Request $request)
     {
-    
+        request()->validate([
+            'device_id' => 'required|integer|exists:devices,id',
+            'name' => 'required|string|max:190',
+            'type' => 'required|string|max:190'
+        ]);
+
+        $query = Sensor::create($request->all());
+
+        return redirect()->route('sensor.show', $query->id)
+            ->with('success', 'Sensor created successfully');
     }
 
     /**
     * Display the specified resource.
     *
+    * @param  Request  $request
     * @param  int  $id
     * @return Response
     */
@@ -64,6 +77,7 @@ class SensorController extends Controller
     /**
     * Show the form for editing the specified resource.
     *
+    * @param  Request  $request
     * @param  int  $id
     * @return Response
     */
@@ -77,12 +91,20 @@ class SensorController extends Controller
     /**
     * Update the specified resource in storage.
     *
+    * @param  Request  $request
     * @param  int  $id
     * @return Response
     */
-    public function update($id)
+    public function update(Request $request, $id)
     {
-    
+        request()->validate([
+            'device_id' => 'required|integer|exists:devices,id',
+            'name' => 'required|string|max:190',
+            'type' => 'required|string|max:190'
+        ]);
+        $query = Sensor::findOrFail($id)->update($request->all());
+        return redirect()->route('sensor.show', $id)
+            ->with('success', 'Sensor updated successfully');
     }
 
     /**
@@ -93,7 +115,9 @@ class SensorController extends Controller
     */
     public function destroy($id)
     {
-    
+        Sensor::findOrFail($id)->delete();
+        return redirect()->route('sensor.index')
+            ->with('success','Sensor deleted successfully');
     }
 
 }

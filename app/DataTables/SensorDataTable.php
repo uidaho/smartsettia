@@ -16,13 +16,13 @@ class SensorDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('device_id', function ($sensor) {
-                return '<a href="/device/' . $sensor->device_id . '">'. $sensor->device->name . '</a>';
+                return '<a href="/device/' . $sensor->device_id . '">'. ($sensor->device->name ?? '') . '</a>';
             })
             ->editColumn('name', function ($sensor) {
                 return '<a href="/sensor/' . $sensor->id . '">'. $sensor->name . '</a>';
             })
             ->addColumn('value', function ($sensor) {
-                return $sensor->latestData->value;
+                return $sensor->latest_data->value;
             })
             ->addColumn('action', 'sensor.action')
             ->blacklist([ 'action', 'value'])

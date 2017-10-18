@@ -16,11 +16,20 @@ class DevicesDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->addColumn('action', 'device.action')
-            ->blacklist([ 'action'])
-            ->setRowClass(function($device) {
-                return $device->trashed() ? 'alert-danger' : "";
-            });
+            ->editColumn('name', function ($device) {
+                return '<a href="' . route('device.show', $device->id) . '">' . $device->name . '</a>';
+            })
+            ->addColumn('location', function ($device) {
+                return ($device->location->name ?? 'null');
+            })
+            ->addColumn('site', function ($device) {
+                return ($device->location->site->name ?? 'null');
+            })
+            ->addColumn('rates', function ($device) {
+                return $device->update_rate . '/' . $device->image_rate .'/' . $device->sensor_rate;
+            })
+            ->blacklist([ 'location', 'site', 'rates' ])
+            ->rawColumns([ 'name' ]);
     }
 
     /**
@@ -30,18 +39,7 @@ class DevicesDataTable extends DataTable
      */
     public function query()
     {
-        $query = Device::select([
-                            'devices.id as id',
-                            'devices.name as name',
-                            'locations.name as location',
-                            'sites.name as site',
-                            'open_time',
-                            'close_time',
-                        ])
-                        ->selectRaw('CONCAT(update_rate, "/", image_rate, "/", sensor_rate) as rates')
-                        ->leftJoin('locations', 'devices.location_id', '=', 'locations.id')
-                        ->leftJoin('sites', 'locations.site_id', '=', 'sites.id');
-    
+        $query = Device::query();
         return $this->applyScopes($query);
     }
 
@@ -53,21 +51,9 @@ class DevicesDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->columns($this->getColumns())
-                    ->parameters([
-                        'dom'     => 'Bfrtip',
-                        'order'   => [ [ 0, 'asc' ] ],
-                        'buttons' => [
-                            'export',
-                            'print',
-                            'reset',
-                            'reload',
-                        ],
-                        'paging' => true,
-                        'searching' => true,
-                        'info' => true,
-                        'searchDelay' => 500,
-                    ]);
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->parameters($this->getBuilderParameters());
     }
 
     /**
@@ -78,14 +64,37 @@ class DevicesDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            [ 'name' => 'id', 'data' => 'id', 'title' => 'ID', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'name', 'data' => 'name', 'title' => 'Name', 'render' => null, 'searchable' => true, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'location', 'data' => 'location', 'title' => 'Location', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'site', 'data' => 'site', 'title' => 'Site', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'open_time', 'data' => 'open_time', 'title' => 'Open Time', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'close_time', 'data' => 'close_time', 'title' => 'Close Time', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'rates', 'data' => 'rates', 'title' => 'U/I/S Rates', 'render' => null, 'searchable' => false, 'orderable' => true, 'exportable' => true, 'printable' => true, 'footer' => '' ],
-            [ 'name' => 'action', 'data' => 'action', 'title' => 'Actions', 'render' => null, 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => true, 'footer' => '' ],
+            'id',
+            'name',
+            'location',
+            'site',
+            'open_time',
+            'close_time',
+            'rates'
+        ];
+    }
+
+    /**
+     * Get builder parameters.
+     *
+     * @return array
+     */
+    protected function getBuilderParameters()
+    {
+        return [
+            'dom'     => 'Bfrtip',
+            'order'   => [ [ 0, 'asc' ] ],
+            'buttons' => [
+                'create',
+                'export',
+                'print',
+                'reset',
+                'reload',
+            ],
+            'paging' => true,
+            'searching' => true,
+            'info' => true,
+            'searchDelay' => 500,
         ];
     }
 

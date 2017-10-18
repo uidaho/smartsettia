@@ -45,7 +45,6 @@ Route::get('user/{id}/remove', 'UserController@remove');
  * Device Controller       *
  *-----------------------*/
 Route::resource('device', 'DeviceController');
-Route::get('device/{id}/remove', 'DeviceController@remove');
 // Ajax calls
 Route::get('device/{site_id}/locations', 'DeviceController@locations');
 Route::get('device/{id}/details', 'DeviceController@details');
