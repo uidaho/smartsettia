@@ -109,7 +109,7 @@ function updateSiteDropdown(sites)
 		var siteString = "";
 		for (i = 0; i < Object.keys(sites).length; i++)
 		{
-			siteString += '<li class="empty site" value="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
+			siteString += '<li data-site-id="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
 		}
 		$siteList.append(siteString);
 		$btnChangeSite.show();
@@ -130,7 +130,7 @@ function updateLocationDropdown(locations)
 		var locationString = "";
 		for (i = 0; i < Object.keys(locations).length; i++)
 		{
-			locationString += '<li class="empty location" value="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
+			locationString += '<li data-location-id="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
 		}
 		$locationList.append(locationString);
 		$btnChangeLoc.show();
@@ -153,15 +153,16 @@ function updateDeviceTable(devices)
 		//Get the devices status open, closed, locked, etc.
 		var status = getDeviceStatus(devices[i]);
 
-		tableDevicesString += '<tr id="tr_' + devices[i]["id"] + '">' +
+		tableDevicesString += '<tr>' +
 			'<td>' + devices[i]["name"] + '</td>' +
 			'<td>' +
 			'<div class="btn-group btn-group-sm" role="group">' +
-			'<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
+			'<button class="btn btn-primary" type="button" data-view="" data-device-id="' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
 			getCommandStatusButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
 			getLockButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
+			'<button type="button" class="btn btn-default" data-command="3" data-device-id="' + devices[i]["id"] + '">Reset Command</button>' +
 			'</div>' +
 			'</td>' +
 			'</tr>' +
@@ -191,9 +192,10 @@ function updateDeviceTable(devices)
 	$tableBody.append(tableDevicesString);
 }
 
+//Disable the starting active device's view button
 function disableActiveViewBtn(device_id)
 {
-	$disabledViewBtn = $('#btn_view_' + device_id);
+	$disabledViewBtn = $("#control_devices_list").find("button[data-view][data-device-id=" + device_id + "]");
 	$disabledViewBtn.prop("disabled", true);
 }
 
@@ -333,18 +335,18 @@ function getDeviceStatus(device)
 //Get the devices command status button as html
 function getCommandStatusButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" ';
+	var buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" ';
 
 	switch(status)
 	{
 		case deviceStatusEnum.open:
-			buttonHtml += 'value="2"><i class="glyphicon glyphicon-resize-small"></i> Close';
+			buttonHtml += 'data-command="2"><i class="glyphicon glyphicon-resize-small"></i> Close';
 			break;
 		case deviceStatusEnum.opening:
 			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Opening';
 			break;
 		case deviceStatusEnum.closed:
-			buttonHtml += 'value="1"><i class="glyphicon glyphicon-resize-full"></i> Open';
+			buttonHtml += 'data-command="1"><i class="glyphicon glyphicon-resize-full"></i> Open';
 			break;
 		case deviceStatusEnum.closing:
 			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Closing';
@@ -364,7 +366,7 @@ function getCommandStatusButton(status, device_id)
 //Get the devices lock button as html
 function getLockButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" value="3"';
+	var buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-command="3"';
 
 	if (status === deviceStatusEnum.locked)
 		buttonHtml += '><i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';

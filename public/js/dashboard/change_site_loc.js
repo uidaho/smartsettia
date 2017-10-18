@@ -1,20 +1,14 @@
-//Change Location
-$('#location_change, #site_change').on('click', '.empty', function()
+//Change site
+$('#site_change').on('click', 'li[data-site-id]', function()
 {
-	var location_id, site_id, myURL;
-	if ($(this).hasClass('location'))
-	{
-		//Used for changing locations
-		location_id = $(this).val();
-		myURL = '/dashboard/change/location/' + location_id;
-	}
-	else
-	{
-		//Used for changing sites
-		site_id = $(this).val();
-		myURL = '/dashboard/change/site/' + site_id;
-	}
+	var myURL = '/dashboard/change/site/' + $(this).attr("data-site-id");
+	updateDashboardSiteLoc(myURL);
+});
 
+//Change location
+$('#location_change').on('click', 'li[data-location-id]', function()
+{
+	var myURL = '/dashboard/change/location/' + $(this).attr("data-location-id");
 	updateDashboardSiteLoc(myURL);
 });
 

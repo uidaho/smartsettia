@@ -16,7 +16,7 @@
 					</button>
 					<ul class="dropdown-menu" id="site_change">
 						@foreach($sites as $site)
-							<li class="empty site" value="{{ $site->id }}"><a>{{ $site->name }}</a></li>
+							<li data-site-id="{{ $site->id }}"><a>{{ $site->name }}</a></li>
 						@endforeach
 					</ul>
 				</div>
@@ -30,7 +30,7 @@
 				</button>
 				<ul class="dropdown-menu" id="location_change">
 					@foreach($locations as $location)
-						<li class="empty location" value="{{ $location->id }}"><a>{{ $location->name }}</a></li>
+						<li data-location-id="{{ $location->id }}"><a>{{ $location->name }}</a></li>
 					@endforeach
 				</ul>
 			</div>
@@ -73,7 +73,7 @@
 								<th>Controls</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="control_devices_list">
 						@foreach ($devices as $device)
 							<tr id="tr_{{ $device->id }}">
 								<td>{{ $device->name }}</td>
@@ -116,7 +116,6 @@
 			</div>
 		</div>
 	</div>
-
 
 	<!-- Hidden buttons -->
 	<button class="hidden" value="{{ $active_device[2]->id }}" id="active_site_id"></button>
