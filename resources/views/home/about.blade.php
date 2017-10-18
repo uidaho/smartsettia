@@ -16,9 +16,10 @@
 						<p class="title">COMPUTER SCIENCE</p>
 						<p class="description">I'm a senior Computer Science student at the University of Idaho. My main focus and interests are cyber security and databases. In my free time I like to work on side projects ranging from mobile app development to video game development.</p>
 						<div class="social">
-							<a href="#"><i class="fa fa-facebook-official"></i></a>
-							<a href="#"><i class="fa fa-twitter"></i></a>
-							<a href="#"><i class="fa fa-instagram"></i></a>
+							<a href="https://github.com"><i class="fa fa-github"></i></a>
+							<a href="https://keybase.io"><i class="fa fa-key"></i></a>
+							<a href="https://linkedin.com"><i class="fa fa-linkedin"></i></a>
+							<a href="https://facebook.com"><i class="fa fa-facebook"></i></a>
 						</div>
 					</div>
 				</div>
@@ -29,9 +30,10 @@
 						<p class="description">I'm a senior Computer Science student at the University of Idaho in beautiful Moscow, Idaho. I have a passion for everything electronic. From the capacitor to the cloud, I have been designing and coding things for the web for over
 							a decade. I enjoy volunteering my computer experience for local non-profits, tinkering with emerging technologies, mountain biking, snowmobiling, writing, and traveling.</p>
 						<div class="social">
-							<a href="#"><i class="fa fa-facebook-official"></i></a>
-							<a href="#"><i class="fa fa-twitter"></i></a>
-							<a href="#"><i class="fa fa-instagram"></i></a>
+							<a href="https://github.com/brandonjank"><i class="fa fa-github"></i></a>
+							<a href="https://keybase.io/bjank"><i class="fa fa-key"></i></a>
+							<a href="https://linkedin.com/in/bjank"><i class="fa fa-linkedin"></i></a>
+							<a href="https://facebook.com/bjank"><i class="fa fa-facebook"></i></a>
 						</div>
 					</div>
 				</div>
@@ -41,9 +43,10 @@
 						<p class="title">COMPUTER ENGINEERING</p>
 						<p class="description">I’m a senior Computer Engineer student at the University of Idaho. I love creating systems through embedded microprocessors revolving around robotics, home automation and other gadgits. My latest hobbies involve robotics, 3d printing, and creating custom home automation devices. When I have the chance, I like to go, hiking, and mountain biking through mountain trails.</p>
 						<div class="social">
-							<a href="#"><i class="fa fa-facebook-official"></i></a>
-							<a href="#"><i class="fa fa-twitter"></i></a>
-							<a href="#"><i class="fa fa-instagram"></i></a>
+							<a href="https://github.com"><i class="fa fa-github"></i></a>
+							<a href="https://keybase.io"><i class="fa fa-key"></i></a>
+							<a href="https://linkedin.com"><i class="fa fa-linkedin"></i></a>
+							<a href="https://facebook.com"><i class="fa fa-facebook"></i></a>
 						</div>
 					</div>
 				</div>
