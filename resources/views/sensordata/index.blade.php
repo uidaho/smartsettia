@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
 	<div class="page-header">
-		<h3>Sensor</h3>
+		<h3>Sensor Data</h3>
 	</div>
 	<p>A list of all sensor data.</p>
 	<div class="table-responsive">

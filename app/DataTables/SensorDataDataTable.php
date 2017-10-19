@@ -15,12 +15,15 @@ class SensorDataDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('sensor_id', function ($sensordata) {
-                return '<a href="/sensor/' . $sensordata->sensor_id . '">'. ($sensordata->sensor->name ?? '') . '</a>';
+            ->addColumn('sensor', function ($sensordata) {
+                return '<a href="' . route('sensor.show', $sensordata->sensor_id) . '">'. ($sensordata->sensor->name ?? 'null') . '</a>';
+            })
+            ->addColumn('device', function ($sensordata) {
+                return '<a href="' . route('device.show', $sensordata->sensor->device->id ?? '0') . '">'. ($sensordata->sensor->device->name ?? 'null') . '</a>';
             })
             ->addColumn('action', 'sensordata.action')
             ->blacklist([ 'action'])
-            ->rawColumns(['sensor_id', 'action']);
+            ->rawColumns(['device', 'sensor', 'action']);
     }
 
     /**
@@ -56,11 +59,12 @@ class SensorDataDataTable extends DataTable
     {
         return [
             'id',
-            'sensor_id',
+            [ 'data' => 'sensor', 'name' => 'sensors.id', 'title' => 'Sensor', 'searchable' => false ],
+            [ 'data' => 'device', 'name' => 'devices.id', 'title' => 'Device', 'searchable' => false ],
             'value',
             'created_at',
             'updated_at',
-            'action'
+            [ 'data' => 'action', 'name' => 'action', 'title' => 'Action', 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false ]
         ];
     }
 
