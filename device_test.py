@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # requires: 
-#	sudo apt install fswebcam python3 python3-pip streamer
+#	sudo apt install python3 python3-pip xawtv
 #   sudo pip3 install --upgrade pip requests schedule uuid wget call
 
 # to preserve the pi's SD card
