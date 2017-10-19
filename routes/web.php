@@ -89,3 +89,13 @@ Route::get('user-notifications', 'DashboardController@index')->name('user-notifi
  * Image Controller  *
  *-----------------------*/
 Route::get('image/device/{device_id}', 'ImageController@show');
+
+/*-----------------------*
+ * Location Controller *
+ *-----------------------*/
+Route::resource('location', 'LocationController');
+
+/*-----------------------*
+ * Site Controller *
+ *-----------------------*/
+Route::resource('site', 'SiteController');
