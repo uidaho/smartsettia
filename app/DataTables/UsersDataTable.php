@@ -15,12 +15,16 @@ class UsersDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
+            ->editColumn('name', function(User $user) {
+                return '<a href="' . route('user.show', $user->id) . '">'. $user->name . '</a>';
+            })
+
+            ->editColumn('role', function(User $user) {
+                return $user->roleString();
+            })
             ->addColumn('action', 'user.action')
             ->blacklist([ 'action' ])
-            ->editColumn('role', function(User $user) { return $user->roleString(); })
-            ->setRowClass(function($user) {
-                    return $user->trashed() ? 'alert-danger' : "";
-            })
+            ->rawColumns([ 'name', 'action' ])
             ->setRowData([
                     'data-id' => function($user) {
                         return 'row-'.$user->id;
