@@ -13,7 +13,7 @@
 						@include('sensordata.form')
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
-								{!! Form::button('<i class="glyphicon glyphicon-ok"></i> Edit', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
+								{!! Form::button('<i class="glyphicon glyphicon-ok"></i> Save', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
 								<a href="{{ route('sensordata.show', $sensordata->id) }}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-remove"></i> Cancel</a>
 							</div>
 						</div>
