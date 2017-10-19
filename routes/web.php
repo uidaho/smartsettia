@@ -28,7 +28,6 @@ Route::get('help', 'HomeController@help')->name('help');
  * User Controller       *
  *-----------------------*/
 Route::resource('user', 'UserController');
-Route::get('user/{id}/remove', 'UserController@remove');
 /* Auto route definitions for resource routes:
  * TYPE       URL                   METHOD   VIEW
  * ---------- --------------------- -------- -------------

@@ -145,14 +145,16 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // if the user was already deleted then permananetly delete it
         if ($user->trashed()) {
-            // if the user was already deleted then permananetly delete it
             User::destroy($id);
-        } else {
-            // soft delete the user the first time
-            $user->delete();
+            return redirect()->route('user.index')
+                ->with('success', 'User permanently deleted successfully');
         }
-
-        return redirect('user.index');
+        
+        // soft delete the user the first time
+        $user->delete();
+        return redirect()->route('user.index')
+            ->with('success', 'User deleted successfully');
     }
 }
