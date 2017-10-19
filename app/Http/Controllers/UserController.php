@@ -125,6 +125,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+            'password' => 'string|confirmed',
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
         ]);
@@ -135,6 +136,9 @@ class UserController extends Controller
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
+        if ($request->input('password') != '') {
+            $user->password = bcrypt($request->input('password'));
+        }
         $user->role = $request->input('role');
         $user->phone = $request->input('phone');
 
