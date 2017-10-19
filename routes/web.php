@@ -47,7 +47,7 @@ Route::put('user/{id}/restore', 'UserController@restore')->name('user.restore');
 Route::resource('device', 'DeviceController');
 Route::put('device/{id}/restore', 'DeviceController@restore')->name('device.restore');
 // Ajax calls
-Route::get('device/{site_id}/locations', 'DeviceController@locations');
+Route::get('device/{site}/locations', 'DeviceController@locations');
 
 /*-----------------------*
  * Dashboard Controller  *

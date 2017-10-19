@@ -147,7 +147,7 @@ $formEditDevice.on('submit', function(e)
 				}
 				else if (data.status === 422)
 				{
-					var errors = data.responseJSON;
+					var errors = data.responseJSON['errors'];
 
 					if ('name' in errors)
 					{
