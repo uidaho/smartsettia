@@ -28,9 +28,9 @@ class EditDevice extends FormRequest
             'name' => 'required|string|max:255',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
-            'update_rate' => 'required|int|digits_between:1,7',
-            'image_rate' => 'required|int|digits_between:1,7',
-            'sensor_rate' => 'required|int|digits_between:1,7',
+            'update_rate' => 'required|integer|digits_between:1,7',
+            'image_rate' => 'required|integer|digits_between:1,7',
+            'sensor_rate' => 'required|integer|digits_between:1,7',
         ];
     }
     
@@ -43,11 +43,11 @@ class EditDevice extends FormRequest
     {
         $validator = parent::getValidatorInstance();
     
-        $validator->sometimes('site', 'bail|integer|digits_between:1,7|exists:sites,id', function ($input) {
+        $validator->sometimes('site', 'bail|integer|digits_between:1,10|exists:sites,id', function ($input) {
             return !request('new_site_name');
         });
     
-        $validator->sometimes('location', 'bail|integer|digits_between:1,7|exists:locations,id', function ($input) {
+        $validator->sometimes('location', 'bail|integer|digits_between:1,10|exists:locations,id', function ($input) {
             return !request('new_location_name');
         });
     
