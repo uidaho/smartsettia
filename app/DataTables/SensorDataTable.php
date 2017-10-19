@@ -2,11 +2,10 @@
 
 namespace App\DataTables;
 
-use App\Device;
-use App\Site;
 use Yajra\DataTables\Services\DataTable;
+use App\Sensor;
 
-class DevicesDataTable extends DataTable
+class SensorDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -16,20 +15,18 @@ class DevicesDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('name', function ($device) {
-                return '<a href="' . route('device.show', $device->id) . '">' . $device->name . '</a>';
+            ->editColumn('name', function ($sensor) {
+                return '<a href="' . route('sensor.show', $sensor->id) . '">'. $sensor->name . '</a>';
             })
-            ->addColumn('location', function ($device) {
-                return ($device->location->name ?? 'null');
+            ->editColumn('device_id', function ($sensor) {
+                return '<a href="' . route('device.show', $sensor->device_id) . '">'. ($sensor->device->name ?? '') . '</a>';
             })
-            ->addColumn('site', function ($device) {
-                return ($device->location->site->name ?? 'null');
+            ->addColumn('value', function ($sensor) {
+                return '<a href="' . route('sensordata.show', $sensor->latest_data->id ?? '0') . '">'. ($sensor->latest_data->value ?? 'null') . '</a>';
             })
-            ->addColumn('rates', function ($device) {
-                return $device->update_rate . '/' . $device->image_rate .'/' . $device->sensor_rate;
-            })
-            ->blacklist([ 'location', 'site', 'rates' ])
-            ->rawColumns([ 'name' ]);
+            ->addColumn('action', 'sensor.action')
+            ->blacklist([ 'value', 'action' ])
+            ->rawColumns(['device_id', 'name', 'value', 'action']);
     }
 
     /**
@@ -39,7 +36,7 @@ class DevicesDataTable extends DataTable
      */
     public function query()
     {
-        $query = Device::query();
+        $query = Sensor::query();
         return $this->applyScopes($query);
     }
 
@@ -66,11 +63,10 @@ class DevicesDataTable extends DataTable
         return [
             'id',
             'name',
-            'location',
-            'site',
-            'open_time',
-            'close_time',
-            'rates'
+            [ 'data' => 'device_id', 'name' => 'device_id', 'title' => 'Device' ],
+            'type',
+            'value',
+            [ 'data' => 'action', 'name' => 'action', 'title' => 'Action', 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false ]
         ];
     }
 
@@ -83,7 +79,7 @@ class DevicesDataTable extends DataTable
     {
         return [
             'dom'     => 'Bfrtip',
-            'order'   => [ [ 0, 'asc' ] ],
+            'order'   => [ [ 0, 'desc' ] ],
             'buttons' => [
                 'create',
                 'export',
@@ -105,6 +101,6 @@ class DevicesDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'devices_'.time();
+        return 'sensor_'.time();
     }
 }

@@ -28,7 +28,6 @@ Route::get('help', 'HomeController@help')->name('help');
  * User Controller       *
  *-----------------------*/
 Route::resource('user', 'UserController');
-Route::get('user/{id}/remove', 'UserController@remove');
 /* Auto route definitions for resource routes:
  * TYPE       URL                   METHOD   VIEW
  * ---------- --------------------- -------- -------------
@@ -45,7 +44,6 @@ Route::get('user/{id}/remove', 'UserController@remove');
  * Device Controller       *
  *-----------------------*/
 Route::resource('device', 'DeviceController');
-Route::get('device/{id}/remove', 'DeviceController@remove');
 // Ajax calls
 Route::get('device/{site_id}/locations', 'DeviceController@locations');
 Route::get('device/{id}/details', 'DeviceController@details');
@@ -65,6 +63,17 @@ Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
  * Activity Log Controller *
  *-----------------------*/
 Route::get('logs', 'ActivityLogController@index')->name('logs');
+
+/*-----------------------*
+ * Sensor Controller *
+ *-----------------------*/
+Route::resource('sensor', 'SensorController');
+
+/*-----------------------*
+ * SensorData Controller *
+ *-----------------------*/
+Route::resource('sensordata', 'SensorDataController');
+
 
 // Placeholders for NYI stuff
 Route::get('unit', 'DashboardController@index')->name('unit');

@@ -59,6 +59,8 @@
                                         <a href="{{ route('manage-groups') }}"><i class="fa fa-group"></i> Manage Groups</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('device.index') }}"><i class="fa fa-microchip"></i> Manage Devices</a></li>
+                                    <li class="{{ Route::currentRouteNamed('sensor.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('sensor.index') }}"><i class="fa fa-line-chart"></i> Manage Sensors</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('logs') }}"><i class="fa fa-history"></i> View Logs</a></li>
                                 </ul>
@@ -86,6 +88,23 @@
             </div>
         </div>
     </nav>
+
+    <!-- success/failure -->
+    @if ($message = Session::get('success'))
+    <div class="alert alert-success">
+        <p>{{ $message }}</p>
+    </div>
+    @endif
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <!-- yield content -->
     @yield('content')

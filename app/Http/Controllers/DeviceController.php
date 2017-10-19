@@ -53,8 +53,7 @@ class DeviceController extends Controller
      */
     public function show($id)
     {
-        $device = Device::publicDashData()->findOrFail($id);
-
+        $device = Device::findOrFail($id);
         return view('device.show', [ 'device' => $device ]);
     }
 
@@ -222,19 +221,6 @@ class DeviceController extends Controller
         }
 
         return redirect('device');
-    }
-    
-    /**
-     * Confirms deletion of a device.
-     *
-     * @param  string  $id
-     * @return Response
-     */
-    public function remove($id)
-    {
-        $device = Device::findOrFail($id);
-        
-        return view('device.remove', [ 'device' => $device ]);
     }
     
     /**

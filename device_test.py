@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # requires: 
-#	sudo apt install fswebcam python3 python3-pip streamer
+#	sudo apt install python3 python3-pip xawtv
 #   sudo pip3 install --upgrade pip requests schedule uuid wget call
 
 # to preserve the pi's SD card
@@ -21,10 +21,10 @@ import uuid
 import threading
 import subprocess
 
-VERSION = "0.3.24"
-DOMAIN = "https://smartsettia.com/"
+VERSION = "0.3.31"
+#DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
-#DOMAIN = "https://smartsettia-backburn.c9users.io/"
+DOMAIN = "https://smartsettia-backburn.c9users.io/"
 MAC_ADDRESS = subprocess.check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
@@ -88,9 +88,6 @@ def api_update_job():
 		"limitsw_closed": 1,
 		"light_in": 0,
 		"light_out": 100,
-		"cpu_temp": cpu_temp(),
-		"temperature": temperature(),
-		"humidity": humidity()
 	}
 	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
 	try:
@@ -110,8 +107,8 @@ def api_update_job():
 			schedule_api_image_job()
 		if SENSOR_RATE != response['data']['sensor_rate']:
 			SENSOR_RATE = response['data']['sensor_rate']
-			schedule.clear('api_sensors_job')
-			schedule_api_sensors_job()
+			schedule.clear('api_sensor_job')
+			schedule_api_sensor_job()
 		if UPDATE_RATE != response['data']['update_rate']:
 			UPDATE_RATE = response['data']['update_rate']
 			schedule.clear('api_update_job')
@@ -122,23 +119,55 @@ def api_update_job():
 		time.sleep(60)
 	return
 
+def api_sensor_job():
+	"""This sends a status update to the smartsettia API and returns the status code"""
+	url = DOMAIN+"api/sensor"
+	data = {
+		"uuid": UUID,
+		"token": TOKEN,
+		"sensor_data": [
+			{ "name": "cpu", "type": "cpu_temperature", "value": cpu_temp() },
+			{ "name": "light_in", "type": "light", "value": "99.00" },
+			{ "name": "light_out", "type": "light", "value": "99.00" },
+			{ "name": "temperature", "type": "temperature", "value": temperature() },
+			{ "name": "humidity", "type": "humidity", "value": humidity() },
+			{ "name": "moisture_01", "type": "moisture", "value": "99.00" },
+			{ "name": "moisture_02", "type": "moisture", "value": "99.00" },
+		]
+	}
+	headers = {"Content-type": "application/json", "Accept": "application/json", "Authorization": "Bearer "+TOKEN}
+	try:
+		response = requests.post(url, json=data, headers=headers)
+	except requests.exceptions.RequestException as e:
+		print("{}: api/sensor request failed: {}".format(the_time(), e))
+		return
+	if response.status_code in [201]:
+		print("{}: api/sensor success".format(the_time()))
+	else:
+		print("{}: api/sensor failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
+		time.sleep(60)
+	return
+
 def api_image_job():
 	"""This sends the webcam image to the smartsettia API"""
 	webcam_capture()
-	url = DOMAIN+"api/image"
-	data = {"uuid": UUID, "token": TOKEN}
-	files = {"image": open(IMAGE_PATH,"rb")}
-	headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
-	try:
-		response = requests.post(url, files=files, data=data, headers=headers)
-	except requests.exceptions.RequestException as e:
-		print("{}: api/image request failed: {}".format(the_time(), e))
-		return
-	if response.status_code in [200, 201]:
-		print("{}: api/image success".format(the_time()))
-		return
+	if os.path.lexists(IMAGE_PATH):
+		url = DOMAIN+"api/image"
+		data = {"uuid": UUID, "token": TOKEN}
+		files = {"image": open(IMAGE_PATH,"rb")}
+		headers = {"Accept": "application/json", "Authorization": "Bearer "+TOKEN}
+		try:
+			response = requests.post(url, files=files, data=data, headers=headers)
+		except requests.exceptions.RequestException as e:
+			print("{}: api/image request failed: {}".format(the_time(), e))
+			return
+		if response and response.status_code in [200, 201]:
+			print("{}: api/image success".format(the_time()))
+			return
+		else:
+			print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
 	else:
-		print("{}: api/image failed with status_code {}\n{}".format(the_time(), response.status_code, response.text))
+		print("{}: api/image skipped, no camera".format(the_time()))
 	return
 
 def webcam_capture():
@@ -162,13 +191,13 @@ def cpu_temp():
 	if ARCH == "armv7l":
 		return subprocess.check_output(["/opt/vc/bin/vcgencmd measure_temp | cut -c6-9"], shell=True)[:-1].decode('utf-8')
 	else:
-		return 0.0
+		return "0.00"
 
 def humidity():
-	return 99.0
+	return "99.00"
 
 def temperature():
-	return 99.0
+	return "99.00"
 
 def cover_status():
 	return COVER_STATUS
@@ -177,9 +206,9 @@ def schedule_api_update_job():
 	print("{}: Scheduling api/update every {} seconds".format(the_time(), UPDATE_RATE))
 	schedule.every(UPDATE_RATE).seconds.do(api_update_job).tag('api_update_job')
 	
-def schedule_api_sensors_job():
-	print("{}: Scheduling api/sensors every {} seconds".format(the_time(), SENSOR_RATE))
-	#schedule.every(SENSOR_RATE).seconds.do(run_threaded, api_sensors_job).tag('api_sensors_job')
+def schedule_api_sensor_job():
+	print("{}: Scheduling api/sensor every {} seconds".format(the_time(), SENSOR_RATE))
+	schedule.every(SENSOR_RATE).seconds.do(run_threaded, api_sensor_job).tag('api_sensor_job')
 
 def schedule_api_image_job():
 	print("{}: Scheduling api/image every {} seconds".format(the_time(), IMAGE_RATE))
@@ -191,7 +220,7 @@ api_register()
 
 # start schedules
 schedule_api_update_job()
-schedule_api_sensors_job()
+schedule_api_sensor_job()
 schedule_api_image_job()
 schedule.run_all(1)
 

@@ -9,7 +9,15 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Edit Device</div>
 				<div class="panel-body">
-					@include('device.edit_form')
+                    {!! Form::model($device, ['route' => ['device.update', $device->id], 'method' => 'put', 'class' => 'form-horizontal', 'id' => 'form_edit_device']) !!}
+                        @include('device.form')
+                        <div class="form-group" id="form_group_view_buttons_div">
+                        	<div class="col-md-6 col-md-offset-4">
+                        		{!! Form::button('<i class="glyphicon glyphicon-ok"></i> Save', array('type' => 'submit', 'class' => 'btn btn-info pull-right')) !!}
+                        		<a href="{{ route('device.show', $device->id) }}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-remove"></i> Cancel</a>
+                        	</div>
+                        </div>
+                    {!! Form::close() !!}
 				</div>
             </div>
         </div>

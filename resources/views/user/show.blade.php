@@ -56,10 +56,13 @@
                     </div>
                 </div>
                 <div class="panel-footer">
+                    <a class="btn btn-sm btn-primary" type="button" title="Go up to users" href="{{ route('user.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
                     <a class="btn btn-sm btn-primary" type="button" title="E-mail this user" href="mailto:{{ $user->email }}"><i class="glyphicon glyphicon-envelope"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this user" href="\user\{{ $user->id }}\edit"><i class="glyphicon glyphicon-edit"></i></a>
-                        <a class="btn btn-sm btn-danger" type="button" title="Remove this user" href="\user\{{ $user->id }}\remove"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a class="btn btn-sm btn-warning" type="button" title="Edit this user" href="{{ route('user.edit', $user->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                        {!! Form::open(['method' => 'DELETE', 'route' => ['user.destroy', $user->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete the user named '.$user->name.'?")']) !!}
+                            {!! Form::button('<i class="glyphicon glyphicon-remove"></i> Delete', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Delete this user']) !!}
+                        {!! Form::close() !!}
                     </span>
                 </div>
             </div>
