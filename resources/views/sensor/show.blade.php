@@ -17,11 +17,11 @@
                             <table class="table table-sensor">
                                 <tbody>
                                 <tr>
-                                    <td>Sensor ID:</td>
+                                    <td>ID:</td>
                                     <td>{{ $sensor->id }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Device ID:</td>
+                                    <td>Device:</td>
                                     <td><a href="{{ route('device.show', $sensor->device_id) }}">{{ $sensor->device->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <td>Latest Value:</td>
-                                    <td>{{ $sensor->latest_data->value ?? 'null' }}</td>
+                                    <td><a href="{{ route('sensor.show', $sensor->latest_data->id ?? '0') }}">{{ $sensor->latest_data->value ?? 'null' }}</a></td>
                                 </tr>
                                 </tbody>
                             </table>

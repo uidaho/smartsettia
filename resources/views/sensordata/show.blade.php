@@ -21,8 +21,12 @@
                                     <td>{{ $sensordata->id }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Sensor ID:</td>
-                                    <td>{{ $sensordata->sensor_id }}</td>
+                                    <td>Sensor:</td>
+                                    <td><a href="{{ route('sensor.show', $sensordata->sensor_id) }}">{{ $sensordata->sensor->name ?? 'null' }}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Device:</td>
+                                    <td><a href="{{ route('device.show', $sensordata->sensor->device_id ?? '0') }}">{{ $sensordata->sensor->device->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Value:</td>
