@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <a class="btn btn-sm btn-primary" type="button" title="Go back" href="{{ route('device.show', $sensor->device_id) }}"><i class="glyphicon glyphicon-arrow-left"></i></a>
+                    <a class="btn btn-sm btn-primary" type="button" title="Go up to device" href="{{ route('device.show', $sensor->device_id) }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
                     <span class="pull-right">
                         <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="{{ route('sensor.edit', $sensor->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
                             {!! Form::open(['method' => 'DELETE', 'route' => ['sensor.destroy', $sensor->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
