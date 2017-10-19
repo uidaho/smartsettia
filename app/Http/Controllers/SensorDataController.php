@@ -42,9 +42,10 @@ class SensorDataController extends Controller
     /**
     * Store a newly created resource in storage.
     *
+    * @param Request $request
     * @return Response
     */
-    public function store()
+    public function store(Request $request)
     {
         request()->validate([
             'sensor_id' => 'required|integer|exists:sensors,id',
