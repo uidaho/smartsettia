@@ -18,8 +18,6 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // TODO: Setup logging
-        // $this->middleware('log')->only('index');
     }
 
     /**
@@ -51,17 +49,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        request()->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
         ]);
-
-        if ($validator->fails()) {
-            return redirect('user/create')->withErrors($validator)->withInput();
-        }
 
         $user = new User;
 
@@ -73,7 +67,8 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect('user');
+        return redirect()->route('user.show', $user->id)
+            ->with('success', 'User created successfully');
     }
 
     /**
@@ -115,36 +110,28 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // TODO: Since HTML forms can't make PUT, PATCH, or DELETE requests, you will need
-        // to add a hidden  _method field to spoof these HTTP verbs. The
-        // method_field helper can create this field for you:
-        // {{ method_field('PUT') }}
-
-        $user = User::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
+        request()->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'string|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
+            'password' => 'sometimes|nullable|min:8|confirmed',
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
         ]);
+        
+        $query = User::findOrFail($id);
 
-        if ($validator->fails()) {
-            return redirect('user/'.$id.'/edit')->withErrors($validator)->withInput();
-        }
-
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        $query->name = $request->input('name');
+        $query->email = $request->input('email');
         if ($request->input('password') != '') {
-            $user->password = bcrypt($request->input('password'));
+            $query->password = bcrypt($request->input('password'));
         }
-        $user->role = $request->input('role');
-        $user->phone = $request->input('phone');
+        $query->role = $request->input('role');
+        $query->phone = $request->input('phone');
 
-        $user->save();
+        $query->save();
 
-        return redirect('user');
+        return redirect()->route('user.show', $id)
+            ->with('success', 'User updated successfully');
     }
 
     /**
@@ -166,21 +153,6 @@ class UserController extends Controller
             $user->delete();
         }
 
-        return redirect('user');
-    }
-    
-    /**
-     * Confirms deletion a user.
-     *
-     * @param  Request  $request
-     * @param  string  $id
-     * @return Response
-     */
-    public function remove(Request $request, $id)
-    {
-        $user = User::findOrFail($id);
-        $user->password = "";
-        
-        return view('user.remove', [ 'user' => $user ]);
+        return redirect('user.index');
     }
 }
