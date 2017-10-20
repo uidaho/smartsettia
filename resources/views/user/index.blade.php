@@ -27,18 +27,33 @@
 		            {!! $dataTable->table(['class' => 'table table-bordered table-striped table-condensed'], true) !!}
 		        </div>
 		        <div class="tab-pane fade" id="trash">
-		            <table class="table table-bordered table-condensed" id="trashTable">
-		                <thead>
-		                <tr>
-		                    <th>Id</th>
-		                    <th>Name</th>
-		                    <th>Email</th>
-		                    <th>Role</th>
-		                    <th>Deleted At</th>
-		                    <th>Action</th>
-		                </tr>
-		                </thead>
-		            </table>
+					<table class="table table-bordered table-condensed" id="trashTable">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Name</th>
+								<th>Deleted At</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach ($trashed as $trash)
+							<tr>
+								<th>{{ $trash->id }}</th>
+								<th>{{ $trash->name }}</th>
+								<th>{{ $trash->deleted_at }}</th>
+								<th>
+									{!! Form::open(['method' => 'PUT', 'route' => ['user.restore', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to restore this user?")']) !!}
+										{!! Form::button('<i class="fa fa-undo"></i> Restore', ['type' => 'submit', 'class' => 'btn btn-xs btn-primary', 'title' => 'Restore this user']) !!}
+									{!! Form::close() !!}
+									{!! Form::open(['method' => 'DELETE', 'route' => ['user.destroy', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to permanantly delete this user?")']) !!}
+										{!! Form::button('<i class="glyphicon glyphicon-remove"></i> Delete', ['type' => 'submit', 'class' => 'btn btn-xs btn-danger', 'title' => 'Permanantly delete this user']) !!}
+									{!! Form::close() !!}
+								</th>
+							</tr>
+							@endforeach
+						</tbody>
+					</table>
 		        </div>
 		    </div>
 		</div>

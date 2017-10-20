@@ -204,36 +204,31 @@ class DeviceController extends Controller
     {
         $device = Device::withTrashed()->findOrFail($id);
 
-        if ($device->trashed())
-        {
+        if ($device->trashed()) {
             //If the device was already deleted then permanently delete it
-            Device::destroy($id);
-        }
-        else
-        {
-            //Remove the location from the device
-            $device->location_id = null;
-            
-            //Remove any unused sites or locations
-            $this->RemoveUnusedSiteLoc();
-            
-            //Soft delete the user the first time
+            $device->forceDelete($device->id);
+        } else {
+            //Soft delete the device the first time
             $device->delete();
         }
 
-        return redirect('device');
+        return redirect()->route('device.index')
+            ->with('success','Device deleted successfully');
     }
     
     /**
-     * Delete all unused sites and locations
+     * Restores a device.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    private function RemoveUnusedSiteLoc()
+    public function restore($id)
     {
-        //Delete all sites that don't have any devices
-        //Locations connected to these sites will automatically be deleted by the database
-        Site::doesntHave('devices')->delete();
-    
-        //Delete all locations that don't have any devices
-        Location::doesntHave('devices')->delete();
+        $device = Device::onlyTrashed()->findOrFail($id);
+
+        $device->restore();
+        
+        return redirect()->route('device.show', $device->id)
+            ->with('success','Device restored successfully');
     }
 }
