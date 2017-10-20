@@ -70,8 +70,10 @@ class SensorController extends Controller
     public function show(Request $request, $id)
     {
         $sensor = Sensor::findOrFail($id);
+        
+        $sensordata = $sensor->data()->paginate(15);
 
-        return view('sensor.show', [ 'sensor' => $sensor ]);
+        return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata ]);
     }
 
     /**
