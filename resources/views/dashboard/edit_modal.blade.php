@@ -7,11 +7,13 @@
 				<h4 class="modal-title" id="myModalLabel">Edit Device</h4>
 			</div>
 			<div class="modal-body">
-				@include('device.edit_form')
+				{!! Form::model($device, ['route' => ['device.update', $device->id], 'method' => 'put', 'class' => 'form-horizontal', 'id' => 'form_edit_device']) !!}
+					@include('device.form')
+				{!! Form::close() !!}
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button class="btn btn-primary" type="submit" form="form_edit_device">Save changes</button>
+				<button type="button" class="btn btn-info" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+				<button class="btn btn-primary" type="submit" form="form_edit_device"><i class="glyphicon glyphicon-ok"></i> Save</button>
 			</div>
 		</div>
 	</div>

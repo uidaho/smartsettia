@@ -27,9 +27,6 @@ var $inputUpdateRate = $('#update_rate');
 var $inputImageRate = $('#image_rate');
 var $inputSensorRate = $('#sensor_rate');
 
-//Remove the form buttons that are not used in modal
-$('#form_group_view_buttons_div').remove();
-
 //Update the edit device modal with the current devices info
 function updateDeviceModal(btn)
 {
