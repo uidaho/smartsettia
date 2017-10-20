@@ -60,7 +60,7 @@ class Sensor extends Model
      */
     public function data()
     {
-        return $this->hasMany('App\SensorData');
+        return $this->hasMany('App\SensorData')->orderBy('id', 'DESC');
     }
     
     /**
