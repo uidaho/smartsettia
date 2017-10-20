@@ -3,48 +3,46 @@
 @section('title', 'Dashboard')
 
 @section('content')
-	<div class="alert alert-danger alert-dismissible" role="alert" id="alert_bar" hidden>
-		<button type="button" class="close" aria-label="Close" onclick="hideAlert(this)"><span aria-hidden="true">&times;</span></button>
-	</div>
-	<section class="testimonials" style="margin-bottom: 0">
-		<div class="text-center">
-			<h2 style="display: inline-block" id="header_site">{{ $active_device[2]->name }}</h2>
-			<div style="display: inline-block">
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_site">
-						Change <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" id="site_change">
-						@foreach($sites as $site)
-							<li data-site-id="{{ $site->id }}"><a>{{ $site->name }}</a></li>
-						@endforeach
-					</ul>
-				</div>
-			</div>
-		</div>
-		<blockquote style="margin-bottom: 0">
-			<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $active_device[1]->name }}</p>
-			<div class="btn-group" style="display: inline-block">
-				<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_loc">
-					Change <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" id="location_change">
-					@foreach($locations as $location)
-						<li data-location-id="{{ $location->id }}"><a>{{ $location->name }}</a></li>
-					@endforeach
-				</ul>
-			</div>
-		</blockquote>
-	</section>
-	<div class="container">
-		<div class="row" style="display: flex; align-items: center; position: relative;">
-			<div class="col-md-4 col-md-offset-4">
-
-			</div>
-		</div>
-
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
+				<div class="alert alert-danger alert-dismissible" role="alert" id="alert_bar" hidden>
+					<button type="button" class="close" aria-label="Close" onclick="hideAlert(this)"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<section class="testimonials" style="margin-bottom: 0">
+					<div class="text-center">
+						<h2 style="display: inline-block" id="header_site">{{ $active_device[2]->name }}</h2>
+						<div style="display: inline-block">
+							<div class="btn-group">
+								<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_site">
+									Change <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" id="site_change">
+									@foreach($sites as $site)
+										<li data-site-id="{{ $site->id }}"><a>{{ $site->name }}</a></li>
+									@endforeach
+								</ul>
+							</div>
+						</div>
+					</div>
+					<blockquote style="margin-bottom: 0">
+						<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $active_device[1]->name }}</p>
+						<div class="btn-group" style="display: inline-block">
+							<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_loc">
+								Change <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" id="location_change">
+								@foreach($locations as $location)
+									<li data-location-id="{{ $location->id }}"><a>{{ $location->name }}</a></li>
+								@endforeach
+							</ul>
+						</div>
+					</blockquote>
+				</section>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
 				<h3 id="header_device">{{ $active_device[0]->name }}</h3>
 				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_device[0]->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_device[0]->close_time }}</span></p>
 				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_device[0]->temperature }}C</span>
@@ -55,8 +53,8 @@
 				<hr>
 			</div>
 		</div>
-		<div class="row product">
-			<div class="col-md-6 text-center">
+		<div class="row">
+			<div class="col-md-5 col-md-offset-1 text-center">
 				<!-- Triggers the Image Modal -->
 				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $active_device[0]->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>
@@ -64,7 +62,7 @@
 					<button class="btn btn-primary">Download Image</button>
 				</a>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-5">
 				<div class="table-bordered" style="max-height: 400px; overflow:auto;">
 					<table class="table table-striped table-responsive" style="margin-bottom: 0;" id="device_table">
 						<thead>
@@ -121,7 +119,6 @@
 	<button class="hidden" value="{{ $active_device[2]->id }}" id="active_site_id"></button>
 	<button class="hidden" value="{{ $active_device[1]->id }}" id="active_location_id"></button>
 	<button class="hidden" value="{{ $active_device[0]->id }}" id="active_device_id"></button>
-	<button class="hidden" value="{{ url('/') }}" id="website_base_url"></button>
 
 	@include('dashboard.edit_modal')
 	@include('dashboard.image_modal')
@@ -131,10 +128,7 @@
 	<script src="{{ asset('js/dashboard/update_page.js') }}"></script>
 	<script src="{{ asset('js/dashboard/update_image.js') }}"></script>
 	<script src="{{ asset('js/dashboard/update_sensors.js') }}"></script>
-	<script src="{{ asset('js/dashboard/change_active_device.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_site_loc.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
-	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
-	<script src="{{ asset('js/dashboard/control_device.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>
 @endsection

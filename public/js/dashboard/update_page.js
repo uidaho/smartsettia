@@ -37,20 +37,65 @@ var imageUpdateRate = 30000;
 var imageUpdateTimeout;
 //Lock Ajax calls
 var lock = false;
+//Store the current locations devices
+var devices;
 
 //Call all functions that need to be called at the start
 getStartingIDs();
-updateDashboardData(true);
+refreshDashboardData();
 
-function updateDashboardData(keepUpdating)
+//Continuously refresh dashboard data
+function refreshDashboardData()
+{
+	var targetURL = '/dashboard/refresh';
+	var data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId };
+	updateDashboardData(targetURL, data);
+	setTimeout("refreshDashboardData();", dashUpdateRate);
+}
+
+$(document).ready(function() {
+	//Change site
+	$('#site_change').on('click', 'li[data-site-id]', function () {
+		var targetURL = '/dashboard/change/site/' + $(this).attr("data-site-id");
+		updateDashboardData(targetURL);
+	});
+
+	//Change location
+	$('#location_change').on('click', 'li[data-location-id]', function () {
+		var targetURL = '/dashboard/change/location/' + $(this).attr("data-location-id");
+		updateDashboardData(targetURL);
+	});
+
+	//Change the selected device for the page
+	$("#control_devices_list").on('click', '[data-view]', function () {
+		var arrayNum = $(this).attr("data-view");
+		var device_id = $(this).attr("data-device-id");
+
+		//Set the device image url, sensor values, and the device header name
+		updateActiveDeviceInfo(devices[arrayNum]);
+
+		//Set the rate for the image to be updated at
+		setImageUpdateRate(devices[arrayNum]['image_rate']);
+
+		//Disable the selected view button and enable the previously disabled view button
+		$(this).prop("disabled", true);
+		$disabledViewBtn.prop("disabled", false);
+		$disabledViewBtn = $(this);
+
+		//Store the current device's id
+		currentDeviceId = device_id;
+	});
+});
+
+function updateDashboardData(targetURL, data)
 {
 	if (!lock)
 	{
 		lock = true;
 		$.ajax({
 			type: 'GET',
-			url: '/dashboard/refresh',
-			data: { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId },
+			url: targetURL,
+			data: data,
 			dataType: "json",
 			success: function (data)
 			{
@@ -75,7 +120,7 @@ function updateDashboardData(keepUpdating)
 				disableActiveViewBtn(activeDevice['id']);
 
 				//Set the device image url, sensor values, and the device header name
-				updateActiveDeviceInfo(activeDevice['id'], activeDevice);
+				updateActiveDeviceInfo(activeDevice);
 
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
@@ -85,19 +130,26 @@ function updateDashboardData(keepUpdating)
 				currentLocationId = activeLocation['id'];
 				currentDeviceId = activeDevice['id'];
 
+				devices = data['devices'];
+
 				lock = false;
 			},
 			error: function (data)
 			{
-				alertBarActivate("Error in updateDashboardData()");
+				if (data.status === 404)
+				{
+					alertBarActivate("The selected site or location was not found, try again later.");
+				}
+				else
+				{
+					alertBarActivate("Uncaught error in updateDashboardData()");
+				}
+				
 				console.log(data);
 				lock = false;
 			}
 		});
 	}
-
-	if (keepUpdating)
-		setTimeout("updateDashboardData(true);", dashUpdateRate)
 }
 
 //Update the site dropdown list
@@ -157,7 +209,7 @@ function updateDeviceTable(devices)
 			'<td>' + devices[i]["name"] + '</td>' +
 			'<td>' +
 			'<div class="btn-group btn-group-sm" role="group">' +
-			'<button class="btn btn-primary" type="button" data-view="" data-device-id="' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
+			'<button class="btn btn-primary" type="button" data-view="' + i + '" data-device-id="' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
 			getCommandStatusButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
 			getLockButton(status, devices[i]["id"]) +
@@ -207,42 +259,42 @@ function getStartingIDs()
 	currentSiteId = $('#active_site_id').val();
 }
 
-function updateActiveDeviceInfo(device_id, data)
+function updateActiveDeviceInfo(device)
 {
 	//Only update the device image if the active device has changed
-	if (device_id != currentDeviceId)
+	if (device['id'] != currentDeviceId)
 	{
 		//Change the photo being loaded
-		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device_id;
+		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
 
 		//Update the device image url with the date to prevent the browser from caching
 		updateDeviceImage();
 	}
 
 	//Change the image caption to the name of the current device
-	$imageCaption.html(data['name']);
+	$imageCaption.html(device['name']);
 
 	//Change the header for the device
-	$headerDevice.html(data['name']);
+	$headerDevice.html(device['name']);
 
 	//Change the temperature value
-	$tempNum.text(getTemperature(data['temperature']));
+	$tempNum.text(getTemperature(device['temperature']));
 
 	//Change the humidity value
-	$humidityNum.text(getHumidity(data['humidity']));
+	$humidityNum.text(getHumidity(device['humidity']));
 
 	//Change the inside light value
-	$lightInNum.text(getLight(data['light_in']));
+	$lightInNum.text(getLight(device['light_in']));
 
 	//Change the outside light value
-	$lightOutNum.text(getLight(data['light_out']));
+	$lightOutNum.text(getLight(device['light_out']));
 
 	//Change the cpu temp value
-	$cpuTempNum.text(getCpuTemp(data['cpu_temp']));
+	$cpuTempNum.text(getCpuTemp(device['cpu_temp']));
 
 	//Update the open and close times
-	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(data['open_time']));
-	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(data['close_time']));
+	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
+	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
 }
 
 //Get the temperature amount as a formatted string
