@@ -143,7 +143,7 @@ class UserController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::withTrashed()->findOrFail($id);
 
         // if the user was already deleted then permananetly delete it
         if ($user->trashed()) {
