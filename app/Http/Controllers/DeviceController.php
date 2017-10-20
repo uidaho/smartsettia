@@ -32,7 +32,8 @@ class DeviceController extends Controller
      */
     public function index(DevicesDataTable $dataTable)
     {
-        return $dataTable->render('device.index');
+        $trashed = Device::onlyTrashed()->get();
+        return $dataTable->render('device.index', compact('trashed'));
     }
 
     /**
