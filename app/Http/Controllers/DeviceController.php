@@ -202,7 +202,7 @@ class DeviceController extends Controller
      */
     public function destroy($id)
     {
-        $device = Device::findOrFail($id);
+        $device = Device::findOrFail($id)->withTrashed();
 
         if ($device->trashed())
         {
