@@ -126,8 +126,6 @@ class DeviceController extends Controller
     public function update(EditDevice $request, $id)
     {
         $device = Device::findOrFail($id);
-        $location = null;
-        $site = null;
 
         // TODO figure out way for unique location names for each specific site
         
@@ -135,33 +133,34 @@ class DeviceController extends Controller
         if (!empty($request->input('new_site_name')))
         {
             //Create a new site
-            $siteName = $request->input('new_site_name');
-            $site_id = Site::createSite($siteName)->id;
+            $site = new Site;
+            $site->name = $request->input('new_site_name');
+            $site->save();
+            
+            $site_id = $site->id;
         }
         else
         {
             $site_id = $request->input('site');
         }
-    
-        //Verify the site with the given site id actually exists
-        Site::findOrFail($site_id);
         
         //Get the location id of the old or newly created location
         if (!empty($request->input('new_location_name')))
         {
             //Create a new location
-            $locationName = $request->input('new_location_name');
-            $location_id = Location::createLocation($locationName, $site_id)->id;
+            $location = new Location;
+            $location->name = $request->input('new_location_name');
+            $location->site_id = $site_id;
+            $location->save();
+            
+            $location_id = $location->id;
         }
         else
         {
             $location_id = $request->input('location');
         }
         
-        //Verify the location with the given location id actually exists
-        Location::findOrFail($location_id);
-        
-        //Update the devices name and location_id
+        //Update the device
         $device->location_id = $location_id;
         $device->name = $request->input('name');
         $device->open_time = $request->input('open_time');

@@ -64,19 +64,4 @@ class Site extends Model
     {
         return $this->hasManyThrough('App\Device', 'App\Location');
     }
-    
-    /**
-     * Create a new site and return it
-     *
-     * @param string $name
-     * @return Model $site
-     */
-    public static function createSite($name)
-    {
-        $site = new Site;
-        $site->name = $name;
-        $site->save();
-        
-        return $site;
-    }
 }

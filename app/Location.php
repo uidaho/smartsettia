@@ -76,21 +76,4 @@ class Location extends Model
     {
         return $query->where('site_id', $site_id);
     }
-    
-    /**
-     * Create a new location and return it
-     *
-     * @param string $name
-     * @param int $site_id
-     * @return Model $location
-     */
-    public static function createLocation($name, $site_id)
-    {
-        $location = new Location;
-        $location->name = $name;
-        $location->site_id = $site_id;
-        $location->save();
-        
-        return $location;
-    }
 }
