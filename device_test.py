@@ -22,9 +22,9 @@ import threading
 import subprocess
 
 VERSION = "0.3.31"
-#DOMAIN = "https://smartsettia.com/"
+DOMAIN = "https://smartsettia.com/"
 #DOMAIN = "http://httpbin.org/post"
-DOMAIN = "https://smartsettia-backburn.c9users.io/"
+#DOMAIN = "https://smartsettia-backburn.c9users.io/"
 MAC_ADDRESS = subprocess.check_output(["cat /sys/class/net/eth0/address"], shell=True)[:-1].decode('utf8').replace(":", "")
 UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, MAC_ADDRESS))
 CHALLENGE = "temppass"
