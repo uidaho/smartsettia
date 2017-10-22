@@ -26,7 +26,7 @@
 						</div>
 					</div>
 					<div class="panel-footer">
-						<a class="btn btn-sm btn-primary" type="button" title="Go to site list" href="{{ route('site.show', $site->site_id) }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+						<a class="btn btn-sm btn-primary" type="button" title="Go to site list" href="{{ route('site.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
 						<span class="pull-right">
                         <a class="btn btn-sm btn-warning" type="button" title="Edit this site data" href="{{ route('site.edit', $site->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
 							{!! Form::open(['method' => 'DELETE', 'route' => ['site.destroy', $site->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
@@ -51,18 +51,19 @@
 									<thead>
 									<tr>
 										<td>Name:</td>
-										<td>Updated At:</td>
+										<td>Updated:</td>
 									</tr>
 									</thead>
 									<tbody>
-									@foreach ($site->locations()->orderBy('name', 'ASC')->get() as $location)
+									@foreach ($locations as $location)
 										<tr>
 											<td><a href="{{ route('location.show', $location->id) }}">{{ $location->name }}</a></td>
-											<td>{{ $location->updated_at }} GMT</td>
+											<td>{{ $location->updated_at->diffForHumans() }}</td>
 										</tr>
 									@endforeach
 									</tbody>
 								</table>
+								{{ $locations->links() }}
 							</div>
 						</div>
 					</div>

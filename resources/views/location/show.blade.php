@@ -30,7 +30,7 @@
 						</div>
 					</div>
 					<div class="panel-footer">
-						<a class="btn btn-sm btn-primary" type="button" title="Go up to site" href="{{ route('site.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+						<a class="btn btn-sm btn-primary" type="button" title="Go to location list" href="{{ route('location.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
 						<span class="pull-right">
                         <a class="btn btn-sm btn-warning" type="button" title="Edit this location data" href="{{ route('location.edit', $location->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
 							{!! Form::open(['method' => 'DELETE', 'route' => ['location.destroy', $location->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
@@ -55,18 +55,19 @@
 									<thead>
 									<tr>
 										<td>Name:</td>
-										<td>Updated At:</td>
+										<td>Updated:</td>
 									</tr>
 									</thead>
 									<tbody>
-									@foreach ($location->devices as $device)
+									@foreach ($devices as $device)
 										<tr>
 											<td><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></td>
-											<td>{{ $device->updated_at }} GMT</td>
+											<td>{{ $device->updated_at->diffForHumans() }}</td>
 										</tr>
 									@endforeach
 									</tbody>
 								</table>
+								{{ $devices->links() }}
 							</div>
 						</div>
 					</div>

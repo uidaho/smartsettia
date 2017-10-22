@@ -64,8 +64,9 @@ class SiteController extends Controller
     public function show($id)
     {
         $site = Site::findOrFail($id);
+        $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
         
-        return view('site.show', [ 'site' => $site ]);
+        return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
     }
     
     /**

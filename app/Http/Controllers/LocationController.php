@@ -65,8 +65,9 @@ class LocationController extends Controller
     public function show($id)
     {
         $location = Location::findOrFail($id);
+        $devices = $location->devices()->orderBy('name', 'ASC')->paginate(15);
     
-        return view('location.show', [ 'location' => $location ]);
+        return view('location.show', [ 'location' => $location, 'devices' => $devices ]);
     }
 
     /**
