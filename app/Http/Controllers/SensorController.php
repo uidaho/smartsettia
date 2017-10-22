@@ -81,10 +81,6 @@ class SensorController extends Controller
             ->values($sensordata->pluck('value'))
             ->responsive(true);
             
-        // $chart = Charts::database($sensor->data(), 'bar', 'highcharts')
-        //     ->elementLabel("Total")
-        //     ->responsive(true)
-        //     ->groupByHour();
         
         return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata, 'chart' => $chart ]);
     }

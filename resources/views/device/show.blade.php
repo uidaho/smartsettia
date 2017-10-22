@@ -22,7 +22,7 @@
                                  src="/image/device/{{ $device->id }}"
                                  alt="Device picture">
                         </div>
-                        <div class="col-md-9 col-lg-9 hidden-xs hidden-sm">
+                        <div class="col-md-9 col-lg-9">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-information">
                                 <tbody>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-sensors">
                                 <thead>
@@ -169,12 +169,46 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Sensor graphs for for last 7 days</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-group" id="accordion">
+                        @foreach ($charts as $chart)
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ $loop->index }}">{{ $chart->title }}</a>
+                                </h4>
+                            </div>
+                            <div id="collapse{{ $loop->index }}" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    {!! $chart->html() !!}
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
 @push('styles')
+{!! Charts::styles() !!}
 @endpush
 
 
 @push('scripts')
+{!! Charts::scripts() !!}
+@foreach ($charts as $chart)
+{!! $chart->script() !!}
+@endforeach
 @endpush
