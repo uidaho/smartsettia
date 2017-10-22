@@ -20,8 +20,6 @@ class DeviceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // TODO: Setup logging
-        // $this->middleware('log')->only('index');
     }
 
     /**
@@ -59,7 +57,7 @@ class DeviceController extends Controller
     }
 
     /**
-     * View the edit device page or the edit device modal
+     * View the edit device page
      *
      * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -93,10 +91,7 @@ class DeviceController extends Controller
             $sites = Site::all();
         }
         
-        if (\Request::ajax())
-            return response()->json([ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
-        else
-            return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
+        return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
     }
     
     /**

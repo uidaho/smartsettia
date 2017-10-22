@@ -28,7 +28,7 @@ let $inputImageRate = $('#image_rate');
 let $inputSensorRate = $('#sensor_rate');
 
 //Update the edit device modal with the current devices info
-$("#control_devices_list").on('click', '[data-edit]', function () {
+$controlDeviceList.on('click', '[data-edit]', function () {
 	let arrayNum = $(this).attr("data-edit");
 	let device_id = $(this).attr("data-device-id");
 	let device = devices[arrayNum];
@@ -90,109 +90,20 @@ $("#control_devices_list").on('click', '[data-edit]', function () {
 
 });
 
-/*
-//Update the edit device modal with the current devices info
-function updateDeviceModal(btn)
-{
-	let editDeviceID = btn.id.substring(btn.id.lastIndexOf('_') + 1);
-
-	//Reset Modal
-	resetEditDeviceModal();
-
-	//Update form route
-	$formEditDevice.attr('action', '/device/' + editDeviceID);
-
-	if (!lock)
-	{
-		lock = true;
-		$.ajax({
-			type: 'GET',
-			url: '/device/' + editDeviceID + '/edit',
-			data: '',
-			dataType: "json",
-			success: function (data) {
-				//Update input box for the device name
-				$inputDeviceName.val(data['device']['name']);
-
-				//Update the site dropdown
-				$siteDropDown.empty();
-				if (Object.keys(data['sites']).length > 0)
-				{
-					let siteString = "";
-					for (i = 0; i < Object.keys(data['sites']).length; i++)
-					{
-						siteString += '<option value="' + data["sites"][i]["id"] + '">' + data["sites"][i]["name"] + '</option>'
-					}
-					siteString += '<option value="">Create new site</option>';
-					$siteDropDown.append(siteString);
-				}
-
-				//Update the location dropdown
-				$locationDropDown.empty();
-				let locationString = "";
-				if (Object.keys(data['locations']).length > 0)
-				{
-					for (i = 0; i < Object.keys(data['locations']).length; i++)
-					{
-						locationString += '<option value="' + data["locations"][i]["id"] + '">' + data["locations"][i]["name"] + '</option>'
-					}
-					locationString += '<option value="">Create new location</option>';
-					$locationDropDown.append(locationString);
-				}
-				else
-				{
-					locationString += '<option value="">Choose a site first</option>';
-					$locationDropDown.append(locationString);
-				}
-
-				//Update the open time
-				$inputOpenTime.val(data['device']['open_time']);
-
-				//Update the close time
-				$inputCloseTime.val(data['device']['close_time']);
-
-				//Update the update rate
-				$inputUpdateRate.val(data['device']['update_rate']);
-
-				//Update the image rate
-				$inputImageRate.val(data['device']['image_rate']);
-
-				//Update the sensor rate
-				$inputSensorRate.val(data['device']['sensor_rate']);
-
-				lock = false;
-			},
-			error: function (data)
-			{
-				console.log("Error in updateDeviceModal() " + data);
-				//Close the edit device modal
-				$editDeviceModal.modal('hide');
-				lock = false;
-			}
-		});
-	}
-	else
-	{
-		//Close the edit device modal
-		$editDeviceModal.modal('hide');
-	}
-}
-*/
-
 //Submitting the edit device modal form
 $formEditDevice.on('submit', function(e)
 {
 	//Prevent the normal form submission
 	e.preventDefault();
-	let $this = $(this);
+	let $formSubmit = $(this);
 
 	if (!lock)
 	{
 		lock = true;
 		$.ajax({
-			url: $this.prop('action'),
+			url: $formSubmit.prop('action'),
 			method: 'POST',
-			data: $this.serialize(),
+			data: $formSubmit.serialize(),
 			dataType: "json",
 			success: function (data) {
 				lock = false;
@@ -283,7 +194,6 @@ $formEditDevice.on('submit', function(e)
 				}
 				else
 				{
-					alertBarActivate("Uncaught error in device edit form submit");
 					console.log("Uncaught error in device edit form submit");
 
 					//Close the edit device modal
