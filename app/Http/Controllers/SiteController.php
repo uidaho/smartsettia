@@ -46,10 +46,10 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:75',
+            'name' => 'required|string|unique:sites,name|max:75',
         ]);
         
-        $site = Site::create($request->all());
+        $site = Site::create(['name' => $request->name]);
         
         return redirect()->route('site.show', $site->id)
             ->with('success', 'Site created successfully');
@@ -86,18 +86,18 @@ class SiteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Site $site)
     {
         $request->validate([
-            'name' => 'required|string|max:75',
+            'name' => 'required|string|max:75|unique:sites,name,'.$site->id,
         ]);
         
-        Site::findOrFail($id)->update($request->all());
+        $site->update(['name' => $request->name]);
         
-        return redirect()->route('site.show', $id)
+        return redirect()->route('site.show', $site->id)
             ->with('success', 'Site updated successfully');
     }
     

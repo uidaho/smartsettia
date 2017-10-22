@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\DataTables\LocationDataTable;
 use App\Location;
+use App\Site;
+use App\Http\Requests\EditLocation;
 
 class LocationController extends Controller
 {
@@ -34,23 +36,29 @@ class LocationController extends Controller
      */
     public function create()
     {
-        return view('location.create');
+        $sites = Site::orderBy('name', 'ASC')->get();
+        return view('location.create', [ 'sites' => $sites ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  EditLocation $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EditLocation $request)
     {
-        $request->validate([
-            'site_id' => 'required|integer|digits_between:1,10|exists:sites,id',
-            'name' => 'required|string|max:75',
-        ]);
+        //Get the site id of the old or newly created site
+        if (!empty($request->input('new_site_name')))
+        {
+            //Create a new site
+            $site = Site::create(['name' => $request->input('new_site_name')]);
+            $site_id = $site->id;
+        }
+        else
+            $site_id = $request->input('site');
     
-        $location = Location::create($request->all());
+        $location = Location::create(['name' => $request->input('name'), 'site_id' => $site_id]);
     
         return redirect()->route('location.show', $location->id)
             ->with('success', 'Location created successfully');
@@ -79,25 +87,32 @@ class LocationController extends Controller
     public function edit($id)
     {
         $location = Location::findOrFail($id);
+        $sites = Site::orderByRaw("id = ? DESC", $location->site_id)->orderBy('name', 'ASC')->get();
     
-        return view('location.edit', [ 'location' => $location ]);
+        return view('location.edit', [ 'location' => $location, 'sites' => $sites ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  EditLocation  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditLocation $request, $id)
     {
-        $request->validate([
-            'site_id' => 'required|integer|digits_between:1,10|exists:sites,id',
-            'name' => 'required|string|max:75',
-        ]);
+        //Get the site id of the old or newly created site
+        if (!empty($request->input('new_site_name')))
+        {
+            //Create a new site
+            $site = Site::create(['name' => $request->input('new_site_name')]);
+            $site_id = $site->id;
+        }
+        else
+            $site_id = $request->input('site');
         
-        Location::findOrFail($id)->update($request->all());
+        //Update the location with the supplied name and the site
+        Location::findOrFail($id)->update(['name' => $request->input('name'), 'site_id' => $site_id]);
         
         return redirect()->route('location.show', $id)
             ->with('success', 'Location updated successfully');

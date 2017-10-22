@@ -13,7 +13,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active">
 						<a href="#location" role="tab" data-toggle="tab">
-							<icon class="fa fa-line-chart"></icon> Location
+							<icon class="fa fa-map-marker"></icon> Location
 						</a>
 					</li>
 				</ul>

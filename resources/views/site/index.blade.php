@@ -13,7 +13,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active">
 						<a href="#site" role="tab" data-toggle="tab">
-							<icon class="fa fa-line-chart"></icon> Site
+							<icon class="fa fa-globe"></icon> Site
 						</a>
 					</li>
 				</ul>

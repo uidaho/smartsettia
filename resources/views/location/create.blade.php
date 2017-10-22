@@ -31,5 +31,5 @@
 
 
 @push('scripts')
-
+	<script src="{{ asset('js/edit_location.js') }}"></script>
 @endpush
