@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Sensor extends Model 
 {
@@ -72,15 +73,63 @@ class Sensor extends Model
     }
     
     /**
+     * Get the last hour's sensor data averaged by the minute for the sensor.
+     */
+    public function getLastHourMinutelyAvgDataAttribute()
+    {
+        return $this->hasMany('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ':00') AS date, AVG(value) AS value")
+            ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)")
+            ->groupBy(\DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %H:%i')"))
+            ->get();
+    }
+    
+    /**
      * Get the last day's sensor data averaged hourly for the sensor.
      */
     public function getLastDayHourlyAvgDataAttribute()
     {
-        // SELECT CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value) FROM sensor_data WHERE sensor_id = 20 AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d %H')
-        return $this->hasOne('App\SensorData')
-            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value)")
-            ->where('created_at', '>=', Carbon::now()->subDay())
-            ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m-%d %H')")
-            ->get() ?? (object)[];
+        // SELECT CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value) As value FROM sensor_data WHERE sensor_id = 20 AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d %H')
+        return $this->hasMany('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value) AS value")
+            ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)")
+            ->groupBy(\DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %H')"))
+            ->get();
+    }
+    
+    /**
+     * Get the last weeks's sensor data averaged daily for the sensor.
+     */
+    public function getLastWeekDailyAvgDataAttribute()
+    {
+        return $this->hasMany('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d '), '00:00:00') AS date, AVG(value) AS value")
+            ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)")
+            ->groupBy(\DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d ')"))
+            ->get();
+    }
+    
+    /**
+     * Get the last months's sensor data averaged daily for the sensor.
+     */
+    public function getLastMonthDailyAvgDataAttribute()
+    {
+        return $this->hasMany('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d'), ' 00:00:00') AS date, AVG(value) AS value")
+            ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 30 DAY)")
+            ->groupBy(\DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d ')"))
+            ->get();
+    }
+    
+    /**
+     * Get the last year's sensor data averaged monthly for the sensor.
+     */
+    public function getLastYearMonthlyAvgDataAttribute()
+    {
+        return $this->hasMany('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m'), '-00 00:00:00') AS date, AVG(value) AS value")
+            ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 1 YEAR)")
+            ->groupBy(\DB::raw("DATE_FORMAT(created_at, '%Y-%m')"))
+            ->get();
     }
 }
