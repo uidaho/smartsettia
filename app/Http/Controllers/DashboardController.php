@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -10,6 +9,7 @@ use App\Device;
 use App\Site;
 use App\Location;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -29,26 +29,47 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        try
-        {
-            //Todo use the users preferred device
-            //Get the first device that doesn't have a null location_id
-            $device = Device::publicDashData()->where('location_id', '!=', 'null')->orderBy('id', 'ASC')->first();
-        }
-        catch(ModelNotFoundException $e)
-        {
-            //If no device is found then redirect the user to the home page and display a message about registering a device
-            return redirect('home')->with('no_devices', 'To access the dashboard page there must be at least one registered device assigned to a location.');
-        }
+        //4 queries
+        $site_id = 0;
+        $location_id = 0;
+        //TODO use the users preferred device
+        $device_id = 3;
         
-        //Get the devices location
-        $location = $device->location()->select('id', 'name', 'site_id')->firstOrFail();
-        //Get the devices site
-        $site = $location->site()->select('id', 'name')->firstOrFail();
+        $myQuery = Device::where('id', '=', $device_id)->with('location.site')->get();
+        if (!$myQuery->isEmpty())
+        {
+            $site_id = $myQuery[0]->location->site->id;
+            $location_id = $myQuery[0]->location->id;
+        }
     
-        $data = $this->dashData($site, $location, $device);
+        //Get all sites with the selected site first
+        $sites = Site::orderByRaw("id = ? DESC", $site_id)->orderBy('name', 'ASC')->get();
+        //Get all locations for the selected site with the selected location first
+        $locations = Location::where('site_id', '=', $sites[0]->id)->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
+        //Get all devices for the selected location
+        $devices = Device::publicDashData()->where('location_id', '=', $locations[0]->id)->orderBy('name', 'ASC')->get();
+    
+        //Get the active device
+        $active_device = $devices->where('id', $device_id)->first();
+        //Set the active device to the first device in $devices if it is not empty and the original active device wasn't found
+        if (!$devices->isEmpty() && $active_device == null)
+            $active_device = $devices[0];
+    
+        //Store the active site, location, and device in a collection
+        $active_data = collect([$active_device, $locations[0], $sites[0]]);
         
-        return view('dashboard.index', [ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
+        return view('dashboard.index', [ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations, 'sites' => $sites ]);
+    }
+    
+    /**
+     * Show the given device.
+     *
+     * @param  string  $id
+     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show($id)
+    {
+    
     }
     
     /**
@@ -69,134 +90,54 @@ class DashboardController extends Controller
      */
     public function refreshPage(Request $request)
     {
-        Validator::make($request->all(), [
-            'site_id' => 'required|int|digits_between:1,7',
-            'location_id' => 'required|int|digits_between:1,7',
-            'device_id' => 'required|int|digits_between:1,7',
-        ])->validate();
-        
+        $request->validate([
+            'site_id' => 'required|integer|digits_between:1,7',
+            'location_id' => 'sometimes|required|integer|digits_between:1,7',
+            'device_id' => 'sometimes|required|integer|digits_between:1,7',
+            'offset' => 'sometimes|required|integer|digits_between:1,7',
+        ]);
+    
         //Todo limit the amount of queries based on if there is changes
         //Check for changes in database since last update
+        
+        //Limit the number of devices to be loaded
+        $limit = 4;
+        
+        //Set the offset for device pagination
+        $offset = $request->offset ?? 0;
+        
+        //Get the active site, location, and device ids
+        $site_id = $request->site_id;
+        $location_id = $request->location_id;
+        $device_id = $request->device_id;
     
-        //Get the given site
-        $site = Site::select('id', 'name')->find($request->site_id);
-        //Get the given location
-        $location = Location::select('id', 'name', 'site_id')->find($request->location_id);
-        //Get the given device if it is still at the same location
-        $device = Device::publicDashData()->where('location_id', '=', $request->location_id)->find($request->device_id);
-        
-        if (empty($site))                 //Check if the site still exists
-        {
-            try
-            {
-                //Get the first site and if no sites exist throw an error
-                $site = Site::select('id', 'name')->firstOrFail();
-            }
-            catch(ModelNotFoundException $e)
-            {
-                //If no device is found then redirect the user to the home page and display a message about registering a device
-                return redirect('home')->with('no_devices', 'To access the dashboard page there must be at least one registered device assigned to a location.');
-            }
-            
-            //Get the first location from the site
-            $location = $site->locations()->select('id', 'name', 'site_id')->firstOrFail();
-            //Get the first device from the location
-            $device = $location->devices()->publicDashData()->firstOrFail();
-        }
-        else if (empty($location))        //Check if the location still exists
-        {
-            //Get the first location from the given site
-            $location = $site->locations()->select('id', 'name', 'site_id')->firstOrFail();
-            //Get the first device from the location
-            $device = $location->devices()->publicDashData()->firstOrFail();
-        }
-        else if (empty($device))        //Check if the device still exists at the given location
-        {
-            //Get the first device from the location
-            $device = $location->devices()->publicDashData()->firstOrFail();
-        }
-        
-        $data = $this->dashData($site, $location, $device);
-        
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
-    }
+        //4 queries
+        //TODO always have a un-deletable site and location and there will never be an error
+        //Get all sites with the selected site first
+        $sites = Site::orderByRaw("id = ? DESC", $site_id)->orderBy('name', 'ASC')->get();
+        //Get all locations for the selected site with the selected location first
+        $locations = Location::where('site_id', '=', $sites[0]->id)->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
+        //Get all devices for the selected location
+        $devices = Device::publicDashData()->where('location_id', '=', $locations[0]->id)->orderBy('name', 'ASC')->limit($limit)->offset($offset * $limit)->get();
+        //Get the total device count for the given location
+        $deviceCount = Device::where('location_id', '=', $locations[0]->id)->count();
     
-    /**
-     * Return database data about devices, sites, and locations
-     *
-     * @param int $site_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function siteChange($site_id)
-    {
-        //Get the given site
-        $site = Site::select('id', 'name')->findOrFail($site_id);
-        //Get the first location alphabetically at the given location
-        $location = Location::select('id', 'name', 'site_id')->where('site_id', '=', $site->id)->orderBy('name', 'ASC')->firstOrFail();
-        //Get the first device alphabetically at the given location
-        $device = Device::publicDashData()->where('location_id', '=', $location->id)->orderBy('name', 'ASC')->firstOrFail();
+        //Get the active device
+        $active_device = $devices->where('id', $device_id)->first();
+        //Set the active device to the first device in $devices if it is not empty and the original active device wasn't found
+        if (!$devices->isEmpty() && $active_device == null)
+            $active_device = $devices[0];
         
-        $data = $this->dashData($site, $location, $device);
+        //Store the active site, location, and device in a collection
+        $active_data = collect([$active_device, $locations[0], $sites[0]]);
         
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
-    }
-    
-    /**
-     * Return database data about devices, sites, and locations
-     *
-     * @param int $location_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function locationChange($location_id)
-    {
-        //Get the given location
-        $location = Location::select('id', 'name', 'site_id')->findOrFail($location_id);
-        //Get the locations site
-        $site = $location->site()->select('id', 'name')->firstOrFail();
-        //Get the first device alphabetically at the given location
-        $device = Device::publicDashData()->where('location_id', '=', $location->id)->orderBy('name', 'ASC')->firstOrFail();
+        //Get the total amount of pages for pagination
+        $page_count = ceil($deviceCount / $limit) - 1;
         
-        $data = $this->dashData($site, $location, $device);
+        //Store pagination data
+        $pag_data = collect(['offset' => $offset, 'page_count' => $page_count]);
         
-        return response()->json([ 'active_device' => $data[0], 'devices' => $data[1], 'locations' => $data[2], 'sites' => $data[3] ]);
-    }
-    
-    /**
-     * Return database data about the given device
-     * Return 404 error if the device is not found
-     *
-     * @param int $device_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function deviceChange($device_id)
-    {
-        $device = Device::publicDashData()->findOrFail($device_id);
-        
-        return response()->json($device);
-    }
-    
-    /**
-     * Return database data about devices, sites, and locations
-     *
-     * @param \Illuminate\Database\Eloquent\Model $site
-     * @param \Illuminate\Database\Eloquent\Model $location
-     * @param \Illuminate\Database\Eloquent\Model $device
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function dashData($site, $location, $device)
-    {
-        //Get all the sites except for the current site ordered by name
-        $sites = Site::select('id', 'name')->orderBy('name', 'ASC')->get()->except($site->id);
-        
-        //Get all the locations for the given site except for the new current location ordered by name
-        $locations = $site->locations()->select('id', 'name', 'site_id')->orderBy('name', 'ASC')->get()->except($location->id);
-        
-        //Get all the devices that belong to the given location ordered by name
-        $devices = $location->devices()->publicDashData()->orderBy('name', 'ASC')->get();
-        
-        $active_device = collect([$device, $location, $site]);
-        
-        return collect([$active_device, $devices, $locations, $sites]);
+        return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations, 'sites' => $sites, 'pag_data' => $pag_data]);
     }
     
     /**

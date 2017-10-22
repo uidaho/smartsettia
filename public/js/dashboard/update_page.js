@@ -1,29 +1,29 @@
-var $headerSite = $('#header_site');
-var $headerLocation = $('#header_location');
-var $headerDevice = $('#header_device');
-var $tableBody = $('#device_table tbody');
+let $headerSite = $('#header_site');
+let $headerLocation = $('#header_location');
+let $headerDevice = $('#header_device');
+let $tableBody = $('#device_table tbody');
 //Spans under device name
-var $tempNum = $('#temperature');
-var $humidityNum = $('#humidity');
-var $lightInNum = $('#light_in');
-var $lightOutNum = $('#light_out');
-var $cpuTempNum = $('#cpu_temp');
-//
-var $siteList = $('#site_change');
-var $locationList = $('#location_change');
-var $btnChangeSite = $('#btn_change_site');
-var $btnChangeLoc = $('#btn_change_loc');
-var $spanOpenTime = $('#span_open_time');
-var $spanCloseTime = $('#span_close_time');
+let $tempNum = $('#temperature');
+let $humidityNum = $('#humidity');
+let $lightInNum = $('#light_in');
+let $lightOutNum = $('#light_out');
+let $cpuTempNum = $('#cpu_temp');
+let $spanOpenTime = $('#span_open_time');
+let $spanCloseTime = $('#span_close_time');
+//Lists and there button for changing the site and location
+let $siteList = $('#site_change');
+let $locationList = $('#location_change');
+let $btnChangeSite = $('#btn_change_site');
+let $btnChangeLoc = $('#btn_change_loc');
 //Helper Variables
-var $disabledViewBtn;
-var currentDeviceId;
-var currentLocationId;
-var currentSiteId;
+let $disabledViewBtn;
+let currentDeviceId;
+let currentLocationId;
+let currentSiteId;
 //Error/Alert Bar
-var $alertBar = $('#alert_bar');
+let $alertBar = $('#alert_bar');
 //Device status enum
-var deviceStatusEnum = {
+let deviceStatusEnum = {
 	open: 1,
 	opening: 2,
 	closed: 3,
@@ -32,13 +32,23 @@ var deviceStatusEnum = {
 	error: 6
 };
 //Update rates
-var dashUpdateRate = 5000;
-var imageUpdateRate = 30000;
-var imageUpdateTimeout;
+let dashUpdateRate = 5000;
+let imageUpdateRate = 30000;
+let imageUpdateTimeout;
 //Lock Ajax calls
-var lock = false;
-//Store the current locations devices
-var devices;
+let lock = false;
+//Store the sites
+let sites;
+//Store the current site's locations
+let locations;
+//Store the current location's devices
+let devices;
+//The list for the device pagination buttons
+let $paginationDevice = $('#pagination_device');
+//The current device pagination offset
+let currentDeviceOffset = 0;
+//The list that holds all the devices
+let $controlDeviceList = $("#control_devices_list");
 
 //Call all functions that need to be called at the start
 getStartingIDs();
@@ -47,47 +57,35 @@ refreshDashboardData();
 //Continuously refresh dashboard data
 function refreshDashboardData()
 {
-	var targetURL = '/dashboard/refresh';
-	var data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId };
+	let targetURL = '/dashboard/refresh';
+	let data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : currentDeviceOffset };
 	updateDashboardData(targetURL, data);
 	setTimeout("refreshDashboardData();", dashUpdateRate);
 }
 
-$(document).ready(function() {
-	//Change site
-	$('#site_change').on('click', 'li[data-site-id]', function () {
-		var targetURL = '/dashboard/change/site/' + $(this).attr("data-site-id");
-		updateDashboardData(targetURL);
-	});
-
-	//Change location
-	$('#location_change').on('click', 'li[data-location-id]', function () {
-		var targetURL = '/dashboard/change/location/' + $(this).attr("data-location-id");
-		updateDashboardData(targetURL);
-	});
-
-	//Change the selected device for the page
-	$("#control_devices_list").on('click', '[data-view]', function () {
-		var arrayNum = $(this).attr("data-view");
-		var device_id = $(this).attr("data-device-id");
-
-		//Set the device image url, sensor values, and the device header name
-		updateActiveDeviceInfo(devices[arrayNum]);
-
-		//Set the rate for the image to be updated at
-		setImageUpdateRate(devices[arrayNum]['image_rate']);
-
-		//Disable the selected view button and enable the previously disabled view button
-		$(this).prop("disabled", true);
-		$disabledViewBtn.prop("disabled", false);
-		$disabledViewBtn = $(this);
-
-		//Store the current device's id
-		currentDeviceId = device_id;
-	});
+//Change site
+$siteList.on('click', 'li[data-site-id]', function () {
+	let targetURL = '/dashboard/refresh';
+	let data = { site_id : $(this).attr("data-site-id") };
+	updateDashboardData(targetURL, data);
 });
 
-function updateDashboardData(targetURL, data)
+//Change location
+$locationList.on('click', 'li[data-location-id]', function () {
+	let targetURL = '/dashboard/refresh';
+	let data = { location_id : $(this).attr("data-location-id"), site_id : currentSiteId };
+	updateDashboardData(targetURL, data);
+});
+
+//Change the device pagination page
+$paginationDevice.on('click', '[data-arrow]', function () {
+	let pageNum = $(this).attr("data-arrow");
+	let targetURL = '/dashboard/refresh';
+	let data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : pageNum };
+	updateDashboardData(targetURL, data);
+});
+
+function updateDashboardData(targetURL, targetData)
 {
 	if (!lock)
 	{
@@ -95,26 +93,37 @@ function updateDashboardData(targetURL, data)
 		$.ajax({
 			type: 'GET',
 			url: targetURL,
-			data: data,
+			data: targetData,
 			dataType: "json",
 			success: function (data)
 			{
-				var activeDevice = data['active_device'][0];
-				var activeLocation = data['active_device'][1];
-				var activeSite = data['active_device'][2];
+				//Get the active site, location, and device
+				let activeSite = data['active_data'][2];
+				let activeLocation = data['active_data'][1];
+				let activeDevice = data['active_data'][0];
+
+				//Store all the currently loaded sites, locations, and devices
+				sites = data['sites'];
+				locations = data['locations'];
+				devices = data['devices'];
+
+				//TODO handle when active device is empty
 
 				//Change the active site and location names
 				$headerSite.html(activeSite['name']);
 				$headerLocation.html('<b>Location: </b>' + activeLocation['name']);
 
 				//Update the site dropdown list
-				updateSiteDropdown(data['sites']);
+				updateSiteDropdown(sites);
 
 				//Update the location dropdown list
-				updateLocationDropdown(data['locations']);
+				updateLocationDropdown(locations);
 
 				//Update the devices table with all the devices
-				updateDeviceTable(data['devices']);
+				updateDeviceTable(devices);
+
+				//Setup the device pagination buttons
+				setupDevicePagination(data['pag_data']);
 
 				//Hide the view button of the active device
 				disableActiveViewBtn(activeDevice['id']);
@@ -130,21 +139,19 @@ function updateDashboardData(targetURL, data)
 				currentLocationId = activeLocation['id'];
 				currentDeviceId = activeDevice['id'];
 
-				devices = data['devices'];
-
 				lock = false;
 			},
 			error: function (data)
 			{
 				if (data.status === 404)
 				{
-					alertBarActivate("The selected site or location was not found, try again later.");
+					alertBarActivate("An error was encountered, please try again later.");
 				}
 				else
 				{
 					alertBarActivate("Uncaught error in updateDashboardData()");
 				}
-				
+
 				console.log(data);
 				lock = false;
 			}
@@ -152,14 +159,34 @@ function updateDashboardData(targetURL, data)
 	}
 }
 
+//Change the selected device for the page
+$controlDeviceList.on('click', '[data-view]', function () {
+	let arrayNum = $(this).attr("data-view");
+	let device_id = $(this).attr("data-device-id");
+
+	//Set the device image url, sensor values, and the device header name
+	updateActiveDeviceInfo(devices[arrayNum]);
+
+	//Set the rate for the image to be updated at
+	setImageUpdateRate(devices[arrayNum]['image_rate']);
+
+	//Disable the selected view button and enable the previously disabled view button
+	$(this).prop("disabled", true);
+	$disabledViewBtn.prop("disabled", false);
+	$disabledViewBtn = $(this);
+
+	//Store the current device's id
+	currentDeviceId = device_id;
+});
+
 //Update the site dropdown list
 function updateSiteDropdown(sites)
 {
 	$siteList.empty();
-	if (Object.keys(sites).length > 0)
+	if (Object.keys(sites).length > 1)
 	{
-		var siteString = "";
-		for (i = 0; i < Object.keys(sites).length; i++)
+		let siteString = "";
+		for (let i = 1; i < Object.keys(sites).length; i++)
 		{
 			siteString += '<li data-site-id="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
 		}
@@ -177,10 +204,10 @@ function updateLocationDropdown(locations)
 {
 	$locationList.empty();
 
-	if (Object.keys(locations).length > 0)
+	if (Object.keys(locations).length > 1)
 	{
-		var locationString = "";
-		for (i = 0; i < Object.keys(locations).length; i++)
+		let locationString = "";
+		for (let i = 1; i < Object.keys(locations).length; i++)
 		{
 			locationString += '<li data-location-id="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
 		}
@@ -198,12 +225,12 @@ function updateDeviceTable(devices)
 {
 	//Empty the device table's body
 	$tableBody.empty();
-	var tableDevicesString = "";
+	let tableDevicesString = "";
 	//Add the devices to the table
 	for (i = 0; i < Object.keys(devices).length; i++)
 	{
 		//Get the devices status open, closed, locked, etc.
-		var status = getDeviceStatus(devices[i]);
+		let status = getDeviceStatus(devices[i]);
 
 		tableDevicesString += '<tr>' +
 			'<td>' + devices[i]["name"] + '</td>' +
@@ -213,7 +240,7 @@ function updateDeviceTable(devices)
 			getCommandStatusButton(status, devices[i]["id"]) +
 			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
 			getLockButton(status, devices[i]["id"]) +
-			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
+			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" data-edit="' + i + '" data-device-id="' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
 			'<button type="button" class="btn btn-default" data-command="3" data-device-id="' + devices[i]["id"] + '">Reset Command</button>' +
 			'</div>' +
 			'</td>' +
@@ -297,10 +324,37 @@ function updateActiveDeviceInfo(device)
 	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
 }
 
+//Setup the device pagination buttons
+function setupDevicePagination(paginationData)
+{
+	//Empty the pagination buttons list
+	$paginationDevice.empty();
+
+	//Get the page numbers for the next and prev pages
+	currentDeviceOffset = parseInt(paginationData['offset']);
+	let nextPageNum = currentDeviceOffset + 1;
+	let prevPageNum = currentDeviceOffset - 1;
+
+	//Setup the html for the buttons
+	let pagString = "";
+	if (paginationData['offset'] == 0)
+		pagString += '<li><button class="btn btn-default disabled" rel="prev">&laquo;</button></li>';
+	else
+		pagString += '<li><button class="btn btn-default" rel="prev" data-arrow="' + prevPageNum + '">&laquo;</button></li>';
+
+	if (paginationData['offset'] == paginationData['page_count'])
+		pagString += '<li><button class="btn btn-default disabled" rel="next">&raquo;</button></li>';
+	else
+		pagString += '<li><button class="btn btn-default" rel="next" data-arrow="' + nextPageNum + '">&raquo;</button></li>';
+
+	//Insert the pagination html into the list
+	$paginationDevice.html(pagString);
+}
+
 //Get the temperature amount as a formatted string
 function getTemperature(val)
 {
-	var temperature;
+	let temperature;
 
 	if (val === null)
 		temperature = "C";
@@ -313,7 +367,7 @@ function getTemperature(val)
 //Get the humidity amount as a formatted string
 function getHumidity(val)
 {
-	var humidity;
+	let humidity;
 
 	if (val === null)
 		humidity = "%";
@@ -326,7 +380,7 @@ function getHumidity(val)
 //Get the light amount as a formatted string
 function getLight(val)
 {
-	var light;
+	let light;
 
 	if (val === null)
 		light = "%";
@@ -339,7 +393,7 @@ function getLight(val)
 //Get the CPU temperature as a formatted string
 function getCpuTemp(val)
 {
-	var temperature;
+	let temperature;
 
 	if (val === null)
 		temperature = "C";
@@ -352,9 +406,9 @@ function getCpuTemp(val)
 function getDeviceStatus(device)
 {
 	//console.log(device['name'] + " command: " + device["cover_command"] + " status: " + device['cover_status']);
-	var status;
-	var isOpen = (device['cover_command'] === 'open') && (device['cover_status'] === 'open');
-	var isClosed = (device['cover_command'] === 'close') && (device['cover_status'] === 'closed');
+	let status;
+	let isOpen = (device['cover_command'] === 'open') && (device['cover_status'] === 'open');
+	let isClosed = (device['cover_command'] === 'close') && (device['cover_status'] === 'closed');
 	//console.log("isOpen: " + isOpen + " isClosed: " + isClosed);
 
 	switch(device['cover_command'])
@@ -387,7 +441,7 @@ function getDeviceStatus(device)
 //Get the devices command status button as html
 function getCommandStatusButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" ';
+	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" ';
 
 	switch(status)
 	{
@@ -418,7 +472,7 @@ function getCommandStatusButton(status, device_id)
 //Get the devices lock button as html
 function getLockButton(status, device_id)
 {
-	var buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-command="3"';
+	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-command="3"';
 
 	if (status === deviceStatusEnum.locked)
 		buttonHtml += '><i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
@@ -435,11 +489,11 @@ function getLockButton(status, device_id)
 //Format the time to be hours:mins[am or pm]
 function getFormattedTime(time)
 {
-	var formattedTime;
-	var temp = time.split(':');
-	var hours = parseInt(temp[0]);
-	var mins = temp[1];
-	var period;
+	let formattedTime;
+	let temp = time.split(':');
+	let hours = parseInt(temp[0]);
+	let mins = temp[1];
+	let period;
 
 	if (hours >= 12)
 		period = 'pm';
@@ -456,7 +510,7 @@ function getFormattedTime(time)
 // convert the image update rate, and call the new setTimeout()
 function setImageUpdateRate(time)
 {
-	var formattedTime;
+	let formattedTime;
 
 	formattedTime = parseInt(time) * 1000;
 

@@ -55,11 +55,10 @@ Route::get('device/{site}/locations', 'DeviceController@locations');
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('dev_layout', 'DashboardController@dev_layout');
 // Ajax calls
-Route::get('dashboard/change/site/{site_id}', 'DashboardController@siteChange');
-Route::get('dashboard/change/location/{location_id}', 'DashboardController@locationChange');
-Route::get('dashboard/change/device/{device_id}', 'DashboardController@deviceChange');
 Route::get('dashboard/refresh', 'DashboardController@refreshPage');
 Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
+//Testing
+Route::get('dashboard/{id}', 'DashboardController@show');
 
 /*-----------------------*
  * Activity Log Controller *

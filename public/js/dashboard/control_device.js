@@ -11,10 +11,10 @@ $(document).ready(function() {
 		if (!lock)
 		{
 			lock = true;
-			var device_id = $(this).attr("data-device-id");
+			let device_id = $(this).attr("data-device-id");
 
 			//Get the command from the buttons data command attribute
-			var commandVal = $(this).attr("data-command");
+			let commandVal = $(this).attr("data-command");
 
 			$.ajax({
 				type: 'POST',
