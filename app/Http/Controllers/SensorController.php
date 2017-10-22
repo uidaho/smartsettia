@@ -6,6 +6,7 @@ use App\Sensor;
 use App\DataTables\SensorDataTable;
 use Illuminate\Http\Request;
 use Validator;
+use Charts;
 
 class SensorController extends Controller 
 {
@@ -71,9 +72,21 @@ class SensorController extends Controller
     {
         $sensor = Sensor::findOrFail($id);
         
-        $sensordata = $sensor->data()->paginate(15);
-
-        return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata ]);
+        $sensordata = $sensor->data()->paginate(25);
+        
+        $chart = Charts::create('line', 'highcharts')
+            ->title($sensor->name)
+            ->elementLabel($sensor->type)
+            ->labels($sensordata->pluck('created_at'))
+            ->values($sensordata->pluck('value'))
+            ->responsive(true);
+            
+        // $chart = Charts::database($sensor->data(), 'bar', 'highcharts')
+        //     ->elementLabel("Total")
+        //     ->responsive(true)
+        //     ->groupByHour();
+        
+        return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata, 'chart' => $chart ]);
     }
 
     /**

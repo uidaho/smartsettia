@@ -70,4 +70,17 @@ class Sensor extends Model
     {
         return $this->hasOne('App\SensorData')->latest()->first() ?? (object)[];
     }
+    
+    /**
+     * Get the last day's sensor data averaged hourly for the sensor.
+     */
+    public function getLastDayHourlyAvgDataAttribute()
+    {
+        // SELECT CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value) FROM sensor_data WHERE sensor_id = 20 AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d %H')
+        return $this->hasOne('App\SensorData')
+            ->selectRaw("CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H'), ':00:00') AS date, AVG(value)")
+            ->where('created_at', '>=', Carbon::now()->subDay())
+            ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m-%d %H')")
+            ->get() ?? (object)[];
+    }
 }
