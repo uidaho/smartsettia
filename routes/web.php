@@ -54,7 +54,6 @@ Route::get('device/{site}/locations', 'DeviceController@locations');
  *-----------------------*/
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('dev_layout', 'DashboardController@dev_layout');
-// Ajax calls
 Route::get('dashboard/refresh', 'DashboardController@refreshPage');
 //Testing
 Route::get('dashboard/{id}', 'DashboardController@show');
@@ -96,4 +95,5 @@ Route::resource('location', 'LocationController');
 /*-----------------------*
  * Site Controller *
  *-----------------------*/
+Route::get('site/{site}/locations', 'SiteController@locations');
 Route::resource('site', 'SiteController');

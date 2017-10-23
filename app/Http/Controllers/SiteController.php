@@ -113,4 +113,17 @@ class SiteController extends Controller
         return redirect()->route('site.index')
             ->with('success','Site deleted successfully');
     }
+    
+    /**
+     * Get the locations belonging to the given site
+     *
+     * @param  Site $site
+     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function locations(Site $site)
+    {
+        $locations = $site->locations;
+        
+        return response()->json($locations);
+    }
 }

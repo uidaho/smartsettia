@@ -16,7 +16,7 @@
 					<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<div id="failure_bar_text"></div>
 				</div>
-				<section class="testimonials" style="margin-bottom: 0">
+				<section class="testimonials" style="margin-bottom: 0; margin-top: 10px">
 					<div class="text-center">
 						<h2 style="display: inline-block" id="header_site">{{ $active_data['site']->name }}</h2>
 						<div style="display: inline-block">

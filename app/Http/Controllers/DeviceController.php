@@ -90,23 +90,6 @@ class DeviceController extends Controller
         
         return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
     }
-    
-    /**
-     * Get the locations belonging to the given site
-     * Return null if the site does not have any locations
-     *
-     * @param  Site $site
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function locations(Site $site)
-    {
-        $locations = $site->locations;
-        
-        if ($locations->isEmpty())
-            $locations = null;
-    
-        return response()->json($locations);
-    }
 
     /**
      * Update the given device.

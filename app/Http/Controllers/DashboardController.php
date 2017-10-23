@@ -8,8 +8,6 @@ use Validator;
 use App\Device;
 use App\Site;
 use App\Location;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -32,13 +30,13 @@ class DashboardController extends Controller
         $site_id = 0;
         $location_id = 0;
         //TODO use the users preferred device
-        $device_id = 3;
+        $device_id = Device::firstOrFail()->id;
         
-        $myQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location.site')->get();
-        if (!$myQuery->isEmpty())
+        $deviceQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location.site')->get();
+        if (!$deviceQuery->isEmpty())
         {
-            $site_id = $myQuery[0]->location->site->id;
-            $location_id = $myQuery[0]->location->id;
+            $site_id = $deviceQuery[0]->location->site->id;
+            $location_id = $deviceQuery[0]->location->id;
         }
     
         //Get all sites with the selected site first
@@ -70,16 +68,6 @@ class DashboardController extends Controller
     public function show($id)
     {
         return redirect('/dashboard');
-    }
-    
-    /**
-     * Show the development layouts for dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function dev_layout()
-    {
-        return view('dashboard.dev_layout');
     }
     
     /**
@@ -140,5 +128,15 @@ class DashboardController extends Controller
         
         return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations,
             'sites' => $sites, 'pag_data' => $pag_data]);
+    }
+    
+    /**
+     * Show the development layouts for dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dev_layout()
+    {
+        return view('dashboard.dev_layout');
     }
 }
