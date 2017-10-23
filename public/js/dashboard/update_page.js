@@ -238,7 +238,7 @@ function updateDeviceTable(devices)
 		let status = getDeviceStatus(devices[i]);
 
 		tableDevicesString += '<tr>' +
-			'<td>' + devices[i]["name"] + '</td>' +
+			'<td><a href="/device/' + devices[i]['id'] + '">' + devices[i]["name"] + '</a></td>' +
 			'<td>' +
 			'<div class="btn-group btn-group-sm" role="group">' +
 			'<button class="btn btn-primary" type="button" data-view="' + i + '" data-device-id="' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
