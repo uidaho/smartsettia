@@ -105,9 +105,9 @@ function updateDashboardData(targetURL, targetData)
 			success: function (data)
 			{
 				//Get the active site, location, and device
-				let activeSite = data['active_data'][2];
-				let activeLocation = data['active_data'][1];
-				let activeDevice = data['active_data'][0] || deviceDefault;
+				let activeSite = data['active_data']['site'];
+				let activeLocation = data['active_data']['location'];
+				let activeDevice = data['active_data']['device'] || deviceDefault;
 
 				//Store all the currently loaded sites, locations, and devices
 				sites = data['sites'];

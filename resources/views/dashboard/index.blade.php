@@ -18,7 +18,7 @@
 				</div>
 				<section class="testimonials" style="margin-bottom: 0">
 					<div class="text-center">
-						<h2 style="display: inline-block" id="header_site">{{ $active_data[2]->name }}</h2>
+						<h2 style="display: inline-block" id="header_site">{{ $active_data['site']->name }}</h2>
 						<div style="display: inline-block">
 							<div class="btn-group">
 								<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_site">
@@ -33,7 +33,7 @@
 						</div>
 					</div>
 					<blockquote style="margin-bottom: 0">
-						<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $active_data[1]->name }}</p>
+						<p style="display: inline-block" id="header_location"><b>Location: </b>{{ $active_data['location']->name }}</p>
 						<div class="btn-group" style="display: inline-block">
 							<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="btn_change_loc">
 								Change <span class="caret"></span>
@@ -50,22 +50,22 @@
 		</div>
 		<div class="row">
 			<div class="col-md-10 col-md-offset-1">
-				<h3 id="header_device">{{ $active_data[0]->name }}</h3>
-				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_data[0]->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_data[0]->close_time }}</span></p>
-				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_data[0]->temperature }}C</span>
-				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $active_data[0]->humidity }}%</span>
-				<i class="fa fa-adjust"></i> Inside Light <span class="badge trialing-space" id="light_in">{{ $active_data[0]->light_in }}%</span>
-				<i class="fa fa-adjust fa-flip-horizontal"></i> Outside Light <span class="badge trialing-space" id="light_out">{{ $active_data[0]->light_out }}%</span>
-				<i class="fa fa-empire" aria-hidden="true"></i> CPU Temp <span class="badge trialing-space" id="cpu_temp">{{ $active_data[0]->cpu_temp }}C</span>
+				<h3 id="header_device">{{ $active_data['device']->name }}</h3>
+				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_data['device']->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_data['device']->close_time }}</span></p>
+				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_data['device']->temperature }}C</span>
+				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $active_data['device']->humidity }}%</span>
+				<i class="fa fa-adjust"></i> Inside Light <span class="badge trialing-space" id="light_in">{{ $active_data['device']->light_in }}%</span>
+				<i class="fa fa-adjust fa-flip-horizontal"></i> Outside Light <span class="badge trialing-space" id="light_out">{{ $active_data['device']->light_out }}%</span>
+				<i class="fa fa-empire" aria-hidden="true"></i> CPU Temp <span class="badge trialing-space" id="cpu_temp">{{ $active_data['device']->cpu_temp }}C</span>
 				<hr>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-5 col-md-offset-1 text-center">
 				<!-- Triggers the Image Modal -->
-				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $active_data[0]->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
+				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . $active_data['device']->id }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>
-				<a class="no-style-link" href="{{ URL('image/device') . '/' . $active_data[0]->id }}" download="custom_name.jpg" id="download_image_link">
+				<a class="no-style-link" href="{{ URL('image/device') . '/' . $active_data['device']->id }}" download="custom_name.jpg" id="download_image_link">
 					<button class="btn btn-primary">Download Image</button>
 				</a>
 			</div>
@@ -125,9 +125,9 @@
 	</div>
 
 	<!-- Hidden buttons -->
-	<button class="hidden" value="{{ $active_data[2]->id }}" id="active_site_id"></button>
-	<button class="hidden" value="{{ $active_data[1]->id }}" id="active_location_id"></button>
-	<button class="hidden" value="{{ $active_data[0]->id }}" id="active_device_id"></button>
+	<button class="hidden" value="{{ $active_data['site']->id }}" id="active_site_id"></button>
+	<button class="hidden" value="{{ $active_data['location']->id }}" id="active_location_id"></button>
+	<button class="hidden" value="{{ $active_data['device']->id }}" id="active_device_id"></button>
 
 	@include('dashboard.edit_modal')
 	@include('dashboard.image_modal')

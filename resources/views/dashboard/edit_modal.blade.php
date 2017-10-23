@@ -7,7 +7,7 @@
 				<h4 class="modal-title" id="myModalLabel">Edit Device</h4>
 			</div>
 			<div class="modal-body">
-				{!! Form::model($active_data[0], ['route' => ['device.update', $active_data[0]->id], 'method' => 'put', 'class' => 'form-horizontal', 'id' => 'form_edit_device']) !!}
+				{!! Form::model($active_data['device'], ['route' => ['device.update', $active_data['device']->id], 'method' => 'put', 'class' => 'form-horizontal', 'id' => 'form_edit_device']) !!}
 					@include('device.form')
 				{!! Form::close() !!}
 			</div>
