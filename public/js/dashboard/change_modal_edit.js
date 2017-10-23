@@ -115,11 +115,14 @@ $formEditDevice.on('submit', function(e)
 
 				//Close the edit device modal
 				$editDeviceModal.modal('hide');
+
+				//Display a message of success to the user
+				alertBarActivate(data['success'], 'success');
 			},
 			error: function (data) {
 				if (data.status === 404)
 				{
-					alertBarActivate("Device not found, try again later.");
+					alertBarActivate("Device not found, try again later.", 'error');
 					console.log("Invalid data");
 				}
 				else if (data.status === 422)
@@ -186,7 +189,7 @@ $formEditDevice.on('submit', function(e)
 				}
 				else if (data.status === 403)
 				{
-					alertBarActivate("Sorry, you do not have permission to edit this device.");
+					alertBarActivate("Sorry, you do not have permission to edit this device.", 'error');
 					console.log("Dont have permission");
 
 					//Close the edit device modal
@@ -194,7 +197,7 @@ $formEditDevice.on('submit', function(e)
 				}
 				else
 				{
-					console.log("Uncaught error in device edit form submit");
+					console.log("Uncaught error in device edit form submit", 'error');
 
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');

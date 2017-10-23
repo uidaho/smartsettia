@@ -73,22 +73,19 @@ class DeviceController extends Controller
         //Check if the selected device has a location
         if (!empty($location))
         {
-            //Get all the sites except for the current site ordered by name
-            $sites = Site::select('id', 'name')->orderBy('name', 'ASC')->get()->except($location->site->id);
-            //Get all the locations except for the current location for the given site ordered by name
-            $locations = $location->site->locations()->select('id', 'name', 'site_id')->orderBy('name', 'ASC')->get()->except($location->id);
-            
-            //Add the current site to the front of the collection of sites
-            $sites->prepend($location->site);
-            //Add the current location to the front of the collection of locations
-            $locations->prepend($location);
+            //Get all sites with the current site first
+            $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $location->site_id)
+                ->orderBy('name', 'ASC')->get();
+            //Get all locations for the selected site with the selected location first
+            $locations = Location::select('id', 'name')->where('site_id', '=', $location->site_id)
+                ->orderByRaw("id = ? DESC", $location->id)->orderBy('name', 'ASC')->get();
         }
         else
         {
             //Set locations to null since there is no site or location attached to the selected device
             $locations = null;
             //Get all of the sites
-            $sites = Site::all();
+            $sites = Site::select('id', 'name')->get();
         }
         
         return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
@@ -128,32 +125,21 @@ class DeviceController extends Controller
         if (!empty($request->input('new_site_name')))
         {
             //Create a new site
-            $site = new Site;
-            $site->name = $request->input('new_site_name');
-            $site->save();
-            
+            $site = Site::create(['name' => $request->input('new_site_name')]);
             $site_id = $site->id;
         }
         else
-        {
             $site_id = $request->input('site');
-        }
         
         //Get the location id of the old or newly created location
         if (!empty($request->input('new_location_name')))
         {
             //Create a new location
-            $location = new Location;
-            $location->name = $request->input('new_location_name');
-            $location->site_id = $site_id;
-            $location->save();
-            
+            $location = Location::create(['name' => $request->input('new_location_name'), 'site_id' => $site_id]);
             $location_id = $location->id;
         }
         else
-        {
             $location_id = $request->input('location');
-        }
         
         //Update the device
         $device->location_id = $location_id;
@@ -164,12 +150,9 @@ class DeviceController extends Controller
         $device->image_rate = $request->input('image_rate');
         $device->sensor_rate = $request->input('sensor_rate');
         $device->save();
-
-        //Remove any unused sites or locations
-        $this->RemoveUnusedSiteLoc();
     
         if (\Request::ajax())
-            return response()->json("Success");
+            return response()->json(['success' => 'Device updated successfully']);
         else
             return redirect()->route('device.show', $id)
                 ->with('success', 'Device updated successfully');

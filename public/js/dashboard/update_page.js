@@ -20,8 +20,11 @@ let $disabledViewBtn;
 let currentDeviceId;
 let currentLocationId;
 let currentSiteId;
-//Error/Alert Bar
-let $alertBar = $('#alert_bar');
+//Success and failure alert bar
+let $alertSuccessBar = $('#alert_success_bar');
+let $alertSuccessText = $('#success_bar_text');
+let $alertFailureBar = $('#alert_failure_bar');
+let $alertFailureText = $('#failure_bar_text');
 //Device status enum
 let deviceStatusEnum = {
 	open: 1,
@@ -49,6 +52,10 @@ let $paginationDevice = $('#pagination_device');
 let currentDeviceOffset = 0;
 //The list that holds all the devices
 let $controlDeviceList = $("#control_devices_list");
+//Device with preset data used for when the selected location doesn't have any devices
+let deviceDefault = {'id':-1, 'name':'No Device', 'location_id':-1, 'cpu_temp':null, 'humidity':null,
+	'temperature':null, 'light_in':null, 'light_out':null, 'close_time':"17:00", 'open_time':'08:00',
+	'cover_command':'lock', 'cover_status': 'locked', 'image_rate':3600, 'sensor_rate':3600, 'update_rate':3600};
 
 //Call all functions that need to be called at the start
 getStartingIDs();
@@ -100,14 +107,12 @@ function updateDashboardData(targetURL, targetData)
 				//Get the active site, location, and device
 				let activeSite = data['active_data'][2];
 				let activeLocation = data['active_data'][1];
-				let activeDevice = data['active_data'][0];
+				let activeDevice = data['active_data'][0] || deviceDefault;
 
 				//Store all the currently loaded sites, locations, and devices
 				sites = data['sites'];
 				locations = data['locations'];
 				devices = data['devices'];
-
-				//TODO handle when active device is empty
 
 				//Change the active site and location names
 				$headerSite.html(activeSite['name']);
@@ -145,11 +150,11 @@ function updateDashboardData(targetURL, targetData)
 			{
 				if (data.status === 404)
 				{
-					alertBarActivate("An error was encountered, please try again later.");
+					alertBarActivate("An error was encountered, please try again later.", 'error');
 				}
 				else
 				{
-					alertBarActivate("Uncaught error in updateDashboardData()");
+					alertBarActivate("Uncaught error in updateDashboardData()", 'error');
 				}
 
 				console.log(data);
@@ -288,40 +293,76 @@ function getStartingIDs()
 
 function updateActiveDeviceInfo(device)
 {
-	//Only update the device image if the active device has changed
-	if (device['id'] != currentDeviceId)
+	if (device !== null)
+	{
+		//Only update the device image if the active device has changed
+		if (device['id'] != currentDeviceId)
+		{
+			//Change the photo being loaded
+			deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
+
+			//Update the device image url with the date to prevent the browser from caching
+			updateDeviceImage();
+		}
+
+		//Change the image caption to the name of the current device
+		$imageCaption.html(device['name']);
+
+		//Change the header for the device
+		$headerDevice.html(device['name']);
+
+		//Change the temperature value
+		$tempNum.text(getTemperature(device['temperature']));
+
+		//Change the humidity value
+		$humidityNum.text(getHumidity(device['humidity']));
+
+		//Change the inside light value
+		$lightInNum.text(getLight(device['light_in']));
+
+		//Change the outside light value
+		$lightOutNum.text(getLight(device['light_out']));
+
+		//Change the cpu temp value
+		$cpuTempNum.text(getCpuTemp(device['cpu_temp']));
+
+		//Update the open and close times
+		$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
+		$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
+	}
+	else
 	{
 		//Change the photo being loaded
-		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
+		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + '-1';
 
 		//Update the device image url with the date to prevent the browser from caching
 		updateDeviceImage();
+
+		//Change the image caption to the name of the current device
+		$imageCaption.html('No Device');
+
+		//Change the header for the device
+		$headerDevice.html('No Device');
+
+		//Change the temperature value
+		$tempNum.text();
+
+		//Change the humidity value
+		$humidityNum.text();
+
+		//Change the inside light value
+		$lightInNum.text();
+
+		//Change the outside light value
+		$lightOutNum.text();
+
+		//Change the cpu temp value
+		$cpuTempNum.text();
+
+		//Update the open and close times
+		$spanOpenTime.html('<b>Open Time: </b>');
+		$spanCloseTime.html('<b>Close Time: </b>');
 	}
-
-	//Change the image caption to the name of the current device
-	$imageCaption.html(device['name']);
-
-	//Change the header for the device
-	$headerDevice.html(device['name']);
-
-	//Change the temperature value
-	$tempNum.text(getTemperature(device['temperature']));
-
-	//Change the humidity value
-	$humidityNum.text(getHumidity(device['humidity']));
-
-	//Change the inside light value
-	$lightInNum.text(getLight(device['light_in']));
-
-	//Change the outside light value
-	$lightOutNum.text(getLight(device['light_out']));
-
-	//Change the cpu temp value
-	$cpuTempNum.text(getCpuTemp(device['cpu_temp']));
-
-	//Update the open and close times
-	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
-	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
 }
 
 //Setup the device pagination buttons
@@ -337,12 +378,12 @@ function setupDevicePagination(paginationData)
 
 	//Setup the html for the buttons
 	let pagString = "";
-	if (paginationData['offset'] == 0)
+	if (paginationData['offset'] <= 0)
 		pagString += '<li><button class="btn btn-default disabled" rel="prev">&laquo;</button></li>';
 	else
 		pagString += '<li><button class="btn btn-default" rel="prev" data-arrow="' + prevPageNum + '">&laquo;</button></li>';
 
-	if (paginationData['offset'] == paginationData['page_count'])
+	if (paginationData['offset'] >= paginationData['page_count'])
 		pagString += '<li><button class="btn btn-default disabled" rel="next">&raquo;</button></li>';
 	else
 		pagString += '<li><button class="btn btn-default" rel="next" data-arrow="' + nextPageNum + '">&raquo;</button></li>';
@@ -529,9 +570,26 @@ function setImageUpdateRate(time)
 }
 
 //Display the alert bar with the given message
-function alertBarActivate(message)
+function alertBarActivate(message, type)
 {
-	$alertBar.html('<button type="button" class="close" aria-label="Close" onclick="$alertBar.hide()"><span aria-hidden="true">&times;</span></button>' +
-		'<strong>Alert!</strong> ' + message);
-	$alertBar.show();
+	if (type === "success")
+	{
+		$alertSuccessText.html(message);
+		$alertSuccessBar.show();
+	}
+	else
+	{
+		$alertFailureText.html('<strong>Whoops!</strong> ' + message);
+		$alertFailureBar.show();
+	}
 }
+
+//Hide the Success alert bar
+$alertSuccessBar.on('click', function () {
+	$alertSuccessBar.hide();
+});
+
+//Hide the failure alert bar
+$alertFailureBar.on('click', function () {
+	$alertFailureBar.hide();
+});

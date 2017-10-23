@@ -6,8 +6,15 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="alert alert-danger alert-dismissible" role="alert" id="alert_bar" hidden>
-					<button type="button" class="close" aria-label="Close" onclick="hideAlert(this)"><span aria-hidden="true">&times;</span></button>
+				<!-- Alert Success -->
+				<div class="alert alert-success alert-dismissible" role="alert" id="alert_success_bar" hidden>
+					<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<div id="success_bar_text"></div>
+				</div>
+				<!-- Alert Failure -->
+				<div class="alert alert-danger alert-dismissible" role="alert" id="alert_failure_bar" hidden>
+					<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<div id="failure_bar_text"></div>
 				</div>
 				<section class="testimonials" style="margin-bottom: 0">
 					<div class="text-center">

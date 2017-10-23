@@ -25,7 +25,7 @@ class EditDevice extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:75',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
             'update_rate' => 'required|integer|digits_between:1,7',
@@ -44,19 +44,19 @@ class EditDevice extends FormRequest
         $validator = parent::getValidatorInstance();
     
         $validator->sometimes('site', 'bail|integer|digits_between:1,10|exists:sites,id', function ($input) {
-            return !request('new_site_name');
+            return !$input->new_site_name;
         });
     
         $validator->sometimes('location', 'bail|integer|digits_between:1,10|exists:locations,id', function ($input) {
-            return !request('new_location_name');
+            return !$input->new_location_name;
         });
     
-        $validator->sometimes('new_site_name', 'bail|string|unique:sites,name|max:255', function ($input) {
-            return !request('site');
+        $validator->sometimes('new_site_name', 'bail|string|max:75|unique:sites,name', function ($input) {
+            return !$input->site;
         });
     
-        $validator->sometimes('new_location_name', 'bail|unique:locations,name|max:255', function ($input) {
-            return !request('location');
+        $validator->sometimes('new_location_name', 'bail|string|max:75|unique:locations,name', function ($input) {
+            return !$input->location;
         });
         
         return $validator;

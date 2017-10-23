@@ -35,7 +35,7 @@ class DashboardController extends Controller
         //TODO use the users preferred device
         $device_id = 3;
         
-        $myQuery = Device::where('id', '=', $device_id)->with('location.site')->get();
+        $myQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location.site')->get();
         if (!$myQuery->isEmpty())
         {
             $site_id = $myQuery[0]->location->site->id;
@@ -69,7 +69,7 @@ class DashboardController extends Controller
      */
     public function show($id)
     {
-    
+        return redirect('/dashboard');
     }
     
     /**
@@ -93,7 +93,7 @@ class DashboardController extends Controller
         $request->validate([
             'site_id' => 'required|integer|digits_between:1,7',
             'location_id' => 'sometimes|required|integer|digits_between:1,7',
-            'device_id' => 'sometimes|required|integer|digits_between:1,7',
+            'device_id' => 'sometimes|required|integer|between:-1,1000000000',
             'offset' => 'sometimes|required|integer|digits_between:1,7',
         ]);
     
