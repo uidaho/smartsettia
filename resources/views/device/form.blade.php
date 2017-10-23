@@ -7,11 +7,11 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('site') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}" id="form_group_site">
-	{!! Form::label('site', 'Site', ['class' =>'col-sm-3 control-label']) !!}
+<div class="form-group{{ $errors->has('site_id') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}" id="form_group_site">
+	{!! Form::label('site_id', 'Site', ['class' =>'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
 		@if ($sites)
-			<select class="form-control" name="site" id="site">
+			<select class="form-control" name="site_id" id="site_id">
 				@if (!$locations)
 					<option value="-1">Choose a site</option>
 				@endif
@@ -22,15 +22,15 @@
 			</select>
 		@endif
 		<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
-		<small class="text-danger" id="error_site">{{ $errors->first('site') }}{{ $errors->first('new_site_name') }}</small>
+		<small class="text-danger" id="error_site">{{ $errors->first('site_id') }}{{ $errors->first('new_site_name') }}</small>
 		<span class="help-block">Single site the device belongs to.</span>
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }} {{ $errors->has('new_location_name') ? ' has-error' : '' }}" id="form_group_location">
-	{!! Form::label('location', 'Location', ['class' => 'col-sm-3 control-label']) !!}
+<div class="form-group{{ $errors->has('location_id') ? ' has-error' : '' }} {{ $errors->has('new_location_name') ? ' has-error' : '' }}" id="form_group_location">
+	{!! Form::label('location_id', 'Location', ['class' => 'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<select class="form-control" name="location" id="location">
+		<select class="form-control" name="location_id" id="location_id">
 			@if ($locations)
 				@foreach($locations as $location)
 					<option value="{{ $location->id }}">{{ $location->name }}</option>
@@ -41,7 +41,7 @@
 			@endif
 		</select>
 		<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
-		<small class="text-danger" id="error_location">{{ $errors->first('location') }}{{ $errors->first('new_location_name') }}</small>
+		<small class="text-danger" id="error_location">{{ $errors->first('location_id') }}{{ $errors->first('new_location_name') }}</small>
 		<span class="help-block">Single location the device belongs to.</span>
 	</div>
 </div>

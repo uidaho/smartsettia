@@ -65,31 +65,31 @@ refreshDashboardData();
 function refreshDashboardData()
 {
 	let targetURL = '/dashboard/refresh';
-	let data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : currentDeviceOffset };
-	updateDashboardData(targetURL, data);
+	let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : currentDeviceOffset };
+	updateDashboardData(targetURL, targetData);
 	setTimeout("refreshDashboardData();", dashUpdateRate);
 }
 
 //Change site
 $siteList.on('click', 'li[data-site-id]', function () {
 	let targetURL = '/dashboard/refresh';
-	let data = { site_id : $(this).attr("data-site-id") };
-	updateDashboardData(targetURL, data);
+	let targetData = { site_id : $(this).attr("data-site-id") };
+	updateDashboardData(targetURL, targetData);
 });
 
 //Change location
 $locationList.on('click', 'li[data-location-id]', function () {
 	let targetURL = '/dashboard/refresh';
-	let data = { location_id : $(this).attr("data-location-id"), site_id : currentSiteId };
-	updateDashboardData(targetURL, data);
+	let targetData = { location_id : $(this).attr("data-location-id"), site_id : currentSiteId };
+	updateDashboardData(targetURL, targetData);
 });
 
 //Change the device pagination page
 $paginationDevice.on('click', '[data-arrow]', function () {
 	let pageNum = $(this).attr("data-arrow");
 	let targetURL = '/dashboard/refresh';
-	let data = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : pageNum };
-	updateDashboardData(targetURL, data);
+	let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : pageNum };
+	updateDashboardData(targetURL, targetData);
 });
 
 function updateDashboardData(targetURL, targetData)
@@ -232,7 +232,7 @@ function updateDeviceTable(devices)
 	$tableBody.empty();
 	let tableDevicesString = "";
 	//Add the devices to the table
-	for (i = 0; i < Object.keys(devices).length; i++)
+	for (let i = 0; i < Object.keys(devices).length; i++)
 	{
 		//Get the devices status open, closed, locked, etc.
 		let status = getDeviceStatus(devices[i]);
@@ -242,11 +242,10 @@ function updateDeviceTable(devices)
 			'<td>' +
 			'<div class="btn-group btn-group-sm" role="group">' +
 			'<button class="btn btn-primary" type="button" data-view="' + i + '" data-device-id="' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
-			getCommandStatusButton(status, devices[i]["id"]) +
+			getCommandStatusButton(status, devices[i]["id"], i) +
 			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
-			getLockButton(status, devices[i]["id"]) +
+			getLockButton(status, devices[i]["id"], i) +
 			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" data-edit="' + i + '" data-device-id="' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
-			'<button type="button" class="btn btn-default" data-command="3" data-device-id="' + devices[i]["id"] + '">Reset Command</button>' +
 			'</div>' +
 			'</td>' +
 			'</tr>' +
@@ -480,20 +479,20 @@ function getDeviceStatus(device)
 }
 
 //Get the devices command status button as html
-function getCommandStatusButton(status, device_id)
+function getCommandStatusButton(status, device_id, arrayNum)
 {
-	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" ';
+	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-array-pos="' + arrayNum + '"';
 
 	switch(status)
 	{
 		case deviceStatusEnum.open:
-			buttonHtml += 'data-command="2"><i class="glyphicon glyphicon-resize-small"></i> Close';
+			buttonHtml += 'data-command="close"><i class="glyphicon glyphicon-resize-small"></i> Close';
 			break;
 		case deviceStatusEnum.opening:
 			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Opening';
 			break;
 		case deviceStatusEnum.closed:
-			buttonHtml += 'data-command="1"><i class="glyphicon glyphicon-resize-full"></i> Open';
+			buttonHtml += 'data-command="open"><i class="glyphicon glyphicon-resize-full"></i> Open';
 			break;
 		case deviceStatusEnum.closing:
 			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Closing';
@@ -511,14 +510,14 @@ function getCommandStatusButton(status, device_id)
 }
 
 //Get the devices lock button as html
-function getLockButton(status, device_id)
+function getLockButton(status, device_id, arrayNum)
 {
-	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-command="3"';
+	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-array-pos="' + arrayNum + '"';
 
 	if (status === deviceStatusEnum.locked)
-		buttonHtml += '><i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
+		buttonHtml += 'data-command="unlock"><i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
 	else if (status === deviceStatusEnum.open || status === deviceStatusEnum.closed)
-		buttonHtml += '><i class="fa fa-lock" aria-hidden="true"></i> Lock';
+		buttonHtml += 'data-command="lock"><i class="fa fa-lock" aria-hidden="true"></i> Lock';
 	else
 		buttonHtml += 'disabled><i class="fa fa-lock" aria-hidden="true"></i> Lock';
 

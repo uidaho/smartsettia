@@ -29,7 +29,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        //4 queries
         $site_id = 0;
         $location_id = 0;
         //TODO use the users preferred device
@@ -110,8 +109,7 @@ class DashboardController extends Controller
         $site_id = $request->site_id;
         $location_id = $request->location_id;
         $device_id = $request->device_id;
-    
-        //4 queries
+        
         //TODO always have a un-deletable site and location and there will never be an error
         //Get all sites with the selected site first
         $sites = Site::orderByRaw("id = ? DESC", $site_id)->orderBy('name', 'ASC')->get();
@@ -138,69 +136,5 @@ class DashboardController extends Controller
         $pag_data = collect(['offset' => $offset, 'page_count' => $page_count]);
         
         return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations, 'sites' => $sites, 'pag_data' => $pag_data]);
-    }
-    
-    /**
-     * Open or close the given device
-     *
-     * @param  Request  $request
-     * @param Device $device
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function updateCommand(Request $request, Device $device)
-    {
-        Validator::make($request->all(), [
-            'command' => 'required|string|max:1|in:1,2,3',
-        ])->validate();
-        
-        //Check that device isn't currently in use or has an error
-        if ($device->cover_status === 'opening' || $device->cover_status === 'closing' || $device->cover_status === 'error')
-            return response()->json("Device is currently in use.", 403);
-        
-        //1 = open, 2 = close, 3 = lock
-        switch($request->command)
-        {
-            case 1:
-                $device->cover_command = 'open';
-                break;
-            case 2:
-                $device->cover_command = 'close';
-                break;
-            case 3:
-                $device->cover_command = $this->disableCommand($device);
-                break;
-        }
-        
-        $device->save();
-        
-        return response()->json("Success");
-    }
-    
-    /**
-     * Get the devices command based on the device being locked or unlocked
-     *
-     * @param Device $device
-     * @return string
-     */
-    public function disableCommand(Device $device)
-    {
-        //Check if the device is already locked or not
-        if ($device->cover_command === 'lock')
-        {
-            //Get the open, close, and current time in the users timezone
-            $open_time = new Carbon($device->open_time, Auth::user()->timezone);
-            $close_time = new Carbon($device->close_time, Auth::user()->timezone);
-            $time_now = Carbon::now(Auth::user()->timezone);
-            
-            //Check if the current time is during the open schedule or not
-            if (($time_now > $open_time) && ($time_now < $close_time))
-                $command =  'open';
-            else
-                $command =  'close';
-        }
-        else
-            $command =  'lock';
-        
-        return $command;
     }
 }

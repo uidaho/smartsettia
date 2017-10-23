@@ -40,7 +40,7 @@ class Device extends Model
      */
     protected $fillable = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
-        'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
+        'time', 'cover_command', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed',
         'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
         'open_time', 'close_time'
     ];
@@ -261,5 +261,42 @@ class Device extends Model
     public function data()
     {
         return $this->hasManyThrough('App\SensorData', 'App\Sensor');
+    }
+    
+    /**
+     * Is the device ready for a command
+     *
+     * @return boolean
+     */
+    public function isReadyForCommand()
+    {
+        $isReady = false;
+        
+        if ($this->cover_status == 'open' || $this->cover_status == 'closed' || $this->cover_status == 'locked')
+            $isReady = true;
+        
+        return $isReady;
+    }
+    
+    /**
+     * Is the device schedule during open hours
+     *
+     * @return boolean
+     */
+    public function isDuringScheduleOpen()
+    {
+        $isOpenHours = false;
+    
+        $timezone = Auth::user()->timezone;
+        //Get the open, close, and current time in the users timezone
+        $open_time = new Carbon($this->open_time, $timezone);
+        $close_time = new Carbon($this->close_time, $timezone);
+        $time_now = Carbon::now($timezone);
+    
+        //Check if the current time is during the open schedule or not
+        if ($time_now->gt($open_time) && $time_now->lt($close_time))
+            $isOpenHours = true;
+        
+        return $isOpenHours;
     }
 }

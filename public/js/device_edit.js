@@ -1,6 +1,6 @@
-var $siteDropDown = $('#site');
+var $siteDropDown = $('#site_id');
 var $siteTextBox = $('#new_site_name');
-var $locationDropDown = $('#location');
+var $locationDropDown = $('#location_id');
 var $locationTextBox = $('#new_location_name');
 var firstSelection = true;
 
@@ -12,7 +12,7 @@ $(document).ready(function() {
 	$siteDropDown.change(function () {
 		if (firstSelection)
 		{
-			$("#site option[value='-1']").remove();
+			$("#site_id option[value='-1']").remove();
 			firstSelection = false;
 		}
 

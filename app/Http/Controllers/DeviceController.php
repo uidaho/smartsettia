@@ -41,7 +41,7 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        return view('device.create');
+        return view('device.index');
     }
 
     /**
@@ -129,7 +129,7 @@ class DeviceController extends Controller
             $site_id = $site->id;
         }
         else
-            $site_id = $request->input('site');
+            $site_id = $request->input('site_id');
         
         //Get the location id of the old or newly created location
         if (!empty($request->input('new_location_name')))
@@ -139,7 +139,7 @@ class DeviceController extends Controller
             $location_id = $location->id;
         }
         else
-            $location_id = $request->input('location');
+            $location_id = $request->input('location_id');
         
         //Update the device
         $device->location_id = $location_id;
@@ -149,6 +149,26 @@ class DeviceController extends Controller
         $device->update_rate = $request->input('update_rate');
         $device->image_rate = $request->input('image_rate');
         $device->sensor_rate = $request->input('sensor_rate');
+        //Check if the cover_command needs to be updated
+        if ($request->input('command') != null)
+        {
+            //If device is currently opening, closing or in an error state don't update command
+            if (!$device->isReadyForCommand())
+                return response()->json("Device is currently in use.", 403);
+    
+            $command = $request->input('command');
+            
+            //If command is to unlock the device then check if the device should be open or closed based on the schedule
+            if ($request->command === 'unlock')
+            {
+                if ($device->isDuringScheduleOpen())
+                    $command =  'open';
+                else
+                    $command =  'close';
+            }
+            $device->cover_command = $command;
+        }
+        
         $device->save();
     
         if (\Request::ajax())
