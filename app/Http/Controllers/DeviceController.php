@@ -66,27 +66,19 @@ class DeviceController extends Controller
     {
         //Get the device with the given id
         $device = Device::publicDashData()->findOrFail($id);
-        
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
-        
-        //Check if the selected device has a location
-        if (!empty($location))
-        {
-            //Get all sites with the current site first
-            $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $location->site_id)
-                ->orderBy('name', 'ASC')->get();
-            //Get all locations for the selected site with the selected location first
-            $locations = Location::select('id', 'name')->where('site_id', '=', $location->site_id)
-                ->orderByRaw("id = ? DESC", $location->id)->orderBy('name', 'ASC')->get();
-        }
-        else
-        {
-            //Set locations to null since there is no site or location attached to the selected device
-            $locations = null;
-            //Get all of the sites
-            $sites = Site::select('id', 'name')->get();
-        }
+    
+        //Get the site id and location id if the exist and if not assign null
+        $site_id = $location->site_id ?? null;
+        $location_id = $location->id ?? null;
+    
+        //Get all sites with the current site first
+        $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $site_id)
+            ->orderBy('name', 'ASC')->get();
+        //Get all locations for the selected site with the selected location first
+        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[0]->id)
+            ->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
         
         return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
     }
@@ -101,8 +93,6 @@ class DeviceController extends Controller
     public function update(EditDevice $request, $id)
     {
         $device = Device::findOrFail($id);
-
-        // TODO figure out way for unique location names for each specific site
         
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))

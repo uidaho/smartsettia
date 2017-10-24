@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EditDevice extends FormRequest
@@ -24,14 +25,15 @@ class EditDevice extends FormRequest
      */
     public function rules()
     {
+        //TODO figure out way for unique location names for each specific site
         return [
-            'name' => 'required|string|max:75',
+            'name' => 'bail|required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
             'update_rate' => 'required|integer|digits_between:1,7',
             'image_rate' => 'required|integer|digits_between:1,7',
             'sensor_rate' => 'required|integer|digits_between:1,7',
-            'command' => 'sometimes|required|string|max:6|in:open,close,lock,unlock',
+            'command' => 'sometimes|required|alpha|max:6|in:open,close,lock,unlock',
         ];
     }
     

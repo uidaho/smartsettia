@@ -27,24 +27,30 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $site_id = 0;
-        $location_id = 0;
         //TODO use the users preferred device
         $device_id = Device::firstOrFail()->id;
-        
-        $deviceQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location.site')->get();
-        if (!$deviceQuery->isEmpty())
-        {
-            $site_id = $deviceQuery[0]->location->site->id;
-            $location_id = $deviceQuery[0]->location->id;
-        }
+    
+        $deviceQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location')->get();
+        $site_id = $deviceQuery[0]->location->site_id ?? null;
+        $location_id = $deviceQuery[0]->location->id ?? null;
     
         //Get all sites with the selected site first
-        $sites = Site::orderByRaw("id = ? DESC", $site_id)->orderBy('name', 'ASC')->get();
+        $sites = Site::select('id', 'name')
+            ->orderByRaw("id = ? DESC", $site_id)
+            ->orderBy('name', 'ASC')
+            ->get();
         //Get all locations for the selected site with the selected location first
-        $locations = Location::where('site_id', '=', $sites[0]->id)->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
+        $locations = Location::select('id', 'name', 'site_id')
+            ->where('site_id', '=', $sites[0]->id ?? null)
+            ->orderByRaw("id = ? DESC", $location_id)
+            ->orderBy('name', 'ASC')
+            ->get();
         //Get all devices for the selected location
-        $devices = Device::publicDashData()->where('location_id', '=', $locations[0]->id)->orderBy('name', 'ASC')->get();
+        $devices = Device::publicDashData()
+            ->where('location_id', '=', $locations[0]->id ?? null)
+            ->orderBy('name', 'ASC')
+            ->limit(1)
+            ->get();
     
         //Get the active device
         $active_device = $devices->where('id', $device_id)->first();
@@ -101,15 +107,25 @@ class DashboardController extends Controller
         
         //TODO always have a un-deletable site and location and there will never be an error
         //Get all sites with the selected site first
-        $sites = Site::orderByRaw("id = ? DESC", $site_id)->orderBy('name', 'ASC')->get();
+        $sites = Site::select('id', 'name')
+            ->orderByRaw("id = ? DESC", $site_id)
+            ->orderBy('name', 'ASC')
+            ->get();
         //Get all locations for the selected site with the selected location first
-        $locations = Location::where('site_id', '=', $sites[0]->id)
-            ->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
+        $locations = Location::select('id', 'name', 'site_id')
+            ->where('site_id', '=', $sites[0]->id ?? null)
+            ->orderByRaw("id = ? DESC", $location_id)
+            ->orderBy('name', 'ASC')
+            ->get();
         //Get all devices for the selected location
-        $devices = Device::publicDashData()->where('location_id', '=', $locations[0]->id)
-            ->orderBy('name', 'ASC')->limit($limit)->offset($offset * $limit)->get();
+        $devices = Device::publicDashData()
+            ->where('location_id', '=', $locations[0]->id ?? null)
+            ->orderBy('name', 'ASC')
+            ->limit($limit)
+            ->offset($offset * $limit)
+            ->get();
         //Get the total device count for the given location
-        $deviceCount = Device::where('location_id', '=', $locations[0]->id)->count();
+        $deviceCount = Device::where('location_id', '=', $locations[0]->id ?? null)->count();
     
         //Get the active device
         $active_device = $devices->where('id', $device_id)->first();
