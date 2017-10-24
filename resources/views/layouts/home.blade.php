@@ -54,15 +54,19 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Manage <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('user.index') }}"><i class="fa fa-user"></i> Manage Users</a></li>
+                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Manage Users</a></li>
                                     <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('manage-groups') }}"><i class="fa fa-group"></i> Manage Groups</a></li>
+                                        <a href="{{ route('manage-groups') }}"><i class="fa-fw fa fa-group" aria-hidden="true"></i> Manage Groups</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('device.index') }}"><i class="fa fa-microchip"></i> Manage Devices</a></li>
+                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Manage Devices</a></li>
+									<li class="{{ Route::currentRouteNamed('location.index') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Manage Locations</a></li>
+									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Manage Sites</a></li>
                                     <li class="{{ Route::currentRouteNamed('sensor.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('sensor.index') }}"><i class="fa fa-line-chart"></i> Manage Sensors</a></li>
+                                        <a href="{{ route('sensor.index') }}"><i class="fa-fw fa fa-line-chart" aria-hidden="true"></i> Manage Sensors</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('logs') }}"><i class="fa fa-history"></i> View Logs</a></li>
+                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> View Logs</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -74,11 +78,11 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li class="{{ Route::currentRouteNamed('user.edit') ? 'active' : '' }}" role="presentation">
-                                    <a href="{{ route('user.edit', ['id' => Auth::user()->id]) }}"><i class="fa fa-gear"></i> Settings</a></li>
+                                    <a href="{{ route('user.edit', ['id' => Auth::user()->id]) }}"><i class="fa-fw fa fa-gear"></i> Settings</a></li>
                                 <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
-                                    <a href="{{ route('user-notifications') }}"><i class="fa fa-envelope"></i> Notifications</a></li>
+                                    <a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
                                 <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i> Logout</a>
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa-fw fa fa-sign-out"></i> Logout</a>
                                     <form id="logout-form" action="logout" method="POST" style="display: none;">{{ csrf_field() }}</form>
                                 </li>
                             </ul>

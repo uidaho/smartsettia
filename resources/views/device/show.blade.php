@@ -120,9 +120,9 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <a class="btn btn-sm btn-primary" type="button" title="Go up to devices" href="{{ route('device.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+					<a class="btn btn-sm btn-primary" type="button" title="Go up to devices" href="{{ route('device.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="{{ route('device.edit', $device->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+						<a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="{{ route('device.edit', $device->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
                         {!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $device->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
                             {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this device']) !!}
                         {!! Form::close() !!}

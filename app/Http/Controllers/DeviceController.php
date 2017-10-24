@@ -191,7 +191,8 @@ class DeviceController extends Controller
         if (\Request::ajax())
             return response()->json("Success");
         else
-            return redirect('device');
+            return redirect()->route('device.show', $id)
+                ->with('success', 'Device updated successfully');
     }
 
     /**
