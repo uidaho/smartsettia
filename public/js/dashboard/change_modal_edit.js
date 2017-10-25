@@ -140,9 +140,9 @@ $formEditDevice.on('submit', function(e)
 						$errorSite.html(errors['new_site_name'][0]);
 						$formGroupSite.addClass('has-error');
 					}
-					else if ('site' in errors)
+					else if ('site_id' in errors)
 					{
-						$errorSite.html(errors['site'][0]);
+						$errorSite.html(errors['site_id'][0]);
 						$formGroupSite.addClass('has-error');
 					}
 
@@ -151,9 +151,9 @@ $formEditDevice.on('submit', function(e)
 						$errorLocation.html(errors['new_location_name'][0]);
 						$formGroupLocation.addClass('has-error');
 					}
-					else if ('location' in errors)
+					else if ('location_id' in errors)
 					{
-						$errorLocation.html(errors['location'][0]);
+						$errorLocation.html(errors['location_id'][0]);
 						$formGroupLocation.addClass('has-error');
 					}
 
@@ -190,7 +190,7 @@ $formEditDevice.on('submit', function(e)
 				else if (data.status === 403)
 				{
 					alertBarActivate("Sorry, you do not have permission to edit this device.", 'error');
-					console.log("Dont have permission");
+					console.log("Don't have permission");
 
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');

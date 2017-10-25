@@ -69,7 +69,7 @@ class DeviceController extends Controller
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
     
-        //Get the site id and location id if the exist and if not assign null
+        //Get the site id and location id if they exist and if not assign 0
         $site_id = $location->site_id ?? 0;
         $location_id = $location->id ?? 0;
     

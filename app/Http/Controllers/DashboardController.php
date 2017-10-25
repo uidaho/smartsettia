@@ -59,21 +59,10 @@ class DashboardController extends Controller
             $active_device = $devices[0];
     
         //Store the active site, location, and device in a collection
-        $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);
+        $active_data = collect([ 'device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null ]);
         
         return view('dashboard.index', [ 'active_data' => $active_data, 'devices' => $devices,
             'locations' => $locations, 'sites' => $sites ]);
-    }
-    
-    /**
-     * Show the given device.
-     *
-     * @param  string  $id
-     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function show($id)
-    {
-        return redirect('/dashboard');
     }
     
     /**
@@ -101,9 +90,9 @@ class DashboardController extends Controller
         $offset = $request->offset ?? 0;
         
         //Get the active site, location, and device ids
-        $site_id = $request->site_id;
-        $location_id = $request->location_id;
-        $device_id = $request->device_id;
+        $site_id = $request->site_id ?? 0;
+        $location_id = $request->location_id ?? 0;
+        $device_id = $request->device_id ?? 0;
         
         //TODO always have a un-deletable site and location and there will never be an error
         //Get all sites with the selected site first

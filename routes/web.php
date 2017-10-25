@@ -53,8 +53,6 @@ Route::resource('device', 'DeviceController');
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('dev_layout', 'DashboardController@dev_layout');
 Route::get('dashboard/refresh', 'DashboardController@refreshPage');
-//Testing
-Route::get('dashboard/{id}', 'DashboardController@show');
 
 /*-----------------------*
  * Activity Log Controller *
