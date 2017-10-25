@@ -47,8 +47,16 @@ let currentDeviceOffset = 0;
 let $controlDeviceList = $("#control_devices_list");
 //Device with preset data used for when the selected location doesn't have any devices
 let deviceDefault = {
-	'id': -1, 'name': 'No Device', 'location_id': -1, 'close_time': "17:00", 'open_time': '08:00',
+	'id': 0, 'name': 'No Devices', 'location_id': 0, 'close_time': "17:00", 'open_time': '08:00',
 	'cover_command': 'lock', 'cover_status': 'locked', 'image_rate': 3600, 'sensor_rate': 3600, 'update_rate': 3600
+};
+//Location with preset data used for when the selected site has no locations
+let locationDefault = {
+	'id': 0, 'name': 'No Locations', 'site_id': 0
+};
+//Site with preset data used for when there are no sites
+let siteDefault = {
+	'id': 0, 'name': 'No Sites'
 };
 
 //Call all functions that need to be called at the start
@@ -108,8 +116,8 @@ function updateDashboardData(targetURL, targetData)
 			dataType: "json",
 			success: function (data) {
 				//Get the active site, location, and device
-				let activeSite = data['active_data']['site'];
-				let activeLocation = data['active_data']['location'];
+				let activeSite = data['active_data']['site'] || siteDefault;
+				let activeLocation = data['active_data']['location'] || locationDefault;
 				let activeDevice = data['active_data']['device'] || deviceDefault;
 
 				//Store all the currently loaded sites, locations, and devices

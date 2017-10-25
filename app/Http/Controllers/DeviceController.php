@@ -70,14 +70,14 @@ class DeviceController extends Controller
         $location = $device->location()->select('id', 'name', 'site_id')->first();
     
         //Get the site id and location id if the exist and if not assign null
-        $site_id = $location->site_id ?? null;
-        $location_id = $location->id ?? null;
+        $site_id = $location->site_id ?? 0;
+        $location_id = $location->id ?? 0;
     
         //Get all sites with the current site first
         $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $site_id)
             ->orderBy('name', 'ASC')->get();
         //Get all locations for the selected site with the selected location first
-        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[0]->id)
+        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[0]->id ?? 0)
             ->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
         
         return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);

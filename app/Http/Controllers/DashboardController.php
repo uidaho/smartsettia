@@ -31,8 +31,8 @@ class DashboardController extends Controller
         $device_id = Device::firstOrFail()->id;
     
         $deviceQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location')->get();
-        $site_id = $deviceQuery[0]->location->site_id ?? null;
-        $location_id = $deviceQuery[0]->location->id ?? null;
+        $site_id = $deviceQuery[0]->location->site_id ?? 0;
+        $location_id = $deviceQuery[0]->location->id ?? 0;
     
         //Get all sites with the selected site first
         $sites = Site::select('id', 'name')
@@ -41,13 +41,13 @@ class DashboardController extends Controller
             ->get();
         //Get all locations for the selected site with the selected location first
         $locations = Location::select('id', 'name', 'site_id')
-            ->where('site_id', '=', $sites[0]->id ?? null)
+            ->where('site_id', '=', $sites[0]->id ?? 0)
             ->orderByRaw("id = ? DESC", $location_id)
             ->orderBy('name', 'ASC')
             ->get();
         //Get all devices for the selected location
         $devices = Device::publicDashData()
-            ->where('location_id', '=', $locations[0]->id ?? null)
+            ->where('location_id', '=', $locations[0]->id ?? 0)
             ->orderBy('name', 'ASC')
             ->limit(1)
             ->get();
@@ -59,7 +59,7 @@ class DashboardController extends Controller
             $active_device = $devices[0];
     
         //Store the active site, location, and device in a collection
-        $active_data = collect(['device' => $active_device, 'location' => $locations[0], 'site' => $sites[0]]);
+        $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);
         
         return view('dashboard.index', [ 'active_data' => $active_data, 'devices' => $devices,
             'locations' => $locations, 'sites' => $sites ]);
@@ -87,7 +87,7 @@ class DashboardController extends Controller
         $request->validate([
             'site_id' => 'required|integer|digits_between:1,7',
             'location_id' => 'sometimes|required|integer|digits_between:1,7',
-            'device_id' => 'sometimes|required|integer|between:-1,1000000000',
+            'device_id' => 'sometimes|required|integer|digits_between:1,7',
             'offset' => 'sometimes|required|integer|digits_between:1,7',
         ]);
     
@@ -113,19 +113,19 @@ class DashboardController extends Controller
             ->get();
         //Get all locations for the selected site with the selected location first
         $locations = Location::select('id', 'name', 'site_id')
-            ->where('site_id', '=', $sites[0]->id ?? null)
+            ->where('site_id', '=', $sites[0]->id ?? 0)
             ->orderByRaw("id = ? DESC", $location_id)
             ->orderBy('name', 'ASC')
             ->get();
         //Get all devices for the selected location
         $devices = Device::publicDashData()
-            ->where('location_id', '=', $locations[0]->id ?? null)
+            ->where('location_id', '=', $locations[0]->id ?? 0)
             ->orderBy('name', 'ASC')
             ->limit($limit)
             ->offset($offset * $limit)
             ->get();
         //Get the total device count for the given location
-        $deviceCount = Device::where('location_id', '=', $locations[0]->id ?? null)->count();
+        $deviceCount = Device::where('location_id', '=', $locations[0]->id ?? 0)->count();
     
         //Get the active device
         $active_device = $devices->where('id', $device_id)->first();
@@ -134,7 +134,7 @@ class DashboardController extends Controller
             $active_device = $devices[0];
         
         //Store the active site, location, and device in a collection
-        $active_data = collect(['device' => $active_device, 'location' => $locations[0], 'site' => $sites[0]]);
+        $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);
         
         //Get the total amount of pages for pagination
         $page_count = ceil($deviceCount / $limit) - 1;

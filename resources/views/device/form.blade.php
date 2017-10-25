@@ -10,18 +10,19 @@
 <div class="form-group{{ $errors->has('site_id') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}" id="form_group_site">
 	{!! Form::label('site_id', 'Site', ['class' =>'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		@if ($sites)
-			<select class="form-control" name="site_id" id="site_id">
-				@if (!$locations)
-					<option value="-1">Choose a site</option>
-				@endif
+		<select class="form-control" name="site_id" id="site_id">
+			@if (!$sites->isEmpty())
 				@foreach($sites as $site)
 					<option value="{{ $site->id }}">{{ $site->name }}</option>
 				@endforeach
 				<option value="">Create new site</option>
-			</select>
+			@endif
+		</select>
+		@if (!$sites->isEmpty())
+			<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
+		@else
+			<input class="form-control" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
 		@endif
-		<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
 		<small class="text-danger" id="error_site">{{ $errors->first('site_id') }}{{ $errors->first('new_site_name') }}</small>
 		<span class="help-block">Single site the device belongs to.</span>
 	</div>
@@ -30,17 +31,19 @@
 <div class="form-group{{ $errors->has('location_id') ? ' has-error' : '' }} {{ $errors->has('new_location_name') ? ' has-error' : '' }}" id="form_group_location">
 	{!! Form::label('location_id', 'Location', ['class' => 'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<select class="form-control" name="location_id" id="location_id">
-			@if ($locations)
-				@foreach($locations as $location)
-					<option value="{{ $location->id }}">{{ $location->name }}</option>
-				@endforeach
-				<option value="">Create new location</option>
-			@else
-				<option value="">Choose a site first</option>
-			@endif
-		</select>
-		<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
+			<select class="form-control" name="location_id" id="location_id">
+				@if (!$locations->isEmpty())
+					@foreach($locations as $location)
+						<option value="{{ $location->id }}">{{ $location->name }}</option>
+					@endforeach
+					<option value="">Create new location</option>
+				@endif
+			</select>
+		@if (!$locations->isEmpty())
+			<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
+		@else
+			<input class="form-control" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
+		@endif
 		<small class="text-danger" id="error_location">{{ $errors->first('location_id') }}{{ $errors->first('new_location_name') }}</small>
 		<span class="help-block">Single location the device belongs to.</span>
 	</div>
@@ -49,7 +52,7 @@
 <div class="form-group{{ $errors->has('open_time') ? ' has-error' : '' }}" id="form_group_open_time">
 	{!! Form::label('open_time', 'Open Time', ['class' => 'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<input class="form-control" required="required" name="open_time" type="time" value="{{ $device->open_time }}" id="open_time">
+		<input class="form-control" required="required" name="open_time" type="time" value="{{ $device->open_time ?? '07:00' }}" id="open_time">
 		<small class="text-danger" id="error_open_time">{{ $errors->first('open_time') }}</small>
 		<span class="help-block">Local time the device should open each day.</span>
 	</div>
@@ -58,7 +61,7 @@
 <div class="form-group{{ $errors->has('close_time') ? ' has-error' : '' }}" id="form_group_close_time">
 	{!! Form::label('close_time', 'Close Time', ['class' => 'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<input class="form-control" required="required" name="close_time" type="time" value="{{ $device->close_time }}" id="close_time">
+		<input class="form-control" required="required" name="close_time" type="time" value="{{ $device->close_time ?? '20:00' }}" id="close_time">
 		<small class="text-danger" id="error_close_time">{{ $errors->first('close_time') }}</small>
 		<span class="help-block">Local time the device should close each day.</span>
 	</div>

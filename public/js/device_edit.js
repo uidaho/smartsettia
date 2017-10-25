@@ -2,18 +2,11 @@ let $siteDropDown = $('#site_id');
 let $siteTextBox = $('#new_site_name');
 let $locationDropDown = $('#location_id');
 let $locationTextBox = $('#new_location_name');
-let firstSelection = true;
 
 /*Retrieves the locations connected to the site or converts the drop down menus to text boxes
  *when a new site is being created
  */
 $siteDropDown.change(function () {
-	if (firstSelection)
-	{
-		$("#site_id option[value='-1']").remove();
-		firstSelection = false;
-	}
-
 	let site_id = $siteDropDown.val();
 
 	//Check if the selected drop down element is the "Create new location" element
