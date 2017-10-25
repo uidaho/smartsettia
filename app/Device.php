@@ -203,16 +203,11 @@ class Device extends Model
             'location_id',
             'cover_command',
             'cover_status',
-            'temperature',
-            'humidity',
-            'light_in',
-            'light_out',
             'open_time',
             'close_time',
             'update_rate',
             'image_rate',
             'sensor_rate',
-            'cpu_temp',
         ]);
     }
     

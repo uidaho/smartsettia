@@ -3,11 +3,6 @@ let $headerLocation = $('#header_location');
 let $headerDevice = $('#header_device');
 let $tableBody = $('#device_table tbody');
 //Spans under device name
-let $tempNum = $('#temperature');
-let $humidityNum = $('#humidity');
-let $lightInNum = $('#light_in');
-let $lightOutNum = $('#light_out');
-let $cpuTempNum = $('#cpu_temp');
 let $spanOpenTime = $('#span_open_time');
 let $spanCloseTime = $('#span_close_time');
 //Lists and there button for changing the site and location
@@ -40,11 +35,9 @@ let imageUpdateRate = 30000;
 let imageUpdateTimeout;
 //Lock Ajax calls
 let lock = false;
-//Store the sites
+//Store the current sites, locations, and devices
 let sites;
-//Store the current site's locations
 let locations;
-//Store the current location's devices
 let devices;
 //The list for the device pagination buttons
 let $paginationDevice = $('#pagination_device');
@@ -53,9 +46,10 @@ let currentDeviceOffset = 0;
 //The list that holds all the devices
 let $controlDeviceList = $("#control_devices_list");
 //Device with preset data used for when the selected location doesn't have any devices
-let deviceDefault = {'id':-1, 'name':'No Device', 'location_id':-1, 'cpu_temp':null, 'humidity':null,
-	'temperature':null, 'light_in':null, 'light_out':null, 'close_time':"17:00", 'open_time':'08:00',
-	'cover_command':'lock', 'cover_status': 'locked', 'image_rate':3600, 'sensor_rate':3600, 'update_rate':3600};
+let deviceDefault = {
+	'id': -1, 'name': 'No Device', 'location_id': -1, 'close_time': "17:00", 'open_time': '08:00',
+	'cover_command': 'lock', 'cover_status': 'locked', 'image_rate': 3600, 'sensor_rate': 3600, 'update_rate': 3600
+};
 
 //Call all functions that need to be called at the start
 getStartingIDs();
@@ -65,7 +59,12 @@ refreshDashboardData();
 function refreshDashboardData()
 {
 	let targetURL = '/dashboard/refresh';
-	let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : currentDeviceOffset };
+	let targetData = {
+		device_id: currentDeviceId,
+		location_id: currentLocationId,
+		site_id: currentSiteId,
+		offset: currentDeviceOffset
+	};
 	updateDashboardData(targetURL, targetData);
 	setTimeout("refreshDashboardData();", dashUpdateRate);
 }
@@ -73,14 +72,14 @@ function refreshDashboardData()
 //Change site
 $siteList.on('click', 'li[data-site-id]', function () {
 	let targetURL = '/dashboard/refresh';
-	let targetData = { site_id : $(this).attr("data-site-id") };
+	let targetData = {site_id: $(this).attr("data-site-id")};
 	updateDashboardData(targetURL, targetData);
 });
 
 //Change location
 $locationList.on('click', 'li[data-location-id]', function () {
 	let targetURL = '/dashboard/refresh';
-	let targetData = { location_id : $(this).attr("data-location-id"), site_id : currentSiteId };
+	let targetData = {location_id: $(this).attr("data-location-id"), site_id: currentSiteId};
 	updateDashboardData(targetURL, targetData);
 });
 
@@ -88,7 +87,12 @@ $locationList.on('click', 'li[data-location-id]', function () {
 $paginationDevice.on('click', '[data-arrow]', function () {
 	let pageNum = $(this).attr("data-arrow");
 	let targetURL = '/dashboard/refresh';
-	let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : pageNum };
+	let targetData = {
+		device_id: currentDeviceId,
+		location_id: currentLocationId,
+		site_id: currentSiteId,
+		offset: pageNum
+	};
 	updateDashboardData(targetURL, targetData);
 });
 
@@ -102,8 +106,7 @@ function updateDashboardData(targetURL, targetData)
 			url: targetURL,
 			data: targetData,
 			dataType: "json",
-			success: function (data)
-			{
+			success: function (data) {
 				//Get the active site, location, and device
 				let activeSite = data['active_data']['site'];
 				let activeLocation = data['active_data']['location'];
@@ -146,8 +149,7 @@ function updateDashboardData(targetURL, targetData)
 
 				lock = false;
 			},
-			error: function (data)
-			{
+			error: function (data) {
 				if (data.status === 404)
 				{
 					alertBarActivate("An error was encountered, please try again later.", 'error');
@@ -253,9 +255,9 @@ function updateDeviceTable(devices)
 			'<td colspan="2">' +
 			'<div>' +
 			'<ul class="nav nav-tabs">' +
-			'<li class="active"><a href="#tab_1_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge">' + getTemperature(devices[i]['temperature']) + '</span></a></li>' +
-			'<li><a href="#tab_2_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge">' + getHumidity(devices[i]['humidity']) + '</span></a></li>' +
-			'<li><a href="#tab_3_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">' + getHumidity(devices[i]['light_in']) + '</span></a></li>' +
+			'<li class="active"><a href="#tab_1_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge"></span></a></li>' +
+			'<li><a href="#tab_2_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge"></span></a></li>' +
+			'<li><a href="#tab_3_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge"></span></a></li>' +
 			'</ul>' +
 			'<div class="tab-content">' +
 			'<div class="tab-pane active" role="tabpanel" id="tab_1_' + devices[i]["id"] + '">' +
@@ -292,76 +294,25 @@ function getStartingIDs()
 
 function updateActiveDeviceInfo(device)
 {
-	if (device !== null)
-	{
-		//Only update the device image if the active device has changed
-		if (device['id'] != currentDeviceId)
-		{
-			//Change the photo being loaded
-			deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
-
-			//Update the device image url with the date to prevent the browser from caching
-			updateDeviceImage();
-		}
-
-		//Change the image caption to the name of the current device
-		$imageCaption.html(device['name']);
-
-		//Change the header for the device
-		$headerDevice.html(device['name']);
-
-		//Change the temperature value
-		$tempNum.text(getTemperature(device['temperature']));
-
-		//Change the humidity value
-		$humidityNum.text(getHumidity(device['humidity']));
-
-		//Change the inside light value
-		$lightInNum.text(getLight(device['light_in']));
-
-		//Change the outside light value
-		$lightOutNum.text(getLight(device['light_out']));
-
-		//Change the cpu temp value
-		$cpuTempNum.text(getCpuTemp(device['cpu_temp']));
-
-		//Update the open and close times
-		$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
-		$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
-	}
-	else
+	//Only update the device image if the active device has changed
+	if (device['id'] != currentDeviceId)
 	{
 		//Change the photo being loaded
-		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + '-1';
+		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
 
 		//Update the device image url with the date to prevent the browser from caching
 		updateDeviceImage();
-
-		//Change the image caption to the name of the current device
-		$imageCaption.html('No Device');
-
-		//Change the header for the device
-		$headerDevice.html('No Device');
-
-		//Change the temperature value
-		$tempNum.text();
-
-		//Change the humidity value
-		$humidityNum.text();
-
-		//Change the inside light value
-		$lightInNum.text();
-
-		//Change the outside light value
-		$lightOutNum.text();
-
-		//Change the cpu temp value
-		$cpuTempNum.text();
-
-		//Update the open and close times
-		$spanOpenTime.html('<b>Open Time: </b>');
-		$spanCloseTime.html('<b>Close Time: </b>');
 	}
+
+	//Change the image caption to the name of the current device
+	$imageCaption.html(device['name']);
+
+	//Change the header for the device
+	$headerDevice.html(device['name']);
+
+	//Update the open and close times
+	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
+	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
 }
 
 //Setup the device pagination buttons
@@ -391,58 +342,6 @@ function setupDevicePagination(paginationData)
 	$paginationDevice.html(pagString);
 }
 
-//Get the temperature amount as a formatted string
-function getTemperature(val)
-{
-	let temperature;
-
-	if (val === null)
-		temperature = "C";
-	else
-		temperature = val + "C";
-
-	return temperature;
-}
-
-//Get the humidity amount as a formatted string
-function getHumidity(val)
-{
-	let humidity;
-
-	if (val === null)
-		humidity = "%";
-	else
-		humidity = val + "%";
-
-	return humidity;
-}
-
-//Get the light amount as a formatted string
-function getLight(val)
-{
-	let light;
-
-	if (val === null)
-		light = "%";
-	else
-		light = val + "%";
-
-	return light;
-}
-
-//Get the CPU temperature as a formatted string
-function getCpuTemp(val)
-{
-	let temperature;
-
-	if (val === null)
-		temperature = "C";
-	else
-		temperature = val + "C";
-
-	return temperature;
-}
-
 function getDeviceStatus(device)
 {
 	//console.log(device['name'] + " command: " + device["cover_command"] + " status: " + device['cover_status']);
@@ -451,7 +350,7 @@ function getDeviceStatus(device)
 	let isClosed = (device['cover_command'] === 'close') && (device['cover_status'] === 'closed');
 	//console.log("isOpen: " + isOpen + " isClosed: " + isClosed);
 
-	switch(device['cover_command'])
+	switch (device['cover_command'])
 	{
 		case 'open':
 			if (isOpen)
@@ -483,7 +382,7 @@ function getCommandStatusButton(status, device_id, arrayNum)
 {
 	let buttonHtml = '<button class="btn btn-primary" type="button" data-device-id="' + device_id + '" data-array-pos="' + arrayNum + '"';
 
-	switch(status)
+	switch (status)
 	{
 		case deviceStatusEnum.open:
 			buttonHtml += 'data-command="close"><i class="glyphicon glyphicon-resize-small"></i> Close';

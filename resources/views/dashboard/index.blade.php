@@ -52,11 +52,6 @@
 			<div class="col-md-10 col-md-offset-1">
 				<h3 id="header_device">{{ $active_data['device']->name }}</h3>
 				<p><span class="trialing-space" id="span_open_time"><b>Open Time: </b>{{ $active_data['device']->open_time }}</span> <span class="trialing-space" id="span_close_time"><b>Close Time: </b>{{ $active_data['device']->close_time }}</span></p>
-				<i class="fa fa-thermometer-empty"></i> Temperature <span class="badge trialing-space" id="temperature">{{ $active_data['device']->temperature }}C</span>
-				<i class="glyphicon glyphicon-tint"></i> Humidity <span class="badge trialing-space" id="humidity">{{ $active_data['device']->humidity }}%</span>
-				<i class="fa fa-adjust"></i> Inside Light <span class="badge trialing-space" id="light_in">{{ $active_data['device']->light_in }}%</span>
-				<i class="fa fa-adjust fa-flip-horizontal"></i> Outside Light <span class="badge trialing-space" id="light_out">{{ $active_data['device']->light_out }}%</span>
-				<i class="fa fa-empire" aria-hidden="true"></i> CPU Temp <span class="badge trialing-space" id="cpu_temp">{{ $active_data['device']->cpu_temp }}C</span>
 				<hr>
 			</div>
 		</div>

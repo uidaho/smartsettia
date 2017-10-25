@@ -27,8 +27,8 @@ Route::get('help', 'HomeController@help')->name('help');
 /*-----------------------*
  * User Controller       *
  *-----------------------*/
-Route::resource('user', 'UserController');
 Route::put('user/{id}/restore', 'UserController@restore')->name('user.restore');
+Route::resource('user', 'UserController');
 /* Auto route definitions for resource routes:
  * TYPE       URL                   METHOD   VIEW
  * ---------- --------------------- -------- -------------
@@ -44,8 +44,8 @@ Route::put('user/{id}/restore', 'UserController@restore')->name('user.restore');
 /*-----------------------*
  * Device Controller       *
  *-----------------------*/
-Route::resource('device', 'DeviceController');
 Route::put('device/{id}/restore', 'DeviceController@restore')->name('device.restore');
+Route::resource('device', 'DeviceController');
 
 /*-----------------------*
  * Dashboard Controller  *
