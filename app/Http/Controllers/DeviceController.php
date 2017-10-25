@@ -161,10 +161,17 @@ class DeviceController extends Controller
     {
         $device = Device::withTrashed()->findOrFail($id);
 
-        if ($device->trashed()) {
+        if ($device->trashed())
+        {
             //If the device was already deleted then permanently delete it
             $device->forceDelete($device->id);
-        } else {
+        }
+        else
+        {
+            //Remove the location from the device
+            $device->location_id = null;
+            $device->save();
+            
             //Soft delete the device the first time
             $device->delete();
         }
