@@ -1,15 +1,13 @@
 <div class="form-group{{ $errors->has('site') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}" id="form_group_site">
 	{!! Form::label('site', 'Site', ['class' =>'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<select class="form-control" name="site" id="site">
-			@if (!$sites->isEmpty())
+		@if (!$sites->isEmpty())
+			<select class="form-control" name="site" id="site">
 				@foreach($sites as $site)
 					<option value="{{ $site->id }}">{{ $site->name }}</option>
 				@endforeach
 				<option value="">Create new site</option>
-			@endif
-		</select>
-		@if (!$sites->isEmpty())
+			</select>
 			<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
 		@else
 			<input class="form-control" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">

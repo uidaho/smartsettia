@@ -38,13 +38,21 @@ $siteDropDown.change(function () {
 				let locations = data;
 				let locationsString = "";
 
-				//Add the locations to the drop-down
-				for (let i = 0; i < Object.keys(data).length; i++)
+				if (Object.keys(data).length > 0)
 				{
-					locationsString += '<option value="' + locations[i]['id'] + '">' + locations[i]['name'] + '</option>';
+					//Add the locations to the drop-down
+					for (let i = 0; i < Object.keys(data).length; i++)
+					{
+						locationsString += '<option value="' + locations[i]['id'] + '">' + locations[i]['name'] + '</option>';
+					}
+					locationsString += '<option value="">Create new location</option>';
+					$locationDropDown.append(locationsString);
 				}
-				locationsString += '<option value="">Create new location</option>';
-				$locationDropDown.append(locationsString);
+				else
+				{
+					$locationDropDown.hide();
+					$locationTextBox.show();
+				}
 			}
 		});
 	}

@@ -10,15 +10,13 @@
 <div class="form-group{{ $errors->has('site_id') ? ' has-error' : '' }} {{ $errors->has('new_site_name') ? ' has-error' : '' }}" id="form_group_site">
 	{!! Form::label('site_id', 'Site', ['class' =>'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
-		<select class="form-control" name="site_id" id="site_id">
-			@if (!$sites->isEmpty())
+		@if (!$sites->isEmpty())
+			<select class="form-control" name="site_id" id="site_id">
 				@foreach($sites as $site)
 					<option value="{{ $site->id }}">{{ $site->name }}</option>
 				@endforeach
 				<option value="">Create new site</option>
-			@endif
-		</select>
-		@if (!$sites->isEmpty())
+			</select>
 			<input class="form-control" style="display: none" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
 		@else
 			<input class="form-control" name="new_site_name" placeholder="eg: Sixth Street Greenhouse" id="new_site_name">
@@ -31,17 +29,17 @@
 <div class="form-group{{ $errors->has('location_id') ? ' has-error' : '' }} {{ $errors->has('new_location_name') ? ' has-error' : '' }}" id="form_group_location">
 	{!! Form::label('location_id', 'Location', ['class' => 'col-sm-3 control-label']) !!}
 	<div class="col-sm-9">
+		@if (!$locations->isEmpty())
 			<select class="form-control" name="location_id" id="location_id">
-				@if (!$locations->isEmpty())
 					@foreach($locations as $location)
 						<option value="{{ $location->id }}">{{ $location->name }}</option>
 					@endforeach
 					<option value="">Create new location</option>
-				@endif
 			</select>
-		@if (!$locations->isEmpty())
 			<input class="form-control" style="display: none" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
 		@else
+			<select class="form-control" name="location_id" id="location_id" style="display: none">
+			</select>
 			<input class="form-control" name="new_location_name" placeholder="eg: Green House 1A" id="new_location_name">
 		@endif
 		<small class="text-danger" id="error_location">{{ $errors->first('location_id') }}{{ $errors->first('new_location_name') }}</small>

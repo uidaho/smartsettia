@@ -30,9 +30,9 @@ class DashboardController extends Controller
         //TODO use the users preferred device
         $device_id = Device::firstOrFail()->id;
     
-        $deviceQuery = Device::publicDashData()->where('id', '=', $device_id)->with('location')->get();
-        $site_id = $deviceQuery[0]->location->site_id ?? 0;
-        $location_id = $deviceQuery[0]->location->id ?? 0;
+        $location = Location::where('id', '=', $device_id)->first();
+        $site_id = $location->site_id ?? 0;
+        $location_id = $location->id ?? 0;
     
         //Get all sites with the selected site first
         $sites = Site::select('id', 'name')
@@ -51,9 +51,9 @@ class DashboardController extends Controller
             ->orderBy('name', 'ASC')
             ->limit(1)
             ->get();
-    
+        
         //Get the active device
-        $active_device = $devices->where('id', $device_id)->first();
+        $active_device = $devices->where('id', '=', $device_id)->first();
         //Set the active device to the first device in $devices if it is not empty and the original active device wasn't found
         if (!$devices->isEmpty() && $active_device == null)
             $active_device = $devices[0];
