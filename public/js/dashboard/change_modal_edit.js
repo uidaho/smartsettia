@@ -91,8 +91,7 @@ $controlDeviceList.on('click', '[data-edit]', function () {
 });
 
 //Submitting the edit device modal form
-$formEditDevice.on('submit', function(e)
-{
+$formEditDevice.on('submit', function (e) {
 	//Prevent the normal form submission
 	e.preventDefault();
 	let $formSubmit = $(this);
@@ -110,7 +109,12 @@ $formEditDevice.on('submit', function(e)
 
 				//Update the page
 				let targetURL = '/dashboard/refresh';
-				let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId };
+				let targetData = {
+					device_id: currentDeviceId,
+					location_id: currentLocationId,
+					site_id: currentSiteId,
+					offset: currentDeviceOffset
+				};
 				updateDashboardData(targetURL, targetData);
 
 				//Close the edit device modal
