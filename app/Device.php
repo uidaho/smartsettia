@@ -151,7 +151,7 @@ class Device extends Model
         else
             $time = new Carbon($value, 'UTC');
         
-        $this->attributes['open_time'] = $time;
+        $this->attributes['open_time'] = $time->format('H:i:s');
     }
     
     /**
@@ -173,7 +173,7 @@ class Device extends Model
         else
             $time = new Carbon($value, 'UTC');
         
-        $this->attributes['close_time'] = $time;
+        $this->attributes['close_time'] = $time->format('H:i:s');
     }
     
     /**
