@@ -259,29 +259,22 @@ class Device extends Model
     }
     
     /**
-     * Is the device ready for a command
+     * Check if the device is ready for a command
      *
      * @return boolean
      */
     public function isReadyForCommand()
     {
-        $isReady = false;
-        
-        if ($this->cover_status == 'open' || $this->cover_status == 'closed' || $this->cover_status == 'locked')
-            $isReady = true;
-        
-        return $isReady;
+        return ($this->cover_status == 'open' || $this->cover_status == 'closed' || $this->cover_status == 'locked');
     }
     
     /**
-     * Is the device schedule during open hours
+     * Check if the current time is during the devices scheduled time to be open
      *
      * @return boolean
      */
     public function isDuringScheduleOpen()
     {
-        $isOpenHours = false;
-    
         $timezone = Auth::user()->timezone;
         //Get the open, close, and current time in the users timezone
         $open_time = new Carbon($this->open_time, $timezone);
@@ -290,8 +283,8 @@ class Device extends Model
     
         //Check if the current time is during the open schedule or not
         if ($time_now->gt($open_time) && $time_now->lt($close_time))
-            $isOpenHours = true;
-        
-        return $isOpenHours;
+            return true;
+        else
+            return false;
     }
 }
