@@ -83,7 +83,7 @@
 							<p>Mobile Support</p>
 						</div>
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-leaf"></i>
-							<p>Life-cycle Stattistics</p>
+							<p>Life-cycle Statistics</p>
 						</div>
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-floppy-disk"></i>
 							<p>Export Your Data</p>
@@ -107,7 +107,7 @@
 							<p>Light Sensors</p>
 						</div>
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-scale"></i>
-							<p>Teperature Sensors</p>
+							<p>Temperature Sensors</p>
 						</div>
 					</div>
 				</div>
