@@ -113,7 +113,7 @@ $formEditDevice.on('submit', function (e) {
 					device_id: currentDeviceId,
 					location_id: currentLocationId,
 					site_id: currentSiteId,
-					offset: currentDeviceOffset
+					page: currentPaginationPage
 				};
 				updateDashboardData(targetURL, targetData);
 

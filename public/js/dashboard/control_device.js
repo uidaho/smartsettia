@@ -36,7 +36,7 @@ $controlDeviceList.on('click', '[data-command]', function () {
 
 				//Update the page
 				let targetURL = '/dashboard/refresh';
-				let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, offset : currentDeviceOffset };
+				let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, page : currentPaginationPage };
 				updateDashboardData(targetURL, targetData);
 			},
 			error: function (data) {

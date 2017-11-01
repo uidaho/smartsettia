@@ -27,12 +27,12 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        //TODO use the users preferred device
-        $device_id = Device::firstOrFail()->id;
-    
-        $location = Location::where('id', '=', $device_id)->first();
+        $device = Device::find(3);
+        
+        $location = $device->location ?? null;
         $site_id = $location->site_id ?? 0;
         $location_id = $location->id ?? 0;
+        $device_id = $device->id ?? 0;
     
         //Get all sites with the selected site first
         $sites = Site::select('id', 'name')
@@ -49,8 +49,7 @@ class DashboardController extends Controller
         $devices = Device::publicDashData()
             ->where('location_id', '=', $locations[0]->id ?? 0)
             ->orderBy('name', 'ASC')
-            ->limit(1)
-            ->get();
+            ->paginate(4);
         
         //Get the active device
         $active_device = $devices->where('id', '=', $device_id)->first();
@@ -74,27 +73,20 @@ class DashboardController extends Controller
     public function refreshPage(Request $request)
     {
         $request->validate([
-            'site_id' => 'required|integer|digits_between:1,7',
-            'location_id' => 'sometimes|required|integer|digits_between:1,7',
-            'device_id' => 'sometimes|required|integer|digits_between:1,7',
-            'offset' => 'sometimes|required|integer|digits_between:1,7',
+            'site_id' => 'required|integer|digits_between:1,10',
+            'location_id' => 'sometimes|required|integer|digits_between:1,10',
+            'device_id' => 'sometimes|required|integer|digits_between:1,10',
+            'page' => 'sometimes|required|integer|digits_between:1,10',
         ]);
     
         //Todo limit the amount of queries based on if there is changes
         //Check for changes in database since last update
-        
-        //Limit the number of devices to be loaded
-        $limit = 4;
-        
-        //Set the offset for device pagination
-        $offset = $request->offset ?? 0;
         
         //Get the active site, location, and device ids
         $site_id = $request->site_id ?? 0;
         $location_id = $request->location_id ?? 0;
         $device_id = $request->device_id ?? 0;
         
-        //TODO always have a un-deletable site and location and there will never be an error
         //Get all sites with the selected site first
         $sites = Site::select('id', 'name')
             ->orderByRaw("id = ? DESC", $site_id)
@@ -110,11 +102,7 @@ class DashboardController extends Controller
         $devices = Device::publicDashData()
             ->where('location_id', '=', $locations[0]->id ?? 0)
             ->orderBy('name', 'ASC')
-            ->limit($limit)
-            ->offset($offset * $limit)
-            ->get();
-        //Get the total device count for the given location
-        $deviceCount = Device::where('location_id', '=', $locations[0]->id ?? 0)->count();
+            ->paginate(4);
     
         //Get the active device
         $active_device = $devices->where('id', $device_id)->first();
@@ -125,14 +113,8 @@ class DashboardController extends Controller
         //Store the active site, location, and device in a collection
         $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);
         
-        //Get the total amount of pages for pagination
-        $page_count = ceil($deviceCount / $limit) - 1;
-        
-        //Store pagination data
-        $pag_data = collect(['offset' => $offset, 'page_count' => $page_count]);
-        
         return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations,
-            'sites' => $sites, 'pag_data' => $pag_data]);
+            'sites' => $sites]);
     }
     
     /**

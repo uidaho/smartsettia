@@ -42,7 +42,7 @@ let devices;
 //The list for the device pagination buttons
 let $paginationDevice = $('#pagination_device');
 //The current device pagination offset
-let currentDeviceOffset = 0;
+let currentPaginationPage = 0;
 //The list that holds all the devices
 let $controlDeviceList = $("#control_devices_list");
 //Device with preset data used for when the selected location doesn't have any devices
@@ -71,7 +71,7 @@ function refreshDashboardData()
 		device_id: currentDeviceId,
 		location_id: currentLocationId,
 		site_id: currentSiteId,
-		offset: currentDeviceOffset
+		page: currentPaginationPage
 	};
 	updateDashboardData(targetURL, targetData);
 	setTimeout("refreshDashboardData();", dashUpdateRate);
@@ -99,7 +99,7 @@ $paginationDevice.on('click', '[data-arrow]', function () {
 		device_id: currentDeviceId,
 		location_id: currentLocationId,
 		site_id: currentSiteId,
-		offset: pageNum
+		page: pageNum
 	};
 	updateDashboardData(targetURL, targetData);
 });
@@ -123,7 +123,7 @@ function updateDashboardData(targetURL, targetData)
 				//Store all the currently loaded sites, locations, and devices
 				sites = data['sites'];
 				locations = data['locations'];
-				devices = data['devices'];
+				devices = data['devices']['data'];
 
 				//Change the active site and location names
 				$headerSite.html(activeSite['name']);
@@ -139,7 +139,7 @@ function updateDashboardData(targetURL, targetData)
 				updateDeviceTable(devices);
 
 				//Setup the device pagination buttons
-				setupDevicePagination(data['pag_data']);
+				setupDevicePagination(data['devices']);
 
 				//Hide the view button of the active device
 				disableActiveViewBtn(activeDevice['id']);
@@ -150,10 +150,13 @@ function updateDashboardData(targetURL, targetData)
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
 
-				//Change the stored active site and location IDs
+				//Update the stored active site, location, and device IDs
 				currentSiteId = activeSite['id'];
 				currentLocationId = activeLocation['id'];
 				currentDeviceId = activeDevice['id'];
+
+				//Update the current page for pagination
+				currentPaginationPage = data['devices']['current_page'];
 
 				lock = false;
 			},
@@ -324,24 +327,23 @@ function updateActiveDeviceInfo(device)
 }
 
 //Setup the device pagination buttons
-function setupDevicePagination(paginationData)
+function setupDevicePagination(pData)
 {
 	//Empty the pagination buttons list
 	$paginationDevice.empty();
 
 	//Get the page numbers for the next and prev pages
-	currentDeviceOffset = parseInt(paginationData['offset']);
-	let nextPageNum = currentDeviceOffset + 1;
-	let prevPageNum = currentDeviceOffset - 1;
+	let nextPageNum = pData['current_page'] + 1;
+	let prevPageNum = pData['current_page'] - 1;
 
 	//Setup the html for the buttons
 	let pagString = "";
-	if (paginationData['offset'] <= 0)
+	if (pData['current_page'] <= 1)
 		pagString += '<li><button class="btn btn-default disabled" rel="prev">&laquo;</button></li>';
 	else
 		pagString += '<li><button class="btn btn-default" rel="prev" data-arrow="' + prevPageNum + '">&laquo;</button></li>';
 
-	if (paginationData['offset'] >= paginationData['page_count'])
+	if (pData['current_page'] >= pData['last_page'])
 		pagString += '<li><button class="btn btn-default disabled" rel="next">&raquo;</button></li>';
 	else
 		pagString += '<li><button class="btn btn-default" rel="next" data-arrow="' + nextPageNum + '">&raquo;</button></li>';
