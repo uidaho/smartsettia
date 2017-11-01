@@ -91,5 +91,4 @@ Route::resource('location', 'LocationController');
 /*-----------------------*
  * Site Controller *
  *-----------------------*/
-Route::get('site/{site}/locations', 'SiteController@locations');
 Route::resource('site', 'SiteController');

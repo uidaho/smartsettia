@@ -31,17 +31,17 @@ $siteDropDown.change(function () {
 		//Use ajax to get the locations attached to the selected site
 		$.ajax({
 			type: 'GET',
-			url: '/site/' + site_id + '/locations',
+			url: '/site/' + site_id,
 			data: '',
 			success: function (data) {
 				$locationDropDown.empty();
-				let locations = data;
+				let locations = data['locations']['data'];
 				let locationsString = "";
 
-				if (Object.keys(data).length > 0)
+				if (Object.keys(locations).length > 0)
 				{
 					//Add the locations to the drop-down
-					for (let i = 0; i < Object.keys(data).length; i++)
+					for (let i = 0; i < Object.keys(locations).length; i++)
 					{
 						locationsString += '<option value="' + locations[i]['id'] + '">' + locations[i]['name'] + '</option>';
 					}

@@ -65,8 +65,11 @@ class SiteController extends Controller
     {
         $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
-        
-        return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
+    
+        if (\Request::ajax())
+            return response()->json(['site' => $site, 'locations' => $locations]);
+        else
+            return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
     }
     
     /**
@@ -112,18 +115,5 @@ class SiteController extends Controller
         Site::findOrFail($id)->delete();
         return redirect()->route('site.index')
             ->with('success','Site deleted successfully');
-    }
-    
-    /**
-     * Get the locations belonging to the given site
-     *
-     * @param  Site $site
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function locations(Site $site)
-    {
-        $locations = $site->locations;
-        
-        return response()->json($locations);
     }
 }
