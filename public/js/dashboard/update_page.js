@@ -175,22 +175,28 @@ function updateDashboardData(targetURL, targetData)
 
 //Change the selected device for the page
 $deviceTableHolder.on('click', '[data-view]', function () {
-	let arrayNum = $(this).attr("data-view");
-	let device_id = $(this).attr("data-device-id");
+	if (!lock)
+	{
+		lock = true;
+		let arrayNum = $(this).attr("data-view");
+		let device_id = $(this).attr("data-device-id");
 
-	//Set the device image url, sensor values, and the device header name
-	updateActiveDeviceInfo(devices[arrayNum]);
+		//Set the device image url, sensor values, and the device header name
+		updateActiveDeviceInfo(devices[arrayNum]);
 
-	//Set the rate for the image to be updated at
-	setImageUpdateRate(devices[arrayNum]['image_rate']);
+		//Set the rate for the image to be updated at
+		setImageUpdateRate(devices[arrayNum]['image_rate']);
 
-	//Disable the selected view button and enable the previously disabled view button
-	$(this).prop("disabled", true);
-	$disabledViewBtn.prop("disabled", false);
-	$disabledViewBtn = $(this);
+		//Disable the selected view button and enable the previously disabled view button
+		$(this).prop("disabled", true);
+		$disabledViewBtn.prop("disabled", false);
+		$disabledViewBtn = $(this);
 
-	//Store the current device's id
-	currentDeviceId = device_id;
+		//Store the current device's id
+		currentDeviceId = device_id;
+
+		lock = false;
+	}
 });
 
 //Update the site dropdown list

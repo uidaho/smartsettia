@@ -8,7 +8,7 @@ use Validator;
 use App\Device;
 use App\Site;
 use App\Location;
-use Illuminate\Support\HtmlString;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -74,11 +74,26 @@ class DashboardController extends Controller
             ->orderBy('name', 'ASC')
             ->paginate(4);
     
-        //Get the active device
+        //Set the active device to the device defined by the given device id
         $active_device = $devices->where('id', $device_id)->first();
-        //Set the active device to the first device in $devices if it is not empty and the original active device wasn't found
-        if (!$devices->isEmpty() && $active_device == null)
-            $active_device = $devices[0];
+        
+        //Check if there were devices found
+        if (!$devices->isEmpty())
+        {
+            //If the original device with the given device id was not found
+            //Then assign the the first device in the device list as the active device
+            if ($active_device == null)
+                $active_device = $devices[0];
+        
+            //Add an attribute to each device defining if it is stale
+            $devices->transform(function ($item)
+            {
+                //Mark the device as stale if the device has missed three updates plus a minute
+                $deviceStaleMins = ceil(($item->update_rate * 3) / 60) + 1;
+                $item['isDeviceStale'] = ($item->last_network_update_at <= Carbon::now()->subMinute($deviceStaleMins)) ? true : false;
+                return $item;
+            });
+        }
     
         //Store the active site, location, and device in a collection
         $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);

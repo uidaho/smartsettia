@@ -22,6 +22,20 @@ Dashboard
 	margin-right: 10px;
 }
 
+.status-online
+{
+	color: #07a800;
+	font-size: .86em;
+	font-weight: 500;
+}
+
+.status-offline
+{
+	color: #df0000;
+	font-size: .86em;
+	font-weight: 500;
+}
+
 /*
 ======================================
 Dashboard Image Modal
