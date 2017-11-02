@@ -28,7 +28,7 @@ let $inputImageRate = $('#image_rate');
 let $inputSensorRate = $('#sensor_rate');
 
 //Update the edit device modal with the current devices info
-$controlDeviceList.on('click', '[data-edit]', function () {
+$deviceTableHolder.on('click', '[data-edit]', function () {
 	let arrayNum = $(this).attr("data-edit");
 	let device_id = $(this).attr("data-device-id");
 	let device = devices[arrayNum];
@@ -108,7 +108,7 @@ $formEditDevice.on('submit', function (e) {
 				lock = false;
 
 				//Update the page
-				let targetURL = '/dashboard/refresh';
+				let targetURL = '/dashboard';
 				let targetData = {
 					device_id: currentDeviceId,
 					location_id: currentLocationId,

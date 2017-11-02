@@ -287,4 +287,58 @@ class Device extends Model
         else
             return false;
     }
+    
+    /**
+     * Get the covers actual status based on the current command and the devices status
+     *
+     * @return string
+     */
+    public function actualCoverStatus()
+    {
+        $status = '';
+        $isOpen = $this->cover_status === 'open';
+        $isClosed = $this->cover_status === 'closed';
+            
+        switch ($this['cover_command'])
+        {
+            case 'open':
+                if ($isOpen)
+                    $status = 'open';
+                else
+                    $status = 'opening';
+                break;
+            case 'close':
+                if ($isClosed)
+                    $status = 'closed';
+                else
+                    $status = 'closing';
+                break;
+            case 'lock':
+                $status = 'locked';
+                break;
+            default:
+                $status = 'error';
+        }
+    
+        if ($this->cover_status === 'error')
+            $status = 'error';
+        
+        return $status;
+    }
+    
+    /**
+     * Get the page number of the device for the dashboard device table pagination
+     *
+     * @param int $limit
+     * @return int
+     */
+    public function dashPageNum($limit)
+    {
+        $pos = Device::where('location_id', '=', $this->location_id)
+            ->where('name', '<=', $this->name)
+            ->orderBy('name', 'ASC')
+            ->count();
+        
+        return ceil($pos / $limit);
+    }
 }

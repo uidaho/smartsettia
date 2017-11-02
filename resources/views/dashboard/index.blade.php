@@ -67,58 +67,8 @@
 					<button class="btn btn-primary">Download Image</button>
 				</a>
 			</div>
-			<div class="col-md-5">
-				<div class="table-bordered" style="max-height: 400px; overflow:auto;">
-					<table class="table table-striped table-responsive" style="margin-bottom: 0;" id="device_table">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Controls</th>
-							</tr>
-						</thead>
-						<tbody id="control_devices_list">
-						@foreach ($devices as $device)
-							<tr id="tr_{{ $device->id }}">
-								<td>{{ $device->name }}</td>
-								<td>
-									<div class="btn-group btn-group-sm" role="group" style="display: block">
-										<button class="btn btn-primary" type="button" id="btn_view_{{ $device->id }}"><i class="fa fa-video-camera"></i> View</button>
-										<button class="btn btn-primary" type="button"><i class='glyphicon glyphicon-resize-small'></i> Close</button>
-										<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_{{ $device->id }}" disabled><i class="fa fa-line-chart"></i> Graphs</button>
-										<button class="btn btn-primary" type="button" id="btn_lock_{{ $device->id }}" value="3"><i class="fa fa-lock" aria-hidden="true"></i> Lock</button>
-										<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
-									</div>
-								</td>
-							</tr>
-							<tr class="collapse" id="graph_row_{{ $device->id }}">
-								<td colspan="2">
-									<div>
-										<ul class="nav nav-tabs">
-											<li class="active"><a href="#tab_1_{{ $device->id }}" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge">{{ $device->temperture }}C</span></a></li>
-											<li><a href="#tab_2_{{ $device->id }}" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge">{{ $device->humidity }}%</span></a></li>
-											<li><a href="#tab_3_{{ $device->id }}" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">{{ $device->light_in }}%</span></a></li>
-										</ul>
-										<div class="tab-content">
-											<div class="tab-pane active" role="tabpanel" id="tab_1_{{ $device->id }}">
-												<p><img class="img-responsive" src="{{ asset('img/temp-graph.png') }}"></p>
-											</div>
-											<div class="tab-pane" role="tabpanel" id="tab_2_{{ $device->id }}">
-												<p><img class="img-responsive" src="{{ asset('img/humidity-graph.png') }}"></p>
-											</div>
-											<div class="tab-pane" role="tabpanel" id="tab_3_{{ $device->id }}">
-												<p><img class="img-responsive" src="{{ asset('img/light-graph.png') }}"></p>
-											</div>
-										</div>
-									</div>
-								</td>
-							</tr>
-						@endforeach
-						</tbody>
-					</table>
-				</div>
-				<ul class="pagination" id="pagination_device">
-					<li><button class="btn btn-default disabled" rel="prev">&laquo;</button></li><li><button class="btn btn-default disabled" rel="next">&raquo;</button></li>
-				</ul>
+			<div class="col-md-5" id="device_table_holder">
+				@include('dashboard.device_list')
 			</div>
 		</div>
 	</div>
@@ -127,6 +77,7 @@
 	<button class="hidden" value="{{ $active_data['site']->id ?? 0 }}" id="active_site_id"></button>
 	<button class="hidden" value="{{ $active_data['location']->id ?? 0 }}" id="active_location_id"></button>
 	<button class="hidden" value="{{ $active_data['device']->id ?? 0 }}" id="active_device_id"></button>
+	<button class="hidden" value="{{ $devices->currentPage() ?? 0 }}" id="active_device_table_page"></button>
 
 	@include('dashboard.edit_modal')
 	@include('dashboard.image_modal')

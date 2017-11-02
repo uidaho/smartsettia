@@ -6,7 +6,7 @@ $.ajaxSetup({
 });
 
 //Open, close, or lock the selected device
-$controlDeviceList.on('click', '[data-command]', function () {
+$deviceTableHolder.on('click', '[data-command]', function () {
 	if (!lock)
 	{
 		lock = true;
@@ -35,7 +35,7 @@ $controlDeviceList.on('click', '[data-command]', function () {
 				lock = false;
 
 				//Update the page
-				let targetURL = '/dashboard/refresh';
+				let targetURL = '/dashboard';
 				let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, page : currentPaginationPage };
 				updateDashboardData(targetURL, targetData);
 			},
