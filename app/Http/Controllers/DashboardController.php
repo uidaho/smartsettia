@@ -39,9 +39,7 @@ class DashboardController extends Controller
         if (count($request->all()) == 0)
         {
             //Get the device, location, and site ids based on the user's preferred device
-            //TODO get the user's preferred device
-            $device = Device::find(3);
-    
+            $device = Auth::user()->preferredDevice ?? null;
             $location = $device->location ?? null;
             
             //If the location exists then set the pagination page to be where the device is located

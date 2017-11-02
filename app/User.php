@@ -30,7 +30,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'phone'
+        'name', 'email', 'password', 'role', 'phone', 'preferred_device_id'
     ];
     
     /**
@@ -48,7 +48,7 @@ class User extends Authenticatable
      * @var array
      */
     protected static $logAttributes = [
-        'name', 'email', 'password', 'role', 'phone'
+        'name', 'email', 'password', 'role', 'phone', 'preferred_device_id'
     ];
     
     /**
@@ -144,5 +144,13 @@ class User extends Authenticatable
     {
         $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
         return $role_en[ $this->role ] . ' (' . $this->role . ')';
+    }
+    
+    /**
+     * Get the preferred device of the user
+     */
+    public function preferredDevice()
+    {
+        return $this->hasOne('App\Device', 'id', 'preferred_device_id');
     }
 }

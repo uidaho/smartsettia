@@ -50,6 +50,10 @@
                                     <td>Timezone:</td>
                                     <td>{{ $user->timezone }}</td>
                                 </tr>
+								<tr>
+									<td>Preferred Device:</td>
+									<td>{{ is_object($user->preferredDevice) ? $user->preferredDevice->name : 'Non-selected' }}</td>
+								</tr>
                                 </tbody>
                             </table>
                         </div>
