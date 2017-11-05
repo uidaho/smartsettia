@@ -65,8 +65,11 @@ class SiteController extends Controller
     {
         $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
-        
-        return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
+    
+        if (\Request::ajax())
+            return response()->json(['site' => $site, 'locations' => $locations]);
+        else
+            return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
     }
     
     /**

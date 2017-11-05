@@ -27,8 +27,8 @@ Route::get('help', 'HomeController@help')->name('help');
 /*-----------------------*
  * User Controller       *
  *-----------------------*/
-Route::resource('user', 'UserController');
 Route::put('user/{id}/restore', 'UserController@restore')->name('user.restore');
+Route::resource('user', 'UserController');
 /* Auto route definitions for resource routes:
  * TYPE       URL                   METHOD   VIEW
  * ---------- --------------------- -------- -------------
@@ -44,22 +44,14 @@ Route::put('user/{id}/restore', 'UserController@restore')->name('user.restore');
 /*-----------------------*
  * Device Controller       *
  *-----------------------*/
-Route::resource('device', 'DeviceController');
 Route::put('device/{id}/restore', 'DeviceController@restore')->name('device.restore');
-// Ajax calls
-Route::get('device/{site_id}/locations', 'DeviceController@locations');
-Route::get('device/{id}/details', 'DeviceController@details');
+Route::resource('device', 'DeviceController');
 
 /*-----------------------*
  * Dashboard Controller  *
  *-----------------------*/
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('dev_layout', 'DashboardController@dev_layout');
-// Ajax calls
-Route::get('dashboard/change/site/{site_id}', 'DashboardController@siteChange');
-Route::get('dashboard/change/location/{location_id}', 'DashboardController@locationChange');
-Route::get('dashboard/refresh/full', 'DashboardController@ajaxRefreshAll');
-Route::put('dashboard/{device}/command', 'DashboardController@updateCommand');
 
 /*-----------------------*
  * Activity Log Controller *

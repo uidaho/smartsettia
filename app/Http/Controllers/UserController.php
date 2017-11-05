@@ -83,7 +83,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->password = "";
-
+        
         return view('user.show', [ 'user' => $user ]);
     }
 
@@ -117,6 +117,7 @@ class UserController extends Controller
             'password' => 'sometimes|nullable|min:8|confirmed',
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
+            'preferred_device_id' => 'numeric|nullable|digits_between:1,10|exists:devices,id',
         ]);
         
         $query = User::findOrFail($id);
@@ -128,6 +129,7 @@ class UserController extends Controller
         }
         $query->role = $request->input('role');
         $query->phone = $request->input('phone');
+        $query->preferred_device_id = $request->input('preferred_device_id');
 
         $query->save();
 

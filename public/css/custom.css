@@ -71,10 +71,3 @@ Dashboard Image Modal
 	height: 50px;
 	font-size: 8vw;
 }
-
-/*
-*Used by the dash javascript for getting the dropdown elements
- */
-.empty{}
-.site{}
-.location{}

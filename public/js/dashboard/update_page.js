@@ -1,112 +1,208 @@
-var $headerSite = $('#header_site');
-var $headerLocation = $('#header_location');
-var $headerDevice = $('#header_device');
-var $tableBody = $('#device_table tbody');
+let $headerSite = $('#header_site');
+let $headerLocation = $('#header_location');
+let $headerDevice = $('#header_device');
 //Spans under device name
-var $tempNum = $('#temperature');
-var $humidityNum = $('#humidity');
-var $lightInNum = $('#light_in');
-var $lightOutNum = $('#light_out');
-var $cpuTempNum = $('#cpu_temp');
-//
-var $siteList = $('#site_change');
-var $locationList = $('#location_change');
-var $btnChangeSite = $('#btn_change_site');
-var $btnChangeLoc = $('#btn_change_loc');
-var $spanOpenTime = $('#span_open_time');
-var $spanCloseTime = $('#span_close_time');
+let $spanOpenTime = $('#span_open_time');
+let $spanCloseTime = $('#span_close_time');
+//Lists and there button for changing the site and location
+let $siteList = $('#site_change');
+let $locationList = $('#location_change');
+let $btnChangeSite = $('#btn_change_site');
+let $btnChangeLoc = $('#btn_change_loc');
 //Helper Variables
-var $disabledViewBtn;
-var currentDeviceId;
-var currentLocationId;
-var currentSiteId;
-//Device status enum
-var deviceStatusEnum = {
-	open: 1,
-	opening: 2,
-	closed: 3,
-	closing: 4,
-	locked: 5,
-	error: 6
-};
+let $disabledViewBtn;
+let currentDeviceId;
+let currentLocationId;
+let currentSiteId;
+//Success and failure alert bar
+let $alertSuccessBar = $('#alert_success_bar');
+let $alertSuccessText = $('#success_bar_text');
+let $alertFailureBar = $('#alert_failure_bar');
+let $alertFailureText = $('#failure_bar_text');
 //Update rates
-var dashUpdateRate = 5000;
-var imageUpdateRate = 30000;
-var imageUpdateTimeout;
+let dashUpdateRate = 5000;
+let imageUpdateRate = 30000;
+let imageUpdateTimeout;
 //Lock Ajax calls
-var lock = false;
+let lock = false;
+//Store the current sites, locations, and devices
+let sites;
+let locations;
+let devices;
+//The current device pagination offset
+let currentPaginationPage = 0;
+//The table that holds the devices
+let $deviceTableHolder = $('#device_table_holder');
+//Device with preset data used for when the selected location doesn't have any devices
+let deviceDefault = {
+	'id': 0, 'name': 'No Devices', 'location_id': 0, 'close_time': "17:00", 'open_time': '08:00',
+	'cover_command': 'lock', 'cover_status': 'locked', 'image_rate': 3600, 'sensor_rate': 3600, 'update_rate': 3600
+};
+//Location with preset data used for when the selected site has no locations
+let locationDefault = {
+	'id': 0, 'name': 'No Locations', 'site_id': 0
+};
+//Site with preset data used for when there are no sites
+let siteDefault = {
+	'id': 0, 'name': 'No Sites'
+};
 
 //Call all functions that need to be called at the start
 getStartingIDs();
-updateDashboardData(true);
+refreshDashboardData();
 
-function updateDashboardData(keepUpdating)
+//Continuously refresh dashboard data
+function refreshDashboardData()
+{
+	let targetURL = '/dashboard';
+	let targetData = {
+		device_id: currentDeviceId,
+		location_id: currentLocationId,
+		site_id: currentSiteId,
+		page: currentPaginationPage
+	};
+	updateDashboardData(targetURL, targetData);
+	setTimeout("refreshDashboardData();", dashUpdateRate);
+}
+
+//Change site
+$siteList.on('click', 'li[data-site-id]', function () {
+	let targetURL = '/dashboard';
+	let targetData = {site_id: $(this).attr("data-site-id")};
+	updateDashboardData(targetURL, targetData);
+});
+
+//Change location
+$locationList.on('click', 'li[data-location-id]', function () {
+	let targetURL = '/dashboard';
+	let targetData = {location_id: $(this).attr("data-location-id"), site_id: currentSiteId};
+	updateDashboardData(targetURL, targetData);
+});
+
+//Change the device pagination page
+$deviceTableHolder.on('click', '#pagination_links', function (e) {
+	//Prevent the normal link redirect
+	e.preventDefault();
+	let $clickedElement = $(event.target);
+
+	if (typeof $clickedElement.attr('href') !== typeof undefined && $clickedElement.attr('href') !== false)
+	{
+		let pageNum = $clickedElement.attr('href').split('page=')[1];
+		let targetURL = '/dashboard';
+		let targetData = {
+			location_id: currentLocationId,
+			site_id: currentSiteId,
+			page: pageNum
+		};
+		updateDashboardData(targetURL, targetData);
+	}
+});
+
+function updateDashboardData(targetURL, targetData)
 {
 	if (!lock)
 	{
 		lock = true;
 		$.ajax({
 			type: 'GET',
-			url: '/dashboard/refresh/full',
-			data: { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId },
+			url: targetURL,
+			data: targetData,
 			dataType: "json",
-			success: function (data)
-			{
-				var activeDevice = data['active_device'][0];
-				var activeLocation = data['active_device'][1];
-				var activeSite = data['active_device'][2];
+			success: function (data) {
+				//Get the active site, location, and device
+				let activeSite = data['active_data']['site'] || siteDefault;
+				let activeLocation = data['active_data']['location'] || locationDefault;
+				let activeDevice = data['active_data']['device'] || deviceDefault;
+				//Html code of the device table
+				let html_device_table = data['html_device_table'];
+
+				//Store all the currently loaded sites, locations, and devices
+				sites = data['sites'];
+				locations = data['locations'];
+				devices = data['devices']['data'];
 
 				//Change the active site and location names
 				$headerSite.html(activeSite['name']);
 				$headerLocation.html('<b>Location: </b>' + activeLocation['name']);
 
 				//Update the site dropdown list
-				updateSiteDropdown(data['sites']);
+				updateSiteDropdown(sites);
 
 				//Update the location dropdown list
-				updateLocationDropdown(data['locations']);
+				updateLocationDropdown(locations);
 
-				//Update the devices table with all the devices
-				updateDeviceTable(data['devices']);
+				//Update the devices table
+				$deviceTableHolder.html(html_device_table);
 
 				//Hide the view button of the active device
 				disableActiveViewBtn(activeDevice['id']);
 
 				//Set the device image url, sensor values, and the device header name
-				updateActiveDeviceInfo(activeDevice['id'], activeDevice);
+				updateActiveDeviceInfo(activeDevice);
 
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
 
-				//Change the stored active site and location IDs
+				//Update the stored active site, location, and device IDs
 				currentSiteId = activeSite['id'];
 				currentLocationId = activeLocation['id'];
 				currentDeviceId = activeDevice['id'];
 
+				//Update the current page for pagination
+				if (data['devices']['current_page'] > data['devices']['last_page'])
+					currentPaginationPage = data['devices']['last_page'];
+				else
+					currentPaginationPage = data['devices']['current_page'];
+
 				lock = false;
 			},
-			error: function (data)
-			{
-				console.log("Error in updateDashboardData()");
+			error: function (data) {
+				if (data.status === 404)
+				{
+					alertBarActivate("An error was encountered, please try again later.", 'error');
+				}
+				else
+				{
+					alertBarActivate("Uncaught error in updateDashboardData()", 'error');
+				}
+
+				console.log(data);
 				lock = false;
 			}
 		});
 	}
-
-	if (keepUpdating)
-		setTimeout("updateDashboardData(true);", dashUpdateRate)
 }
+
+//Change the selected device for the page
+$deviceTableHolder.on('click', '[data-view]', function () {
+	let arrayNum = $(this).attr("data-view");
+	let device_id = $(this).attr("data-device-id");
+
+	//Set the device image url, sensor values, and the device header name
+	updateActiveDeviceInfo(devices[arrayNum]);
+
+	//Set the rate for the image to be updated at
+	setImageUpdateRate(devices[arrayNum]['image_rate']);
+
+	//Disable the selected view button and enable the previously disabled view button
+	$(this).prop("disabled", true);
+	$disabledViewBtn.prop("disabled", false);
+	$disabledViewBtn = $(this);
+
+	//Store the current device's id
+	currentDeviceId = device_id;
+});
 
 //Update the site dropdown list
 function updateSiteDropdown(sites)
 {
 	$siteList.empty();
-	if (Object.keys(sites).length > 0)
+	if (Object.keys(sites).length > 1)
 	{
-		var siteString = "";
-		for (i = 0; i < Object.keys(sites).length; i++)
+		let siteString = "";
+		for (let i = 1; i < Object.keys(sites).length; i++)
 		{
-			siteString += '<li class="empty site" value="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
+			siteString += '<li data-site-id="' + sites[i]['id'] + '"><a>' + sites[i]['name'] + '</a></li>'
 		}
 		$siteList.append(siteString);
 		$btnChangeSite.show();
@@ -122,12 +218,12 @@ function updateLocationDropdown(locations)
 {
 	$locationList.empty();
 
-	if (Object.keys(locations).length > 0)
+	if (Object.keys(locations).length > 1)
 	{
-		var locationString = "";
-		for (i = 0; i < Object.keys(locations).length; i++)
+		let locationString = "";
+		for (let i = 1; i < Object.keys(locations).length; i++)
 		{
-			locationString += '<li class="empty location" value="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
+			locationString += '<li data-location-id="' + locations[i]['id'] + '"><a>' + locations[i]['name'] + '</a></li>'
 		}
 		$locationList.append(locationString);
 		$btnChangeLoc.show();
@@ -138,59 +234,10 @@ function updateLocationDropdown(locations)
 	}
 }
 
-//Update the devices table
-function updateDeviceTable(devices)
-{
-	//Empty the device table's body
-	$tableBody.empty();
-	var tableDevicesString = "";
-	//Add the devices to the table
-	for (i = 0; i < Object.keys(devices).length; i++)
-	{
-		//Get the devices status open, closed, locked, etc.
-		var status = getDeviceStatus(devices[i]);
-
-		tableDevicesString += '<tr id="tr_' + devices[i]["id"] + '">' +
-			'<td>' + devices[i]["name"] + '</td>' +
-			'<td>' +
-			'<div class="btn-group btn-group-sm" role="group">' +
-			'<button class="btn btn-primary" type="button" onclick="changeDevice(this);" id="btn_view_' + devices[i]["id"] + '"><i class="fa fa-video-camera"></i> View</button>' +
-			getCommandStatusButton(status, devices[i]["id"]) +
-			'<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#graph_row_' + devices[i]["id"] + '" disabled><i class="fa fa-line-chart"></i> Graphs</button>' +
-			getLockButton(status, devices[i]["id"]) +
-			'<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" onclick="updateDeviceModal(this);" id="btn_edit_' + devices[i]["id"] + '"><i class="glyphicon glyphicon-edit"></i> Edit</button>' +
-			'</div>' +
-			'</td>' +
-			'</tr>' +
-			'<tr class="collapse" id="graph_row_' + devices[i]['id'] + '">' +
-			'<td colspan="2">' +
-			'<div>' +
-			'<ul class="nav nav-tabs">' +
-			'<li class="active"><a href="#tab_1_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="fa fa-thermometer-empty"></i> Temp <span class="badge">' + getTemperature(devices[i]['temperature']) + '</span></a></li>' +
-			'<li><a href="#tab_2_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-tint"></i> RH <span class="badge">' + getHumidity(devices[i]['humidity']) + '</span></a></li>' +
-			'<li><a href="#tab_3_' + devices[i]["id"] + '" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-adjust"></i> Light <span class="badge">' + getHumidity(devices[i]['light_in']) + '</span></a></li>' +
-			'</ul>' +
-			'<div class="tab-content">' +
-			'<div class="tab-pane active" role="tabpanel" id="tab_1_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="/img/temp-graph.png"></p>' +
-			'</div>' +
-			'<div class="tab-pane" role="tabpanel" id="tab_2_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="/img/humidity-graph.png"></p>' +
-			'</div>' +
-			'<div class="tab-pane" role="tabpanel" id="tab_3_' + devices[i]["id"] + '">' +
-			'<p><img class="img-responsive" src="/img/light-graph.png"></p>' +
-			'</div>' +
-			'</div>' +
-			'</div>' +
-			'</td>' +
-			'</tr>'
-	}
-	$tableBody.append(tableDevicesString);
-}
-
+//Disable the starting active device's view button
 function disableActiveViewBtn(device_id)
 {
-	$disabledViewBtn = $('#btn_view_' + device_id);
+	$disabledViewBtn = $deviceTableHolder.find("button[data-view][data-device-id=" + device_id + "]");
 	$disabledViewBtn.prop("disabled", true);
 }
 
@@ -200,187 +247,40 @@ function getStartingIDs()
 	currentDeviceId = $('#active_device_id').val();
 	currentLocationId = $('#active_location_id').val();
 	currentSiteId = $('#active_site_id').val();
+	currentPaginationPage = $('#active_device_table_page').val();
 }
 
-function updateActiveDeviceInfo(device_id, data)
+function updateActiveDeviceInfo(device)
 {
 	//Only update the device image if the active device has changed
-	if (device_id != currentDeviceId)
+	if (device['id'] !== currentDeviceId)
 	{
 		//Change the photo being loaded
-		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device_id;
+		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
 
 		//Update the device image url with the date to prevent the browser from caching
 		updateDeviceImage();
 	}
 
 	//Change the image caption to the name of the current device
-	$imageCaption.html(data['name']);
+	$imageCaption.html(device['name']);
 
 	//Change the header for the device
-	$headerDevice.html(data['name']);
-
-	//Change the temperature value
-	$tempNum.text(getTemperature(data['temperature']));
-
-	//Change the humidity value
-	$humidityNum.text(getHumidity(data['humidity']));
-
-	//Change the inside light value
-	$lightInNum.text(getLight(data['light_in']));
-
-	//Change the outside light value
-	$lightOutNum.text(getLight(data['light_out']));
-
-	//Change the cpu temp value
-	$cpuTempNum.text(getCpuTemp(data['cpu_temp']));
+	$headerDevice.html(device['name']);
 
 	//Update the open and close times
-	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(data['open_time']));
-	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(data['close_time']));
-}
-
-//Get the temperature amount as a formatted string
-function getTemperature(val)
-{
-	var temperature;
-
-	if (val === null)
-		temperature = "C";
-	else
-		temperature = val + "C";
-
-	return temperature;
-}
-
-//Get the humidity amount as a formatted string
-function getHumidity(val)
-{
-	var humidity;
-
-	if (val === null)
-		humidity = "%";
-	else
-		humidity = val + "%";
-
-	return humidity;
-}
-
-//Get the light amount as a formatted string
-function getLight(val)
-{
-	var light;
-
-	if (val === null)
-		light = "%";
-	else
-		light = val + "%";
-
-	return light;
-}
-
-//Get the CPU temperature as a formatted string
-function getCpuTemp(val)
-{
-	var temperature;
-
-	if (val === null)
-		temperature = "C";
-	else
-		temperature = val + "C";
-
-	return temperature;
-}
-
-function getDeviceStatus(device)
-{
-	//console.log(device['name'] + " command: " + device["cover_command"] + " status: " + device['cover_status']);
-	var status;
-	var isOpen = (device['cover_command'] === 'open') && (device['cover_status'] === 'open');
-	var isClosed = (device['cover_command'] === 'close') && (device['cover_status'] === 'closed');
-	//console.log("isOpen: " + isOpen + " isClosed: " + isClosed);
-
-	switch(device['cover_command'])
-	{
-		case 'open':
-			if (isOpen)
-				status = deviceStatusEnum.open;
-			else
-				status = deviceStatusEnum.opening;
-			break;
-		case 'close':
-			if (isClosed)
-				status = deviceStatusEnum.closed;
-			else
-				status = deviceStatusEnum.closing;
-			break;
-		case 'lock':
-			status = deviceStatusEnum.locked;
-			break;
-		default:
-			status = deviceStatusEnum.error;
-	}
-
-	if (device['cover_status'] === 'error')
-		status = deviceStatusEnum.error;
-
-	return status;
-}
-
-//Get the devices command status button as html
-function getCommandStatusButton(status, device_id)
-{
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" ';
-
-	switch(status)
-	{
-		case deviceStatusEnum.open:
-			buttonHtml += 'value="2"><i class="glyphicon glyphicon-resize-small"></i> Close';
-			break;
-		case deviceStatusEnum.opening:
-			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Opening';
-			break;
-		case deviceStatusEnum.closed:
-			buttonHtml += 'value="1"><i class="glyphicon glyphicon-resize-full"></i> Open';
-			break;
-		case deviceStatusEnum.closing:
-			buttonHtml += 'disabled><i class=\"fa fa-cog fa-spin fa-fw\" aria-hidden=\"true\"></i> Closing';
-			break;
-		case deviceStatusEnum.locked:
-			buttonHtml += 'disabled><i class="fa fa-lock" aria-hidden="true"></i> Locked';
-			break;
-		default:
-			buttonHtml += 'disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Error';
-	}
-
-	buttonHtml += '</button>';
-
-	return buttonHtml;
-}
-
-//Get the devices lock button as html
-function getLockButton(status, device_id)
-{
-	var buttonHtml = '<button class="btn btn-primary" type="button" onclick="updateDeviceCommand(this);" id="btn_lock_' + device_id + '" value="3">';
-
-	if (status === deviceStatusEnum.locked)
-		buttonHtml += '<i class="fa fa-unlock" aria-hidden="true"></i></i> Unlock';
-	else
-		buttonHtml += '<i class="fa fa-lock" aria-hidden="true"></i> Lock';
-
-	buttonHtml += '</button>';
-
-	return buttonHtml;
+	$spanOpenTime.html('<b>Open Time: </b>' + getFormattedTime(device['open_time']));
+	$spanCloseTime.html('<b>Close Time: </b>' + getFormattedTime(device['close_time']));
 }
 
 //Format the time to be hours:mins[am or pm]
 function getFormattedTime(time)
 {
-	var formattedTime;
-	var temp = time.split(':');
-	var hours = parseInt(temp[0]);
-	var mins = temp[1];
-	var period;
+	let formattedTime;
+	let temp = time.split(':');
+	let hours = parseInt(temp[0]);
+	let mins = temp[1];
+	let period;
 
 	if (hours >= 12)
 		period = 'pm';
@@ -397,7 +297,7 @@ function getFormattedTime(time)
 // convert the image update rate, and call the new setTimeout()
 function setImageUpdateRate(time)
 {
-	var formattedTime;
+	let formattedTime;
 
 	formattedTime = parseInt(time) * 1000;
 
@@ -414,3 +314,28 @@ function setImageUpdateRate(time)
 	else
 		imageUpdateRate = formattedTime;
 }
+
+//Display the alert bar with the given message
+function alertBarActivate(message, type)
+{
+	if (type === "success")
+	{
+		$alertSuccessText.html(message);
+		$alertSuccessBar.show();
+	}
+	else
+	{
+		$alertFailureText.html('<strong>Whoops!</strong> ' + message);
+		$alertFailureBar.show();
+	}
+}
+
+//Hide the Success alert bar
+$alertSuccessBar.on('click', function () {
+	$alertSuccessBar.hide();
+});
+
+//Hide the failure alert bar
+$alertFailureBar.on('click', function () {
+	$alertFailureBar.hide();
+});

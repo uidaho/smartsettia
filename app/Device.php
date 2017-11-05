@@ -40,7 +40,7 @@ class Device extends Model
      */
     protected $fillable = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
-        'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
+        'time', 'cover_command', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed',
         'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
         'open_time', 'close_time'
     ];
@@ -203,16 +203,11 @@ class Device extends Model
             'location_id',
             'cover_command',
             'cover_status',
-            'temperature',
-            'humidity',
-            'light_in',
-            'light_out',
             'open_time',
             'close_time',
             'update_rate',
             'image_rate',
             'sensor_rate',
-            'cpu_temp',
         ]);
     }
     
@@ -261,5 +256,89 @@ class Device extends Model
     public function data()
     {
         return $this->hasManyThrough('App\SensorData', 'App\Sensor');
+    }
+    
+    /**
+     * Check if the device is ready for a command
+     *
+     * @return boolean
+     */
+    public function isReadyForCommand()
+    {
+        return ($this->cover_status == 'open' || $this->cover_status == 'closed' || $this->cover_status == 'locked');
+    }
+    
+    /**
+     * Check if the current time is during the devices scheduled time to be open
+     *
+     * @return boolean
+     */
+    public function isDuringScheduleOpen()
+    {
+        $timezone = Auth::user()->timezone;
+        //Get the open, close, and current time in the users timezone
+        $open_time = new Carbon($this->open_time, $timezone);
+        $close_time = new Carbon($this->close_time, $timezone);
+        $time_now = Carbon::now($timezone);
+    
+        //Check if the current time is during the open schedule or not
+        if ($time_now->gt($open_time) && $time_now->lt($close_time))
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Get the covers actual status based on the current command and the devices status
+     *
+     * @return string
+     */
+    public function actualCoverStatus()
+    {
+        $status = '';
+        $isOpen = $this->cover_status === 'open';
+        $isClosed = $this->cover_status === 'closed';
+            
+        switch ($this['cover_command'])
+        {
+            case 'open':
+                if ($isOpen)
+                    $status = 'open';
+                else
+                    $status = 'opening';
+                break;
+            case 'close':
+                if ($isClosed)
+                    $status = 'closed';
+                else
+                    $status = 'closing';
+                break;
+            case 'lock':
+                $status = 'locked';
+                break;
+            default:
+                $status = 'error';
+        }
+    
+        if ($this->cover_status === 'error')
+            $status = 'error';
+        
+        return $status;
+    }
+    
+    /**
+     * Get the page number of the device for the dashboard device table pagination
+     *
+     * @param int $limit
+     * @return int
+     */
+    public function dashPageNum($limit)
+    {
+        $pos = Device::where('location_id', '=', $this->location_id)
+            ->where('name', '<=', $this->name)
+            ->orderBy('name', 'ASC')
+            ->count();
+        
+        return ceil($pos / $limit);
     }
 }

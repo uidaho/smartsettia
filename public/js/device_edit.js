@@ -1,21 +1,13 @@
-var $siteDropDown = $('#site');
-var $siteTextBox = $('#new_site_name');
-var $locationDropDown = $('#location');
-var $locationTextBox = $('#new_location_name');
-var firstSelection = true;
+let $siteDropDown = $('#site_id');
+let $siteTextBox = $('#new_site_name');
+let $locationDropDown = $('#location_id');
+let $locationTextBox = $('#new_location_name');
 
 /*Retrieves the locations connected to the site or converts the drop down menus to text boxes
  *when a new site is being created
  */
-$siteDropDown.change(function ()
-{
-	if (firstSelection)
-	{
-		$("#site option[value='-1']").remove();
-		firstSelection = false;
-	}
-
-	var site_id = $siteDropDown.val();
+$siteDropDown.change(function () {
+	let site_id = $siteDropDown.val();
 
 	//Check if the selected drop down element is the "Create new location" element
 	if (site_id === '')
@@ -39,26 +31,37 @@ $siteDropDown.change(function ()
 		//Use ajax to get the locations attached to the selected site
 		$.ajax({
 			type: 'GET',
-			url: '/device/' + site_id + '/locations',
+			url: '/site/' + site_id,
 			data: '',
-			success: function(data)
-			{
+			success: function (data) {
 				$locationDropDown.empty();
-				$.each(data, function(index, location)
-				{
-					$locationDropDown.append($("<option></option>").attr('value', location.id).text(location.name));
-				});
+				let locations = data['locations']['data'];
+				let locationsString = "";
 
-				$locationDropDown.append($("<option></option>").attr('value', '').text('Create new location'));
+				if (Object.keys(locations).length > 0)
+				{
+					//Add the locations to the drop-down
+					for (let i = 0; i < Object.keys(locations).length; i++)
+					{
+						locationsString += '<option value="' + locations[i]['id'] + '">' + locations[i]['name'] + '</option>';
+					}
+					locationsString += '<option value="">Create new location</option>';
+					$locationDropDown.append(locationsString);
+				}
+				else
+				{
+					$locationDropDown.hide();
+					$locationTextBox.show();
+				}
 			}
 		});
 	}
 });
 
+
 //Change the location drop down to an input field if the "Create new location" element is selected
-$locationDropDown.change(function ()
-{
-	var location_id = $locationDropDown.val();
+$locationDropDown.change(function () {
+	let location_id = $locationDropDown.val();
 
 	//If the selected drop down element is the "Create new location" element
 	if (location_id === '')

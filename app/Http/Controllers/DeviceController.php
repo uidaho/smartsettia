@@ -20,8 +20,6 @@ class DeviceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // TODO: Setup logging
-        // $this->middleware('log')->only('index');
     }
 
     /**
@@ -43,7 +41,7 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        return view('device.create');
+        return view('device.index');
     }
 
     /**
@@ -59,7 +57,7 @@ class DeviceController extends Controller
     }
 
     /**
-     * View the edit device page or the edit device modal
+     * View the edit device page
      *
      * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -68,66 +66,21 @@ class DeviceController extends Controller
     {
         //Get the device with the given id
         $device = Device::publicDashData()->findOrFail($id);
-        
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
-        
-        //Check if the selected device has a location
-        if (!empty($location))
-        {
-            //Get all the sites except for the current site ordered by name
-            $sites = Site::select('id', 'name')->orderBy('name', 'ASC')->get()->except($location->site->id);
-            //Get all the locations except for the current location for the given site ordered by name
-            $locations = $location->site->locations()->select('id', 'name', 'site_id')->orderBy('name', 'ASC')->get()->except($location->id);
-            
-            //Add the current site to the front of the collection of sites
-            $sites->prepend($location->site);
-            //Add the current location to the front of the collection of locations
-            $locations->prepend($location);
-        }
-        else
-        {
-            //Set locations to null since there is no site or location attached to the selected device
-            $locations = null;
-            //Get all of the sites
-            $sites = Site::all();
-        }
-        
-        if (\Request::ajax())
-            return response()->json([ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
-        else
-            return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
-    }
     
-    /**
-     * Get the locations with the given site id
-     * Return null if the site does not have any locations
-     *
-     * @param  int $site_id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function locations($site_id)
-    {
-        $locations = Location::bySite($site_id)->select('id', 'name', 'site_id')->get();
-        
-        if ($locations->isEmpty())
-            $locations = null;
+        //Get the site id and location id if they exist and if not assign 0
+        $site_id = $location->site_id ?? 0;
+        $location_id = $location->id ?? 0;
     
-        return response()->json($locations);
-    }
-    
-    /**
-     * Get the devices details
-     * Return 404 error if the device is not found
-     *
-     * @param  int $id
-     * @return Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function details($id)
-    {
-        $device = Device::publicDashData()->findOrFail($id);
+        //Get all sites with the current site first
+        $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $site_id)
+            ->orderBy('name', 'ASC')->get();
+        //Get all locations for the selected site with the selected location first
+        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[0]->id ?? 0)
+            ->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
         
-        return response()->json($device);
+        return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
     }
 
     /**
@@ -140,42 +93,28 @@ class DeviceController extends Controller
     public function update(EditDevice $request, $id)
     {
         $device = Device::findOrFail($id);
-        $location = null;
-        $site = null;
-
-        // TODO figure out way for unique location names for each specific site
         
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
         {
             //Create a new site
-            $siteName = $request->input('new_site_name');
-            $site_id = Site::createSite($siteName)->id;
+            $site = Site::create(['name' => $request->input('new_site_name')]);
+            $site_id = $site->id;
         }
         else
-        {
-            $site_id = $request->input('site');
-        }
-    
-        //Verify the site with the given site id actually exists
-        Site::findOrFail($site_id);
+            $site_id = $request->input('site_id');
         
         //Get the location id of the old or newly created location
         if (!empty($request->input('new_location_name')))
         {
             //Create a new location
-            $locationName = $request->input('new_location_name');
-            $location_id = Location::createLocation($locationName, $site_id)->id;
+            $location = Location::create(['name' => $request->input('new_location_name'), 'site_id' => $site_id]);
+            $location_id = $location->id;
         }
         else
-        {
-            $location_id = $request->input('location');
-        }
+            $location_id = $request->input('location_id');
         
-        //Verify the location with the given location id actually exists
-        Location::findOrFail($location_id);
-        
-        //Update the devices name and location_id
+        //Update the device
         $device->location_id = $location_id;
         $device->name = $request->input('name');
         $device->open_time = $request->input('open_time');
@@ -183,13 +122,30 @@ class DeviceController extends Controller
         $device->update_rate = $request->input('update_rate');
         $device->image_rate = $request->input('image_rate');
         $device->sensor_rate = $request->input('sensor_rate');
+        //Check if the cover_command needs to be updated
+        if ($request->input('command') != null)
+        {
+            //If device is currently opening, closing or in an error state don't update command
+            if (!$device->isReadyForCommand())
+                return response()->json("Device is currently in use.", 403);
+    
+            $command = $request->input('command');
+            
+            //If command is to unlock the device then check if the device should be open or closed based on the schedule
+            if ($request->command === 'unlock')
+            {
+                if ($device->isDuringScheduleOpen())
+                    $command =  'open';
+                else
+                    $command =  'close';
+            }
+            $device->cover_command = $command;
+        }
+        
         $device->save();
-
-        //Remove any unused sites or locations
-        $this->RemoveUnusedSiteLoc();
     
         if (\Request::ajax())
-            return response()->json("Success");
+            return response()->json(['success' => 'Device updated successfully']);
         else
             return redirect()->route('device.show', $id)
                 ->with('success', 'Device updated successfully');
@@ -205,10 +161,17 @@ class DeviceController extends Controller
     {
         $device = Device::withTrashed()->findOrFail($id);
 
-        if ($device->trashed()) {
+        if ($device->trashed())
+        {
             //If the device was already deleted then permanently delete it
             $device->forceDelete($device->id);
-        } else {
+        }
+        else
+        {
+            //Remove the location from the device
+            $device->location_id = null;
+            $device->save();
+            
             //Soft delete the device the first time
             $device->delete();
         }
