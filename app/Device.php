@@ -207,7 +207,7 @@ class Device extends Model
     public function scopePublicDashData($query)
     {
         return $query->select([
-            'id',
+            'devices.id',
             'name',
             'location_id',
             'cover_command',
@@ -218,6 +218,7 @@ class Device extends Model
             'image_rate',
             'sensor_rate',
             'last_network_update_at',
+            'image.updated_at as image_updated_at',
         ]);
     }
     

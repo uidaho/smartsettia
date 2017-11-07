@@ -70,6 +70,7 @@ class DashboardController extends Controller
             ->get();
         //Get all devices for the selected location
         $devices = Device::publicDashData()
+            ->leftJoin('deviceimages as image', 'devices.id', '=', 'image.device_id')
             ->where('location_id', '=', $locations[0]->id ?? 0)
             ->orderBy('name', 'ASC')
             ->paginate(4);
@@ -91,6 +92,16 @@ class DashboardController extends Controller
                 //Mark the device as stale if the device has missed three updates plus a minute
                 $deviceStaleMins = ceil(($item->update_rate * 3) / 60) + 1;
                 $item['isDeviceStale'] = ($item->last_network_update_at <= Carbon::now()->subMinute($deviceStaleMins)) ? true : false;
+    
+                //Mark the device image as stale if the device has missed three image updates plus a minute
+                if ($item->image_updated_at != null)
+                {
+                    $imageStaleMins = ceil(($item->image_rate * 3) / 60) + 1;
+                    $item['isImageStale'] = ($item->image_updated_at <= Carbon::now()->subMinute($imageStaleMins)) ? true : false;
+                }
+                else
+                    $item['isImageStale'] = false;
+                
                 return $item;
             });
         }
