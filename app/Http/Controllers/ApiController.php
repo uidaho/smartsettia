@@ -54,6 +54,7 @@ class ApiController extends Controller
             'mac_address'   => 'nullable|string|min:12|max:12',
             'time'          => 'nullable|date',
             'cover_status'  => 'nullable|string|max:32',
+            'cover_command'  => 'nullable|alpha|max:5|in:open,close',
             'error_msg'     => 'nullable|string',
             'limitsw_open'   => 'nullable|boolean',
             'limitsw_closed' => 'nullable|boolean',
@@ -74,6 +75,8 @@ class ApiController extends Controller
         $device->mac_address = $request->input('mac_address');
         $device->time = $request->input('time');
         $device->cover_status = $request->input('cover_status');
+        if ($request->input('cover_command') != null)
+            $device->cover_command = $request->input('cover_command');
         $device->error_msg = $request->input('error_msg');
         $device->limitsw_open = $request->input('limitsw_open');
         $device->limitsw_closed = $request->input('limitsw_closed');
