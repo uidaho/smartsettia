@@ -65,7 +65,7 @@ class DeviceController extends Controller
     public function edit($id)
     {
         //Get the device with the given id
-        $device = Device::publicDashData()->findOrFail($id);
+        $device = Device::findOrFail($id);
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
     
