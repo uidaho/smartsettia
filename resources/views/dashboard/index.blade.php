@@ -59,7 +59,12 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-5 col-md-offset-1 text-center">
+			<div class="col-md-5 col-md-offset-1 text-center relative">
+				<!-- Image alert bar -->
+				<div class="alert alert-warning alert-dismissible alert-image-stale" role="alert" id="alert_stale_image_bar" hidden>
+					<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<div id="image_stale_bar_text"></div>
+				</div>
 				<!-- Triggers the Image Modal -->
 				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . ($active_data['device']->id ?? 0) }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>

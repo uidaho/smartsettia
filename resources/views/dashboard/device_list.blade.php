@@ -9,7 +9,17 @@
 		<tbody id="control_devices_list">
 		@foreach ($devices as $device)
 			<tr id="tr_{{ $device->id }}">
-				<td>{{ $device->name }}</td>
+				<td>
+					<b><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></b>
+					@if($device->isDeviceStale)
+						<p class="status-offline">Last Seen
+							<br>
+							{{ $device->lastNetworkUpdateAtHuman }}
+						</p>
+					@else
+						<p class="status-online">Online</p>
+					@endif
+				</td>
 				<td>
 					<div class="btn-group btn-group-sm" role="group" style="display: block">
 						@if($device->id == $active_data['device']['id'])
