@@ -11,6 +11,7 @@ use App\Sensor;
 use App\SensorData;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
@@ -84,6 +85,7 @@ class ApiController extends Controller
         $device->cpu_temp = $request->input('cpu_temp');
         $device->temperature = $request->input('temperature');
         $device->humidity = $request->input('humidity');
+        $device->last_network_update_at = Carbon::now();
         
         $device->save();
         

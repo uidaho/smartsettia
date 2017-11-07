@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Traits\LogsActivity;
-//use Spatie\Activitylog\Traits\CausesActivity;
-use App\Sensor;
-use App\SensorData;
 
 class Device extends Model
 {
@@ -23,7 +20,8 @@ class Device extends Model
      * @var array
      */
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
+        'last_network_update_at'
     ];
     
     /**
@@ -42,7 +40,7 @@ class Device extends Model
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
         'time', 'cover_command', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed',
         'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
-        'open_time', 'close_time'
+        'open_time', 'close_time', 'last_network_update_at',
     ];
     
     /**
@@ -177,6 +175,17 @@ class Device extends Model
     }
     
     /**
+     * Accessor: Get the last time the server received and update call from the device converted to a
+     * user friendly format. The format is Month day 12hour:mins am/pm and will be in the user's preferred timezone
+     *
+     * @return string
+     */
+    public function getLastNetworkUpdateAtHumanAttribute()
+    {
+        return $this->last_network_update_at->setTimezone(Auth::user()->timezone)->format('M j g:i a');
+    }
+    
+    /**
      * Scope a query to only include devices belonging to a given location
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -198,7 +207,7 @@ class Device extends Model
     public function scopePublicDashData($query)
     {
         return $query->select([
-            'id',
+            'devices.id',
             'name',
             'location_id',
             'cover_command',
@@ -208,6 +217,8 @@ class Device extends Model
             'update_rate',
             'image_rate',
             'sensor_rate',
+            'last_network_update_at',
+            'image.updated_at as image_updated_at',
         ]);
     }
     
@@ -259,7 +270,7 @@ class Device extends Model
     }
     
     /**
-     * Check if the device is ready for a command
+     * Check if the device is ready for a cover command
      *
      * @return boolean
      */

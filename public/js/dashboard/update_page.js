@@ -19,6 +19,10 @@ let $alertSuccessBar = $('#alert_success_bar');
 let $alertSuccessText = $('#success_bar_text');
 let $alertFailureBar = $('#alert_failure_bar');
 let $alertFailureText = $('#failure_bar_text');
+//Image alert bar
+let $alertImageBar = $('#alert_stale_image_bar');
+let $alertImageText = $('#image_stale_bar_text');
+let userExitImageAlert = false;
 //Update rates
 let dashUpdateRate = 5000;
 let imageUpdateRate = 30000;
@@ -67,6 +71,7 @@ function refreshDashboardData()
 
 //Change site
 $siteList.on('click', 'li[data-site-id]', function () {
+	resetImageAlert();
 	let targetURL = '/dashboard';
 	let targetData = {site_id: $(this).attr("data-site-id")};
 	updateDashboardData(targetURL, targetData);
@@ -74,6 +79,7 @@ $siteList.on('click', 'li[data-site-id]', function () {
 
 //Change location
 $locationList.on('click', 'li[data-location-id]', function () {
+	resetImageAlert();
 	let targetURL = '/dashboard';
 	let targetData = {location_id: $(this).attr("data-location-id"), site_id: currentSiteId};
 	updateDashboardData(targetURL, targetData);
@@ -81,6 +87,7 @@ $locationList.on('click', 'li[data-location-id]', function () {
 
 //Change the device pagination page
 $deviceTableHolder.on('click', '#pagination_links', function (e) {
+	resetImageAlert();
 	//Prevent the normal link redirect
 	e.preventDefault();
 	let $clickedElement = $(event.target);
@@ -143,6 +150,10 @@ function updateDashboardData(targetURL, targetData)
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
 
+				//Alert the user if the image for the selected device is stale
+				if (activeDevice['isImageStale'] && !userExitImageAlert)
+					alertImageBarActivate();
+
 				//Update the stored active site, location, and device IDs
 				currentSiteId = activeSite['id'];
 				currentLocationId = activeLocation['id'];
@@ -175,22 +186,36 @@ function updateDashboardData(targetURL, targetData)
 
 //Change the selected device for the page
 $deviceTableHolder.on('click', '[data-view]', function () {
-	let arrayNum = $(this).attr("data-view");
-	let device_id = $(this).attr("data-device-id");
+	if (!lock)
+	{
+		lock = true;
+		let arrayNum = $(this).attr("data-view");
+		let device_id = $(this).attr("data-device-id");
 
-	//Set the device image url, sensor values, and the device header name
-	updateActiveDeviceInfo(devices[arrayNum]);
+		//Set the device image url, sensor values, and the device header name
+		updateActiveDeviceInfo(devices[arrayNum]);
 
-	//Set the rate for the image to be updated at
-	setImageUpdateRate(devices[arrayNum]['image_rate']);
+		//Set the rate for the image to be updated at
+		setImageUpdateRate(devices[arrayNum]['image_rate']);
 
-	//Disable the selected view button and enable the previously disabled view button
-	$(this).prop("disabled", true);
-	$disabledViewBtn.prop("disabled", false);
-	$disabledViewBtn = $(this);
+		//Disable the selected view button and enable the previously disabled view button
+		$(this).prop("disabled", true);
+		$disabledViewBtn.prop("disabled", false);
+		$disabledViewBtn = $(this);
 
-	//Store the current device's id
-	currentDeviceId = device_id;
+		//Reset the user exiting the stale image alert
+		userExitImageAlert = false;
+		//Alert the user if the image for the selected device is stale
+		if (devices[arrayNum]['isImageStale'] && !userExitImageAlert)
+			alertImageBarActivate();
+		else
+			$alertImageBar.trigger("click");
+
+		//Store the current device's id
+		currentDeviceId = device_id;
+
+		lock = false;
+	}
 });
 
 //Update the site dropdown list
@@ -315,6 +340,13 @@ function setImageUpdateRate(time)
 		imageUpdateRate = formattedTime;
 }
 
+//Reset the user exiting the stale image alert
+function resetImageAlert()
+{
+	userExitImageAlert = false;
+	$alertImageBar.trigger("click");
+}
+
 //Display the alert bar with the given message
 function alertBarActivate(message, type)
 {
@@ -338,4 +370,18 @@ $alertSuccessBar.on('click', function () {
 //Hide the failure alert bar
 $alertFailureBar.on('click', function () {
 	$alertFailureBar.hide();
+});
+
+//Display the image alert bar
+function alertImageBarActivate()
+{
+	$alertImageText.html('<strong>Warning!</strong> This image is stale');
+	$alertImageBar.show();
+}
+
+//Hide the failure alert bar
+$alertImageBar.on('click', function ()
+{
+	$alertImageBar.hide();
+	userExitImageAlert = true;
 });
