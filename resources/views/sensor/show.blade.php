@@ -73,26 +73,28 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <strong>{{ $sensor->name }}</strong><br>
-                        <table class="table table-device-sensors table-striped">
-                            <thead>
-                                <tr>
-                                    <td>ID:</td>
-                                    <td>Value:</td>
-                                    <td>Created At:</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($sensordata as $data)
-                                <tr>
-                                    <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</td>
-                                    <td>{{ $data->value }}</a></td>
-                                    <td>{{ $data->created_at }} GMT</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $sensordata->links() }}
+                        <div class="col-md-12 col-lg-12">
+                            <strong>{{ $sensor->name }}</strong><br>
+                            <table class="table table-device-sensors table-striped">
+                                <thead>
+                                    <tr>
+                                        <td>ID:</td>
+                                        <td>Value:</td>
+                                        <td>Created At:</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($sensordata as $data)
+                                    <tr>
+                                        <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</td>
+                                        <td>{{ $data->value }}</a></td>
+                                        <td>{{ $data->created_at }} GMT</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            {{ $sensordata->links() }}
+                        </div>
                     </div>
                 </div>
                 <div class="panel-footer">

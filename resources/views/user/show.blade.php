@@ -22,7 +22,7 @@
                                  src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=50"
                                  alt="User Pic">
                         </div>
-                        <div class="col-md-9 col-lg-9 hidden-xs hidden-sm">
+                        <div class="col-md-9 col-lg-9">
                             <strong>{{ $user->name }}</strong><br>
                             <table class="table table-user-information">
                                 <tbody>
