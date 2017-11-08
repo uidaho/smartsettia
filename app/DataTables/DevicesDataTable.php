@@ -90,8 +90,11 @@ class DevicesDataTable extends DataTable
             'order'   => [ [ 0, 'asc' ] ],
             'buttons' => [
                 'create',
-                'export',
-                'print',
+                [ 'extend' => 'collection', 'text' => '<i class="fa fa-file-excel-o"></i> Export', 'buttons' => [ 
+                    [ 'extend' => 'csv', 'exportOptions' => [ 'modifier' => [ 'search' => true ] ] ],
+                    [ 'extend' => 'excel', 'exportOptions' => [ 'modifier' => [ 'search' => true ] ] ],
+                ] ],
+                [ 'extend' => 'print', 'exportOptions' => [ 'modifier' => [ 'search' => true ] ] ],
                 'reset',
                 'reload',
             ],
