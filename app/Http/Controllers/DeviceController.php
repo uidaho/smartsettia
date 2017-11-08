@@ -57,11 +57,12 @@ class DeviceController extends Controller
         
         $charts = [];
         foreach ($device->sensors as $sensor) {
+            $data = $sensor->last_week_daily_avg_data;
             $charts[$sensor->id] = Charts::create('line', 'highcharts')
                 ->title($sensor->name)
                 ->elementLabel($sensor->type)
-                ->labels($sensor->last_week_daily_avg_data->pluck('date'))
-                ->values($sensor->last_week_daily_avg_data->pluck('value'))
+                ->labels($data->pluck('date'))
+                ->values($data->pluck('value'))
                 ->responsive(true);
         }
         
