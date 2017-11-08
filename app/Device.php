@@ -309,18 +309,23 @@ class Device extends Model
         $status = '';
         $isOpen = $this->cover_status === 'open';
         $isClosed = $this->cover_status === 'closed';
+        $isLocked = $this->cover_status === 'locked';
             
         switch ($this['cover_command'])
         {
             case 'open':
                 if ($isOpen)
                     $status = 'open';
+                else if ($isLocked)
+                    $status = 'unlocking';
                 else
                     $status = 'opening';
                 break;
             case 'close':
                 if ($isClosed)
                     $status = 'closed';
+                else if ($isLocked)
+                    $status = 'unlocking';
                 else
                     $status = 'closing';
                 break;

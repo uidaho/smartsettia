@@ -43,6 +43,9 @@
 							@case('locked')
 								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-lock" aria-hidden="true"></i> Locked</button>
 								@break
+							@case('unlocking')
+								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-cog fa-spin fa-fw" aria-hidden="true"></i> Unlocking</button>
+								@break
 							@default
 								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Error</button>
 						@endswitch
