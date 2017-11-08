@@ -86,8 +86,8 @@
                                 <tbody>
                                     @foreach ($sensordata as $data)
                                     <tr>
-                                        <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</td>
-                                        <td>{{ $data->value }}</a></td>
+                                        <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</a></td>
+                                        <td>{{ $data->value }}</td>
                                         <td>{{ $data->created_at }} GMT</td>
                                     </tr>
                                     @endforeach
