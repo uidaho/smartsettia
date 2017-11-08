@@ -22,7 +22,7 @@ let $alertFailureText = $('#failure_bar_text');
 //Image alert bar
 let $alertImageBar = $('#alert_stale_image_bar');
 let $alertImageText = $('#image_stale_bar_text');
-let userExitImageAlert = false;
+let userExitedImageAlert = false;
 //Update rates
 let dashUpdateRate = 5000;
 let imageUpdateRate = 30000;
@@ -71,7 +71,6 @@ function refreshDashboardData()
 
 //Change site
 $siteList.on('click', 'li[data-site-id]', function () {
-	resetImageAlert();
 	let targetURL = '/dashboard';
 	let targetData = {site_id: $(this).attr("data-site-id")};
 	updateDashboardData(targetURL, targetData);
@@ -79,7 +78,6 @@ $siteList.on('click', 'li[data-site-id]', function () {
 
 //Change location
 $locationList.on('click', 'li[data-location-id]', function () {
-	resetImageAlert();
 	let targetURL = '/dashboard';
 	let targetData = {location_id: $(this).attr("data-location-id"), site_id: currentSiteId};
 	updateDashboardData(targetURL, targetData);
@@ -87,7 +85,6 @@ $locationList.on('click', 'li[data-location-id]', function () {
 
 //Change the device pagination page
 $deviceTableHolder.on('click', '#pagination_links', function (e) {
-	resetImageAlert();
 	//Prevent the normal link redirect
 	e.preventDefault();
 	let $clickedElement = $(event.target);
@@ -150,9 +147,8 @@ function updateDashboardData(targetURL, targetData)
 				//Set the rate for the image to be updated at
 				setImageUpdateRate(activeDevice['image_rate']);
 
-				//Alert the user if the image for the selected device is stale
-				if (activeDevice['isImageStale'] && !userExitImageAlert)
-					alertImageBarActivate();
+				//Display or hide the image stale alert depending on if the image is stale or not
+				updateImageStaleAlert(activeDevice);
 
 				//Update the stored active site, location, and device IDs
 				currentSiteId = activeSite['id'];
@@ -204,12 +200,12 @@ $deviceTableHolder.on('click', '[data-view]', function () {
 		$disabledViewBtn = $(this);
 
 		//Reset the user exiting the stale image alert
-		userExitImageAlert = false;
+		userExitedImageAlert = false;
 		//Alert the user if the image for the selected device is stale
-		if (devices[arrayNum]['isImageStale'] && !userExitImageAlert)
+		if (devices[arrayNum]['isImageStale'] && !userExitedImageAlert)
 			alertImageBarActivate();
 		else
-			$alertImageBar.trigger("click");
+			resetImageAlert();
 
 		//Store the current device's id
 		currentDeviceId = device_id;
@@ -340,11 +336,23 @@ function setImageUpdateRate(time)
 		imageUpdateRate = formattedTime;
 }
 
+//Display or hide the image stale alert depending on if the image is stale or not
+function updateImageStaleAlert(activeDevice)
+{
+	//Alert the user if the image for the selected device is stale
+	if (activeDevice['isImageStale'] && !userExitedImageAlert)
+		alertImageBarActivate();
+
+	//Hide alert if the image is not stale anymore
+	if (!activeDevice['isImageStale'] && $alertImageBar.is(':visible'))
+		resetImageAlert();
+}
+
 //Reset the user exiting the stale image alert
 function resetImageAlert()
 {
-	userExitImageAlert = false;
 	$alertImageBar.trigger("click");
+	userExitedImageAlert = false;
 }
 
 //Display the alert bar with the given message
@@ -383,5 +391,5 @@ function alertImageBarActivate()
 $alertImageBar.on('click', function ()
 {
 	$alertImageBar.hide();
-	userExitImageAlert = true;
+	userExitedImageAlert = true;
 });
