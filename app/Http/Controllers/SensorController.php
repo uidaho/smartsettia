@@ -71,17 +71,14 @@ class SensorController extends Controller
     public function show(Request $request, $id)
     {
         $sensor = Sensor::findOrFail($id);
-        
         $sensordata = $sensor->data()->paginate(25);
-        
         $chart = Charts::create('line', 'highcharts')
             ->title($sensor->name)
             ->elementLabel($sensor->type)
             ->labels($sensordata->pluck('created_at'))
             ->values($sensordata->pluck('value'))
             ->responsive(true);
-            
-        
+
         return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata, 'chart' => $chart ]);
     }
 
