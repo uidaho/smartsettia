@@ -9,7 +9,7 @@
 		<tbody id="control_devices_list">
 		@foreach ($devices as $device)
 			<tr id="tr_{{ $device->id }}">
-				<td>
+				<td style="padding-bottom: 0;">
 					<b><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></b>
 					@if($device->isDeviceStale)
 						<p class="status-offline">Last Seen
