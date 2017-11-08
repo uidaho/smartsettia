@@ -73,7 +73,8 @@ class SiteDataTable extends DataTable
             'order'   => [ [ 0, 'asc' ] ],
             'buttons' => [
                 'create',
-                'export',
+                'csv',
+                'excel',
                 'print',
                 'reset',
                 'reload',

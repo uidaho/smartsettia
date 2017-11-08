@@ -39,7 +39,6 @@ sudo apt upgrade
 sudo apt install curl unzip git
 sudo apt install php7.0 php7.0-fpm php7.0-curl php7.0-dev php7.0-gd php7.0-intl php7.0-mcrypt php7.0-json php7.0-mysql php7.0-opcache php7.0-bcmath php7.0-mbstring php7.0-soap php7.0-xml php7.0-cli
 sudo apt install composer redis-server nginx
-sudo apt install wkhtmltopdf
 ```
 
 ### Install MySQL

@@ -79,7 +79,8 @@ class ActivityLogDataTable extends DataTable
             'dom'     => 'Bfrtip',
             'order'   => [ [ 0, 'desc' ] ],
             'buttons' => [
-                'export',
+                'csv',
+                'excel',
                 'print',
                 'reset',
                 'reload',

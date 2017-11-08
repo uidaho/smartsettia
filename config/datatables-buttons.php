@@ -61,7 +61,8 @@ return [
         'order'   => [[0, 'desc']],
         'buttons' => [
             'create',
-            'export',
+            'csv',
+            'excel',
             'print',
             'reset',
             'reload',

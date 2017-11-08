@@ -84,11 +84,6 @@ sudo mysql_secure_installation
 sudo apt install nginx php5-fpm php5-cli php5-mcrypt git lrzsz unzip zip
 ```
 
-### Install wkhtmltopdf for pdf generation
-```
-sudo apt install wkhtmltopdf
-```
-
 ## Configuration
 ### Create Self-Signed SSL Certificate
 ```
