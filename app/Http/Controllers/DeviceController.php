@@ -93,35 +93,46 @@ class DeviceController extends Controller
     public function update(EditDevice $request, $id)
     {
         $device = Device::findOrFail($id);
+        $site_id = null;
+        $location_id = null;
         
-        //Get the site id of the old or newly created site
-        if (!empty($request->input('new_site_name')))
+        //Get the site id and location id for the device if they are not null
+        if ($request->input('new_site_name') != null || $request->input('site_id') != null)
         {
-            //Create a new site
-            $site = Site::create(['name' => $request->input('new_site_name')]);
-            $site_id = $site->id;
+            //Get the site id of the old or newly created site
+            if (!empty($request->input('new_site_name')))
+            {
+                //Create a new site
+                $site = Site::create(['name' => $request->input('new_site_name')]);
+                $site_id = $site->id;
+            } else
+                $site_id = $request->input('site_id');
+    
+            //Get the location id of the old or newly created location
+            if (!empty($request->input('new_location_name')))
+            {
+                //Create a new location
+                $location = Location::create(['name' => $request->input('new_location_name'), 'site_id' => $site_id]);
+                $location_id = $location->id;
+            } else
+                $location_id = $request->input('location_id');
         }
-        else
-            $site_id = $request->input('site_id');
-        
-        //Get the location id of the old or newly created location
-        if (!empty($request->input('new_location_name')))
-        {
-            //Create a new location
-            $location = Location::create(['name' => $request->input('new_location_name'), 'site_id' => $site_id]);
-            $location_id = $location->id;
-        }
-        else
-            $location_id = $request->input('location_id');
         
         //Update the device
-        $device->location_id = $location_id;
-        $device->name = $request->input('name');
-        $device->open_time = $request->input('open_time');
-        $device->close_time = $request->input('close_time');
-        $device->update_rate = $request->input('update_rate');
-        $device->image_rate = $request->input('image_rate');
-        $device->sensor_rate = $request->input('sensor_rate');
+        if ($location_id != null)
+            $device->location_id = $location_id;
+        if ($request->input('name') != null)
+            $device->name = $request->input('name');
+        if ($request->input('open_time') != null)
+            $device->open_time = $request->input('open_time');
+        if ($request->input('close_time') != null)
+            $device->close_time = $request->input('close_time');
+        if ($request->input('update_rate') != null)
+            $device->update_rate = $request->input('update_rate');
+        if ($request->input('image_rate') != null)
+            $device->image_rate = $request->input('image_rate');
+        if ($request->input('sensor_rate') != null)
+            $device->sensor_rate = $request->input('sensor_rate');
         //Check if the cover_command needs to be updated
         if ($request->input('command') != null)
         {

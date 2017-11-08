@@ -27,13 +27,13 @@ class EditDevice extends FormRequest
     {
         //TODO figure out way for unique location names for each specific site
         return [
-            'name' => 'bail|required|min:2|max:75|name',
-            'open_time' => 'required|date_format:H:i',
-            'close_time' => 'required|date_format:H:i',
-            'update_rate' => 'required|integer|digits_between:1,7',
-            'image_rate' => 'required|integer|digits_between:1,7',
-            'sensor_rate' => 'required|integer|digits_between:1,7',
-            'command' => 'sometimes|alpha|max:6|in:open,close,lock,unlock',
+            'name' => 'sometimes|nullable|min:2|max:75|name',
+            'open_time' => 'sometimes|nullable|date_format:H:i',
+            'close_time' => 'sometimes|nullable|date_format:H:i',
+            'update_rate' => 'sometimes|nullable|integer|digits_between:1,7',
+            'image_rate' => 'sometimes|nullable|integer|digits_between:1,7',
+            'sensor_rate' => 'sometimes|nullable|integer|digits_between:1,7',
+            'command' => 'sometimes|nullable|alpha|max:6|in:open,close,lock,unlock',
         ];
     }
     
@@ -55,11 +55,11 @@ class EditDevice extends FormRequest
         });
     
         $validator->sometimes('new_site_name', 'bail|min:2|max:75|name|unique:sites,name', function ($input) {
-            return !$input->site_id;
+            return !$input->site_id && $input->name;
         });
     
         $validator->sometimes('new_location_name', 'bail|min:2|max:75|name|unique:locations,name', function ($input) {
-            return !$input->location_id;
+            return !$input->location_id && $input->name;
         });
         
         return $validator;

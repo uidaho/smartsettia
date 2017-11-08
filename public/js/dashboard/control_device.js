@@ -13,18 +13,11 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 
 		//Get the device's id
 		let device_id = $(this).attr("data-device-id");
-		//Get the devices position in the devices array
-		let devicePos = $(this).attr("data-array-pos");
-		//Get the devices data
-		let targetData = devices[devicePos];
-		//Update the cover command with the command from the buttons data command attribute
-		targetData['command'] = $(this).attr("data-command");
-		//Update the location id to the current location id
-		targetData['location_id'] = currentLocationId;
-		//Add current site id
-		targetData['site_id'] = currentSiteId;
-		//Add the route type override
-		targetData['_method'] = 'put';
+		//Store the command and the route type override
+		let targetData = {
+			command: $(this).attr("data-command"),
+			_method: 'put'
+		};
 
 		$.ajax({
 			type: 'POST',
@@ -36,8 +29,8 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 
 				//Update the page
 				let targetURL = '/dashboard';
-				let targetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, page : currentPaginationPage };
-				updateDashboardData(targetURL, targetData);
+				let newTargetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, page : currentPaginationPage };
+				updateDashboardData(targetURL, newTargetData);
 			},
 			error: function (data) {
 				if (data.status === 422)
