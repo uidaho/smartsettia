@@ -27,13 +27,13 @@ class EditDevice extends FormRequest
     {
         //TODO figure out way for unique location names for each specific site
         return [
-            'name' => 'bail|required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#',
+            'name' => 'bail|required|min:2|max:75|name',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i',
             'update_rate' => 'required|integer|digits_between:1,7',
             'image_rate' => 'required|integer|digits_between:1,7',
             'sensor_rate' => 'required|integer|digits_between:1,7',
-            'command' => 'sometimes|required|alpha|max:6|in:open,close,lock,unlock',
+            'command' => 'sometimes|alpha|max:6|in:open,close,lock,unlock',
         ];
     }
     
@@ -46,19 +46,19 @@ class EditDevice extends FormRequest
     {
         $validator = parent::getValidatorInstance();
     
-        $validator->sometimes('site_id', 'bail|required|integer|digits_between:1,10|exists:sites,id', function ($input) {
+        $validator->sometimes('site_id', 'bail|integer|digits_between:1,10|exists:sites,id', function ($input) {
             return !$input->new_site_name && $input->site_id;
         });
     
-        $validator->sometimes('location_id', 'bail|required|integer|digits_between:1,10|exists:locations,id', function ($input) {
+        $validator->sometimes('location_id', 'bail|integer|digits_between:1,10|exists:locations,id', function ($input) {
             return !$input->new_location_name && $input->location_id;
         });
     
-        $validator->sometimes('new_site_name', 'bail|required|string|max:75|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:75|name|unique:sites,name', function ($input) {
             return !$input->site_id;
         });
     
-        $validator->sometimes('new_location_name', 'bail|required|string|max:75|unique:locations,name', function ($input) {
+        $validator->sometimes('new_location_name', 'bail|min:2|max:75|name|unique:locations,name', function ($input) {
             return !$input->location_id;
         });
         
