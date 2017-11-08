@@ -83,7 +83,7 @@
                                     <a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
                                 <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa-fw fa fa-sign-out"></i> Logout</a>
-                                    <form id="logout-form" action="logout" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
                                 </li>
                             </ul>
                         </li>
