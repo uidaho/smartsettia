@@ -1,153 +1,137 @@
 //Error text
-var $errorDeviceName = $('#error_device_name');
-var $errorSite = $('#error_site');
-var $errorLocation = $('#error_location');
-var $errorOpenTime = $('#error_open_time');
-var $errorCloseTime = $('#error_close_time');
-var $errorUpdateRate = $('#error_update_rate');
-var $errorImageRate = $('#error_image_rate');
-var $errorSensorRate = $('#error_sensor_rate');
+let $errorDeviceName = $('#error_device_name');
+let $errorSite = $('#error_site');
+let $errorLocation = $('#error_location');
+let $errorOpenTime = $('#error_open_time');
+let $errorCloseTime = $('#error_close_time');
+let $errorUpdateRate = $('#error_update_rate');
+let $errorImageRate = $('#error_image_rate');
+let $errorSensorRate = $('#error_sensor_rate');
 //Error forms
-var $formGroupDeviceName = $('#form_group_device_name');
-var $formGroupSite = $('#form_group_site');
-var $formGroupLocation = $('#form_group_location');
-var $formGroupOpenTime = $('#form_group_open_time');
-var $formGroupCloseTime = $('#form_group_close_time');
-var $formGroupUpdateRate = $('#form_group_update_rate');
-var $formGroupImageRate = $('#form_group_image_rate');
-var $formGroupSensorRate = $('#form_group_sensor_rate');
+let $formGroupDeviceName = $('#form_group_device_name');
+let $formGroupSite = $('#form_group_site');
+let $formGroupLocation = $('#form_group_location');
+let $formGroupOpenTime = $('#form_group_open_time');
+let $formGroupCloseTime = $('#form_group_close_time');
+let $formGroupUpdateRate = $('#form_group_update_rate');
+let $formGroupImageRate = $('#form_group_image_rate');
+let $formGroupSensorRate = $('#form_group_sensor_rate');
 //Modal
-var $editDeviceModal = $('#editDeviceModal');
+let $editDeviceModal = $('#editDeviceModal');
 //Form inputs
-var $formEditDevice = $('#form_edit_device');
-var $inputDeviceName = $('#input_device_name');
-var $inputOpenTime = $('#open_time');
-var $inputCloseTime = $('#close_time');
-var $inputUpdateRate = $('#update_rate');
-var $inputImageRate = $('#image_rate');
-var $inputSensorRate = $('#sensor_rate');
-
-//Remove the form buttons that are not used in modal
-$('#form_group_view_buttons_div').remove();
+let $formEditDevice = $('#form_edit_device');
+let $inputDeviceName = $('#input_device_name');
+let $inputOpenTime = $('#open_time');
+let $inputCloseTime = $('#close_time');
+let $inputUpdateRate = $('#update_rate');
+let $inputImageRate = $('#image_rate');
+let $inputSensorRate = $('#sensor_rate');
 
 //Update the edit device modal with the current devices info
-function updateDeviceModal(btn)
-{
-	var editDeviceID = btn.id.substring(btn.id.lastIndexOf('_') + 1);
+$deviceTableHolder.on('click', '[data-edit]', function () {
+	let arrayNum = $(this).attr("data-edit");
+	let device_id = $(this).attr("data-device-id");
+	let device = devices[arrayNum];
 
 	//Reset Modal
 	resetEditDeviceModal();
 
 	//Update form route
-	$formEditDevice.attr('action', '/device/' + editDeviceID);
+	$formEditDevice.attr('action', '/device/' + device_id);
 
-	if (!lock)
+	//Update input box for the device name
+	$inputDeviceName.val(device['name']);
+
+	//Update the site dropdown
+	$siteDropDown.empty();
+	if (sites.length > 0)
 	{
-		lock = true;
-		$.ajax({
-			type: 'GET',
-			url: '/device/' + editDeviceID + '/edit',
-			data: '',
-			dataType: "json",
-			success: function (data) {
-				//Update input box for the device name
-				$inputDeviceName.val(data['device']['name']);
+		let siteString = "";
+		for (let i = 0; i < sites.length; i++)
+		{
+			siteString += '<option value="' + sites[i]["id"] + '">' + sites[i]["name"] + '</option>'
+		}
+		siteString += '<option value="">Create new site</option>';
+		$siteDropDown.append(siteString);
+	}
 
-				//Update the site dropdown
-				$siteDropDown.empty();
-				if (Object.keys(data['sites']).length > 0)
-				{
-					var siteString = "";
-					for (i = 0; i < Object.keys(data['sites']).length; i++)
-					{
-						siteString += '<option value="' + data["sites"][i]["id"] + '">' + data["sites"][i]["name"] + '</option>'
-					}
-					siteString += '<option value="">Create new site</option>';
-					$siteDropDown.append(siteString);
-				}
-
-				//Update the location dropdown
-				$locationDropDown.empty();
-				var locationString = "";
-				if (Object.keys(data['locations']).length > 0)
-				{
-					for (i = 0; i < Object.keys(data['locations']).length; i++)
-					{
-						locationString += '<option value="' + data["locations"][i]["id"] + '">' + data["locations"][i]["name"] + '</option>'
-					}
-					locationString += '<option value="">Create new location</option>';
-					$locationDropDown.append(locationString);
-				}
-				else
-				{
-					locationString += '<option value="">Choose a site first</option>';
-					$locationDropDown.append(locationString);
-				}
-
-				//Update the open time
-				$inputOpenTime.val(data['device']['open_time']);
-
-				//Update the close time
-				$inputCloseTime.val(data['device']['close_time']);
-
-				//Update the update rate
-				$inputUpdateRate.val(data['device']['update_rate']);
-
-				//Update the image rate
-				$inputImageRate.val(data['device']['image_rate']);
-
-				//Update the sensor rate
-				$inputSensorRate.val(data['device']['sensor_rate']);
-
-				lock = false;
-			},
-			error: function (data)
-			{
-				console.log("Error in updateDeviceModal() " + data);
-				//Close the edit device modal
-				$editDeviceModal.modal('hide');
-				lock = false;
-			}
-		});
+	//Update the location dropdown
+	$locationDropDown.empty();
+	let locationString = "";
+	if (locations.length > 0)
+	{
+		for (let i = 0; i < locations.length; i++)
+		{
+			locationString += '<option value="' + locations[i]["id"] + '">' + locations[i]["name"] + '</option>'
+		}
+		locationString += '<option value="">Create new location</option>';
+		$locationDropDown.append(locationString);
 	}
 	else
 	{
-		//Close the edit device modal
-		$editDeviceModal.modal('hide');
+		locationString += '<option value="">Choose a site first</option>';
+		$locationDropDown.append(locationString);
 	}
-}
+
+	//Update the open time
+	$inputOpenTime.val(device['open_time']);
+
+	//Update the close time
+	$inputCloseTime.val(device['close_time']);
+
+	//Update the update rate
+	$inputUpdateRate.val(device['update_rate']);
+
+	//Update the image rate
+	$inputImageRate.val(device['image_rate']);
+
+	//Update the sensor rate
+	$inputSensorRate.val(device['sensor_rate']);
+
+});
 
 //Submitting the edit device modal form
-$formEditDevice.on('submit', function(e)
-{
+$formEditDevice.on('submit', function (e) {
 	//Prevent the normal form submission
 	e.preventDefault();
-	var $this = $(this);
+	let $formSubmit = $(this);
 
 	if (!lock)
 	{
 		lock = true;
 		$.ajax({
-			url: $this.prop('action'),
+			url: $formSubmit.prop('action'),
 			method: 'POST',
-			data: $this.serialize(),
+			data: $formSubmit.serialize(),
 			dataType: "json",
 			success: function (data) {
 				lock = false;
+
 				//Update the page
-				updateDashboardData(false);
+				let targetURL = '/dashboard';
+				let targetData = {
+					device_id: currentDeviceId,
+					location_id: currentLocationId,
+					site_id: currentSiteId,
+					page: currentPaginationPage
+				};
+				updateDashboardData(targetURL, targetData);
 
 				//Close the edit device modal
 				$editDeviceModal.modal('hide');
+
+				//Display a message of success to the user
+				alertBarActivate(data['success'], 'success');
 			},
 			error: function (data) {
 				if (data.status === 404)
 				{
-					window.alert("Device not found, try again later.");
+					alertBarActivate("Device not found, try again later.", 'error');
+					console.log("Invalid data");
 				}
 				else if (data.status === 422)
 				{
-					var errors = data.responseJSON;
+					let errors = data.responseJSON['errors'];
 
 					if ('name' in errors)
 					{
@@ -160,9 +144,9 @@ $formEditDevice.on('submit', function(e)
 						$errorSite.html(errors['new_site_name'][0]);
 						$formGroupSite.addClass('has-error');
 					}
-					else if ('site' in errors)
+					else if ('site_id' in errors)
 					{
-						$errorSite.html(errors['site'][0]);
+						$errorSite.html(errors['site_id'][0]);
 						$formGroupSite.addClass('has-error');
 					}
 
@@ -171,9 +155,9 @@ $formEditDevice.on('submit', function(e)
 						$errorLocation.html(errors['new_location_name'][0]);
 						$formGroupLocation.addClass('has-error');
 					}
-					else if ('location' in errors)
+					else if ('location_id' in errors)
 					{
-						$errorLocation.html(errors['location'][0]);
+						$errorLocation.html(errors['location_id'][0]);
 						$formGroupLocation.addClass('has-error');
 					}
 
@@ -209,17 +193,21 @@ $formEditDevice.on('submit', function(e)
 				}
 				else if (data.status === 403)
 				{
-					window.alert("Sorry, you do not have permission to edit this device.");
+					alertBarActivate("Sorry, you do not have permission to edit this device.", 'error');
+					console.log("Don't have permission");
 
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
 				}
 				else
 				{
-					console.log("Uncaught error in device edit form submit");
+					console.log("Uncaught error in device edit form submit", 'error');
+
 					//Close the edit device modal
 					$editDeviceModal.modal('hide');
 				}
+
+				console.log(data);
 
 				lock = false;
 			}

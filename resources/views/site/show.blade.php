@@ -58,7 +58,7 @@
 									@foreach ($locations as $location)
 										<tr>
 											<td><a href="{{ route('location.show', $location->id) }}">{{ $location->name }}</a></td>
-											<td>{{ $location->updated_at->diffForHumans() }}</td>
+											<td>{{ is_object($location->updated_at) ? $location->updated_at->diffForHumans() : 'never' }}</td>
 										</tr>
 									@endforeach
 									</tbody>
