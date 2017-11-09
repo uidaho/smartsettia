@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Device;
 use App\Site;
 use App\Location;
+use Charts;
 
 class DeviceController extends Controller
 {
@@ -53,7 +54,19 @@ class DeviceController extends Controller
     public function show($id)
     {
         $device = Device::findOrFail($id);
-        return view('device.show', [ 'device' => $device ]);
+        
+        $charts = [];
+        foreach ($device->sensors as $sensor) {
+            $data = $sensor->last_month_daily_avg_data;
+            $charts[$sensor->id] = Charts::create('line', 'highcharts')
+                ->title($sensor->name)
+                ->elementLabel($sensor->type)
+                ->labels($data->pluck('date'))
+                ->values($data->pluck('value'))
+                ->responsive(true);
+        }
+        
+        return view('device.show', [ 'device' => $device, 'charts' => $charts ]);
     }
 
     /**
