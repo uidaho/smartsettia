@@ -9,7 +9,7 @@
 		<tbody id="control_devices_list">
 		@foreach ($devices as $device)
 			<tr id="tr_{{ $device->id }}">
-				<td>
+				<td style="padding-bottom: 0;">
 					<b><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></b>
 					@if($device->isDeviceStale)
 						<p class="status-offline">Last Seen
@@ -42,6 +42,9 @@
 								@break
 							@case('locked')
 								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-lock" aria-hidden="true"></i> Locked</button>
+								@break
+							@case('unlocking')
+								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-cog fa-spin fa-fw" aria-hidden="true"></i> Unlocking</button>
 								@break
 							@default
 								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Error</button>

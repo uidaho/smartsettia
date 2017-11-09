@@ -25,7 +25,7 @@ class EditLocation extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#',
+            'name' => 'required|min:2|max:75|name',
         ];
     }
     
@@ -38,11 +38,11 @@ class EditLocation extends FormRequest
     {
         $validator = parent::getValidatorInstance();
         
-        $validator->sometimes('site', 'required|integer|digits_between:1,10|exists:sites,id', function ($input) {
+        $validator->sometimes('site', 'integer|digits_between:1,10|exists:sites,id', function ($input) {
             return !$input->new_site_name;
         });
         
-        $validator->sometimes('new_site_name', 'bail|required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:75|name|unique:sites,name', function ($input) {
             return !$input->site;
         });
         

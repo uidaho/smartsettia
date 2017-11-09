@@ -46,7 +46,7 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#|unique:sites,name',
+            'name' => 'required|min:2|max:75|name|unique:sites,name',
         ]);
         
         $site = Site::create(['name' => $request->name]);
@@ -95,7 +95,7 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $request->validate([
-            'name' => 'required|min:2|max:75|regex:#(^[a-zA-Z0-9])([\w ]*)(\w$)#|unique:sites,name,'.$site->id,
+            'name' => 'required|min:2|max:75|name|unique:sites,name,'.$site->id,
         ]);
         
         $site->update(['name' => $request->name]);
