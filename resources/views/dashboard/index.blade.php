@@ -66,7 +66,7 @@
 					<div id="image_stale_bar_text"></div>
 				</div>
 				<!-- Triggers the Image Modal -->
-				<input class="border-simple img-responsive" type="image" src="{{ URL('image/device') . '/' . ($active_data['device']->id ?? 0) }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
+				<input class="border-simple img-responsive center-block" type="image" src="{{ URL('image/device') . '/' . ($active_data['device']->id ?? 0) }}" alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
 				<br>
 				<a class="no-style-link" href="{{ URL('image/device') . '/' . ($active_data['device']->id ?? '-1') }}" download="custom_name.jpg" id="download_image_link">
 					<button class="btn btn-primary">Download Image</button>
