@@ -56,13 +56,6 @@ class ApiController extends Controller
             'cover_status'  => 'nullable|string|max:32',
             'cover_command'  => 'nullable|alpha|max:5|in:open,close',
             'error_msg'     => 'nullable|string',
-            'limitsw_open'   => 'nullable|boolean',
-            'limitsw_closed' => 'nullable|boolean',
-            'light_in'      => 'nullable|numeric',
-            'light_out'     => 'nullable|numeric',
-            'cpu_temp'      => 'nullable|numeric',
-            'temperature'   => 'nullable|numeric',
-            'humidity'      => 'nullable|numeric',
         ])->validate();
         
         // Get the device record.
@@ -78,13 +71,6 @@ class ApiController extends Controller
         if ($request->input('cover_command') != null)
             $device->cover_command = $request->input('cover_command');
         $device->error_msg = $request->input('error_msg');
-        $device->limitsw_open = $request->input('limitsw_open');
-        $device->limitsw_closed = $request->input('limitsw_closed');
-        $device->light_in = $request->input('light_in');
-        $device->light_out = $request->input('light_out');
-        $device->cpu_temp = $request->input('cpu_temp');
-        $device->temperature = $request->input('temperature');
-        $device->humidity = $request->input('humidity');
         $device->last_network_update_at = Carbon::now();
         
         $device->save();
