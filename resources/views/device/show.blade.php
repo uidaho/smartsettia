@@ -22,7 +22,7 @@
                                  src="/image/device/{{ $device->id }}"
                                  alt="Device picture">
                         </div>
-                        <div class="col-md-9 col-lg-9 hidden-xs hidden-sm">
+                        <div class="col-md-9 col-lg-9">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-information">
                                 <tbody>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-sensors">
                                 <thead>
