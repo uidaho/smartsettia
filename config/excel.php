@@ -58,15 +58,15 @@ return array(
     ],
 
     'properties' => [
-        'creator'        => 'Maatwebsite',
-        'lastModifiedBy' => 'Maatwebsite',
+        'creator'        => 'SmartSettia',
+        'lastModifiedBy' => 'SmartSettia',
         'title'          => 'Spreadsheet',
         'description'    => 'Default spreadsheet export',
         'subject'        => 'Spreadsheet export',
-        'keywords'       => 'maatwebsite, excel, export',
+        'keywords'       => 'SmartSettia, excel, export',
         'category'       => 'Excel',
-        'manager'        => 'Maatwebsite',
-        'company'        => 'Maatwebsite',
+        'manager'        => 'SmartSettia',
+        'company'        => 'SmartSettia',
     ],
 
     /*
@@ -106,7 +106,7 @@ return array(
     |
     */
 
-    'creator'    => 'Maatwebsite',
+    'creator'    => 'SmartSettia',
 
     'csv'        => [
         /*
