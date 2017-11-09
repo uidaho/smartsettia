@@ -11,6 +11,7 @@
 /public/storage
 /storage/*.key
 /storage/databases
+/storage/debugbar
 /vendor
 .DS_Store
 .env

@@ -12,7 +12,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							<div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+							<div class="col-md-12 col-lg-12">
 								<strong>{{ $location->name }}</strong><br>
 								<table class="table table-sensor">
 									<tbody>
@@ -49,7 +49,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							<div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+							<div class="col-md-12 col-lg-12">
 								<strong>{{ $location->name }}</strong><br>
 								<table class="table table-device-sensors">
 									<thead>
