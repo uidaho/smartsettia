@@ -56,8 +56,6 @@ class ApiController extends Controller
             'cover_status'  => 'nullable|string|max:32',
             'cover_command'  => 'nullable|alpha|max:5|in:open,close',
             'error_msg'     => 'nullable|string',
-            'limitsw_open'   => 'nullable|boolean',
-            'limitsw_closed' => 'nullable|boolean',
         ])->validate();
         
         // Get the device record.
@@ -73,8 +71,6 @@ class ApiController extends Controller
         if ($request->input('cover_command') != null)
             $device->cover_command = $request->input('cover_command');
         $device->error_msg = $request->input('error_msg');
-        $device->limitsw_open = $request->input('limitsw_open');
-        $device->limitsw_closed = $request->input('limitsw_closed');
         $device->last_network_update_at = Carbon::now();
         
         $device->save();
