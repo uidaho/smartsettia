@@ -306,7 +306,6 @@ class Device extends Model
      */
     public function actualCoverStatus()
     {
-        $status = '';
         $isOpen = $this->cover_status === 'open';
         $isClosed = $this->cover_status === 'closed';
         $isLocked = $this->cover_status === 'locked';

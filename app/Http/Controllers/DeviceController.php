@@ -88,13 +88,11 @@ class DeviceController extends Controller
      *
      * @param  EditDevice  $request
      * @param  string  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function update(EditDevice $request, $id)
     {
         $device = Device::findOrFail($id);
-        $site_id = null;
-        $location_id = null;
         
         //Get the site id and location id for the device if they are not null
         if ($request->input('new_site_name') != null || $request->input('site_id') != null)
@@ -116,11 +114,12 @@ class DeviceController extends Controller
                 $location_id = $location->id;
             } else
                 $location_id = $request->input('location_id');
+    
+            //Update the device
+            $device->location_id = $location_id;
         }
         
         //Update the device
-        if ($location_id != null)
-            $device->location_id = $location_id;
         if ($request->input('name') != null)
             $device->name = $request->input('name');
         if ($request->input('open_time') != null)
