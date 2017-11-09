@@ -12,7 +12,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $sensor->name }}</strong><br>
                             <table class="table table-sensor">
                                 <tbody>
@@ -53,11 +53,27 @@
         <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
+                    <h3 class="panel-title">Sensor Graph</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="values_div" class="row">
+                        {!! $chart->html() !!}
+                    </div>
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
                     <h3 class="panel-title">Sensor History</h3>
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $sensor->name }}</strong><br>
                             <table class="table table-device-sensors table-striped">
                                 <thead>
@@ -70,8 +86,8 @@
                                 <tbody>
                                     @foreach ($sensordata as $data)
                                     <tr>
-                                        <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</td>
-                                        <td>{{ $data->value }}</a></td>
+                                        <td><a href="{{ route('sensordata.show', $data->id) }}">{{ $data->id }}</a></td>
+                                        <td>{{ $data->value }}</td>
                                         <td>{{ $data->created_at }} GMT</td>
                                     </tr>
                                     @endforeach
@@ -90,8 +106,11 @@
 @endsection
 
 @push('styles')
+{!! Charts::styles() !!}
 @endpush
 
 
 @push('scripts')
+{!! Charts::scripts() !!}
+{!! $chart->script() !!}
 @endpush

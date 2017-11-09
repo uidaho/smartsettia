@@ -12,7 +12,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12 col-lg-12 hidden-xs hidden-sm">
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $sensordata->sensor->name ?? 'null' }}</strong><br>
                             <table class="table table-user-information">
                                 <tbody>
