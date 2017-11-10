@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SensorData extends Model 
 {
-    use LogsActivity;
+    //use LogsActivity;
 
     protected $table = 'sensor_data';
 

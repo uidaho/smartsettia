@@ -48,7 +48,7 @@ class Device extends Model
      *
      * @var array
      */
-    protected static $ignoreChangedAttributes = ['updated_at'];
+    protected static $ignoreChangedAttributes = ['updated_at', 'last_network_update_at'];
     
     /**
      * The attributes to log in the Activity Log
