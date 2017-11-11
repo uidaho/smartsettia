@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <td>Latest Value:</td>
-                                    <td><a href="{{ route('sensordata.show', $sensor->latest_data->id ?? '0') }}">{{ $sensor->latest_data->value ?? 'null' }}</a></td>
+                                    <td><a href="{{ route('sensordata.show', $latestData->id ?? '0') }}">{{ $latestData->value ?? 'null' }}</a></td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -28,11 +28,11 @@
                                 <tbody>
                                 <tr>
                                     <td>Site:</td>
-                                    <td><a href="{{-- TODO route('site.show', $device->site->id) --}}">{{ $device->site->name ?? 'null' }}</a></td>
+                                    <td><a href="{{  route('site.show', $device->site->id) }}">{{ $device->site->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Location:</td>
-                                    <td><a href="{{-- TODO route('location.show', $device->location_id) --}}">{{ $device->location->name ?? 'null' }}</a></td>
+                                    <td><a href="{{  route('location.show', $device->location_id) }}">{{ $device->location->name ?? 'null' }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
@@ -40,8 +40,12 @@
                                 </tr>
                                 <tr>
                                     <td>Updated:</td>
-                                    <td>{{ $device->updated_at }}</td>
+                                    <td>{{ $device->updatedAtHuman }}</td>
                                 </tr>
+								<tr>
+									<td>Last Communication:</td>
+									<td>{{ $device->lastNetworkUpdateAtDetailed }}</td>
+								</tr>
                                 <tr>
                                     <td>UUID:</td>
                                     <td>{{ $device->uuid }}</td>
@@ -75,18 +79,6 @@
                                     <td>{{ $device->error_msg }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Open Switch:</td>
-                                    <td>{{ $device->limitsw_open }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Closed Switch:</td>
-                                    <td>{{ $device->limitsw_closed }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Timezone:</td>
-                                    <td>{{ $device->timezone }}</td>
-                                </tr>
-                                <tr>
                                     <td>Update rate:</td>
                                     <td>{{ $device->update_rate }} seconds</td>
                                 </tr>
@@ -108,11 +100,11 @@
                                 </tr>
                                 <tr>
                                     <td>Open Time:</td>
-                                    <td>{{ $device->open_time }}</td>
+                                    <td>{{ $device->openTimeHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>Close Time:</td>
-                                    <td>{{ $device->close_time }}</td>
+                                    <td>{{ $device->closeTimeHuman }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -151,14 +143,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($device->sensors as $sensor)
-                                    <tr>
-                                        <td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
-                                        <td>{{ $sensor->type }}</td>
-                                        <td><a href="{{ route('sensordata.show', $sensor->latest_data->id ?? 0) }}">{{ $sensor->latest_data->value ?? 'null' }}</a></td>
-                                        <td>{{ $sensor->latest_data->updated_at ?? 'null' }} GMT</td>
-                                    </tr>
-                                    @endforeach
+									@foreach ($device->sensors as $sensor)
+                                        <?php $latestData = $sensor->latest_data; ?>
+										<tr>
+											<td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
+											<td>{{ $sensor->type }}</td>
+											<td><a href="{{ route('sensordata.show', $latestData->id ?? 0) }}">{{ $latestData->value ?? 'null' }}</a></td>
+											<td>{{ $latestData->updated_at ?? 'null' }} GMT</td>
+										</tr>
+									@endforeach
                                 </tbody>
                             </table>
                         </div>
