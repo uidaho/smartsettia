@@ -110,6 +110,20 @@ class Device extends Model
     }
     
     /**
+     * Accessor: Get the open time of the device converted to the users preferred time and
+     * converted to a user friendly format of h:i a
+     *
+     * @return string
+     */
+    public function getOpenTimeHumanAttribute()
+    {
+        $time = new Carbon($this->attributes['open_time'], 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
+        
+        return $time->format('h:i a');
+    }
+    
+    /**
      * Accessor: Get the close time of the device converted to hours and minutes
      * If it is a device accessing the time use UTC
      * If it is a user accessing the time use their preferred timezone
@@ -126,6 +140,20 @@ class Device extends Model
             $time = $time->setTimezone(Auth::user()->timezone);
         
         return $time->format('H:i');
+    }
+    
+    /**
+     * Accessor: Get the close time of the device converted to the users preferred time and
+     * converted to a user friendly format of h:i a
+     *
+     * @return string
+     */
+    public function getCloseTimeHumanAttribute()
+    {
+        $time = new Carbon($this->attributes['close_time'], 'UTC');
+        $time = $time->setTimezone(Auth::user()->timezone);
+        
+        return $time->format('h:i a');
     }
     
     /**
@@ -181,6 +209,39 @@ class Device extends Model
     public function getLastNetworkUpdateAtHumanAttribute()
     {
         return $this->last_network_update_at->setTimezone(Auth::user()->timezone)->format('M j g:i a');
+    }
+    
+    /**
+     * Accessor: Get the last time the server received and update call from the device converted to a
+     * user friendly detailed format. The format is Month day, year 12hour:mins am/pm and will be in the user's preferred timezone
+     *
+     * @return string
+     */
+    public function getLastNetworkUpdateAtDetailedAttribute()
+    {
+        return $this->last_network_update_at->setTimezone(Auth::user()->timezone)->format('M j, Y g:i a');
+    }
+    
+    /**
+     * Accessor: Get the devices last update time converted to a
+     * user friendly format. The format is Month day, year 12hour:mins am/pm and will be in the user's preferred timezone
+     *
+     * @return string
+     */
+    public function getUpdatedAtHumanAttribute()
+    {
+        return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M j, Y g:i a');
+    }
+    
+    /**
+     * Accessor: Get the devices created at time converted to a
+     * user friendly format. The format is Month day, year 12hour:mins am/pm and will be in the user's preferred timezone
+     *
+     * @return string
+     */
+    public function getCreatedAtHumanAttribute()
+    {
+        return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M j, Y g:i a');
     }
     
     /**

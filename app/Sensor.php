@@ -4,8 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class Sensor extends Model 
 {
@@ -69,7 +67,9 @@ class Sensor extends Model
      */
     public function getLatestDataAttribute()
     {
-        return $this->hasOne('App\SensorData')->latest()->first() ?? (object)[];
+        return SensorData::whereRaw('id = (SELECT MAX(id)
+                                                    FROM sensor_data
+                                                    WHERE sensor_id = ?)', [$this->id])->first() ?? (object)[];
     }
     
     /**
