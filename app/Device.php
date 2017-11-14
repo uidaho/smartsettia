@@ -38,9 +38,8 @@ class Device extends Model
      */
     protected $fillable = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
-        'time', 'cover_command', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed',
-        'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
-        'open_time', 'close_time', 'last_network_update_at',
+        'time', 'cover_command', 'cover_status', 'error_msg', 'update_rate',
+        'image_rate', 'sensor_rate', 'open_time', 'close_time', 'last_network_update_at',
     ];
     
     /**
@@ -57,9 +56,8 @@ class Device extends Model
      */
     protected static $logAttributes = [
         'name', 'location_id', 'uuid', 'version', 'hostname', 'ip', 'mac_address', 
-        'time', 'cover_status', 'error_msg', 'limitsw_open', 'limitsw_closed', 
-        'light_in', 'light_out', 'update_rate', 'image_rate', 'sensor_rate', 
-        'open_time', 'close_time'
+        'time', 'cover_command', 'cover_status', 'error_msg',
+        'update_rate', 'image_rate', 'sensor_rate', 'open_time', 'close_time'
     ];
     
     /**

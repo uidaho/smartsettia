@@ -27,7 +27,7 @@ class EditDevice extends FormRequest
     {
         //TODO figure out way for unique location names for each specific site
         return [
-            'name' => 'sometimes|nullable|min:2|max:75|name',
+            'name' => 'sometimes|nullable|min:2|max:190|name',
             'open_time' => 'sometimes|nullable|date_format:H:i',
             'close_time' => 'sometimes|nullable|date_format:H:i',
             'update_rate' => 'sometimes|nullable|integer|digits_between:1,7',
@@ -54,11 +54,11 @@ class EditDevice extends FormRequest
             return !$input->new_location_name && $input->location_id;
         });
     
-        $validator->sometimes('new_site_name', 'bail|min:2|max:75|name|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function ($input) {
             return !$input->site_id && $input->name;
         });
     
-        $validator->sometimes('new_location_name', 'bail|min:2|max:75|name|unique:locations,name', function ($input) {
+        $validator->sometimes('new_location_name', 'bail|min:2|max:190|name|unique:locations,name', function ($input) {
             return !$input->location_id && $input->name;
         });
         
@@ -76,7 +76,9 @@ class EditDevice extends FormRequest
             'name.required' => 'A device name is required',
             'site_id.required' => 'A site is required',
             'new_site_name.required' => 'A site is required',
+            'new_site_name.min'  => 'The new site must be at least 2 characters',
             'location_id.required' => 'A location is required',
+            'location_id.min'  => 'The new location must be at least 2 characters',
             'new_location_name.required' => 'A location is required',
             'open_time.required'  => 'A open time for the device is required',
             'open_time.date_format:H:i'  => 'A open time must be in the format hour:minutes',

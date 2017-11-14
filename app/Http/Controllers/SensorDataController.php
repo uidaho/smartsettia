@@ -48,8 +48,8 @@ class SensorDataController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'sensor_id' => 'required|integer|exists:sensors,id',
-            'value' => 'required|string|max:190'
+            'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
+            'value' => 'required|max:190|value_string'
         ]);
 
         $query = SensorData::create($request->all());
@@ -94,8 +94,8 @@ class SensorDataController extends Controller
     public function update($id)
     {
         request()->validate([
-            'sensor_id' => 'required|integer|exists:sensors,id',
-            'value' => 'required|string|max:190'
+            'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
+            'value' => 'required|max:190|value_string'
         ]);
         $query = SensorData::findOrFail($id)->update($request->all());
         return redirect()->route('sensordata.show', $id)

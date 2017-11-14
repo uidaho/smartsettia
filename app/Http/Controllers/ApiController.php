@@ -46,16 +46,16 @@ class ApiController extends Controller
     {
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60|exists:devices,token',
-            'version'       => 'nullable|string|max:32',
-            'hostname'      => 'nullable|string|max:255',
+            'uuid'          => 'required|size:36|uuid|exists:devices,uuid',
+            'token'         => 'required|max:60|alpha_num|exists:devices,token',
+            'version'       => 'nullable|max:32|version',
+            'hostname'      => 'nullable|max:255|url',
             'ip'            => 'nullable|ip',
-            'mac_address'   => 'nullable|string|min:12|max:12',
+            'mac_address'   => 'nullable|size:12|mac',
             'time'          => 'nullable|date',
-            'cover_status'  => 'nullable|string|max:32',
+            'cover_status'  => 'nullable|alpha|max:7|in:opening,closing,open,closed,locked,error',
             'cover_command'  => 'nullable|alpha|max:5|in:open,close',
-            'error_msg'     => 'nullable|string',
+            'error_msg'     => 'nullable|max:1000|error_string',
         ])->validate();
         
         // Get the device record.
@@ -94,11 +94,11 @@ class ApiController extends Controller
     {
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60|exists:devices,token',
-            'sensor_data.*.name'   => 'required|max:190',
-            'sensor_data.*.type'   => 'required|max:190',
-            'sensor_data.*.value'  => 'required|max:190',
+            'uuid'          => 'required|size:36|uuid|exists:devices,uuid',
+            'token'         => 'required|max:60|alpha_num|exists:devices,token',
+            'sensor_data.*.name'   => 'required|min:2|max:190|name',
+            'sensor_data.*.type'   => 'required|max:190|type_name',
+            'sensor_data.*.value'  => 'required|max:190|value_string',
         ])->validate();
         
         // Get the device record.
@@ -147,8 +147,8 @@ class ApiController extends Controller
     {
         // Validate the request.
         $validator = Validator::make($request->all(), [
-            'uuid' => 'required|string|max:255',
-            'challenge' => 'required|string|min:6',
+            'uuid' => 'required|size:36|uuid',
+            'challenge' => 'required|min:6|string',
         ])->validate();
         
         // If challenge string doesnt match then send 401 unauthorized.
@@ -199,8 +199,8 @@ class ApiController extends Controller
     public function image(Request $request) {
         // Validate the request.
         $validator = Validator::make($request->all(), [
-            'uuid'          => 'required|string|max:255|exists:devices,uuid',
-            'token'         => 'required|string|max:60|exists:devices,token',
+            'uuid'          => 'required|size:36|uuid|exists:devices,uuid',
+            'token'         => 'required|max:60|alpha_num|exists:devices,token',
             'image'         => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
         ])->validate();
         

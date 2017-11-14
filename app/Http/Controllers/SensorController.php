@@ -50,9 +50,9 @@ class SensorController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'device_id' => 'required|integer|exists:devices,id',
-            'name' => 'required|name|max:190',
-            'type' => 'required|name|max:190'
+            'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
+            'name' => 'required|min:2|max:190|name',
+            'type' => 'required|max:190|type_name'
         ]);
 
         $query = Sensor::create($request->all());
@@ -108,9 +108,9 @@ class SensorController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            'device_id' => 'required|integer|exists:devices,id',
-            'name' => 'required|name|max:190',
-            'type' => 'required|name|max:190'
+            'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
+            'name' => 'required|min:2|max:190|name',
+            'type' => 'required|max:190|type_name'
         ]);
         $query = Sensor::findOrFail($id)->update($request->all());
         return redirect()->route('sensor.show', $id)
