@@ -39,10 +39,10 @@ class EditLocation extends FormRequest
         $validator = parent::getValidatorInstance();
         
         $validator->sometimes('site', 'integer|digits_between:1,10|exists:sites,id', function ($input) {
-            return !$input->new_site_name;
+            return !$input->new_site_name && $input->site;
         });
         
-        $validator->sometimes('new_site_name', 'bail|min:2|max:75|name|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function ($input) {
             return !$input->site;
         });
         
@@ -59,6 +59,7 @@ class EditLocation extends FormRequest
         return [
             'name.required' => 'A location name is required',
             'new_site_name.unique'  => 'The site name must be unique',
+            'new_site_name.min'  => 'The new site must be at least 2 characters',
         ];
     }
 }
