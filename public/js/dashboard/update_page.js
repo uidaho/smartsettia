@@ -279,6 +279,9 @@ function updateActiveDeviceInfo(device)
 		//Change the photo being loaded
 		deviceImageURL = deviceImageURL.substring(0, deviceImageURL.lastIndexOf('/') + 1) + device['id'];
 
+		//Change the image download name
+		$downloadImageLink.attr('download', 'smartsettia-device-' + device['id'] + '_' + Date.now() + '.jpg');
+
 		//Update the device image url with the date to prevent the browser from caching
 		updateDeviceImage();
 	}

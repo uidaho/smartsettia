@@ -23,6 +23,9 @@ function updateDeviceImage()
 {
 	let newImage = deviceImageURL + "?" + Date.now();
 	deviceImage.src = newImage;
+	let oldFileName = $downloadImageLink.attr('download');
+	let newFileName = oldFileName.substring(0, oldFileName.lastIndexOf('_')) + '_' + Date.now() + '.jpg';
+	$downloadImageLink.attr('download', newFileName);
 	$downloadImageLink.attr('href', newImage);
 	$modalImage.attr('src', newImage);
 }
