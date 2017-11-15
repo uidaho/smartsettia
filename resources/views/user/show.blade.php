@@ -32,11 +32,11 @@
                                 </tr>
                                 <tr>
                                     <td>Registered since:</td>
-                                    <td>{{ $user->created_at }}</td>
+                                    <td>{{ $user->createdAtHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>Updated at:</td>
-                                    <td>{{ $user->updated_at }}</td>
+                                    <td>{{ $user->updatedAtHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>E-mail:</td>

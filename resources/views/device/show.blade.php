@@ -50,7 +50,7 @@
                                 </tr>
 								<tr>
 									<td>Last Communication:</td>
-									<td>{{ $device->lastNetworkUpdateAtDetailed }}</td>
+									<td>{{ $device->lastNetworkUpdateAtHuman }}</td>
 								</tr>
                                 <tr>
                                     <td>UUID:</td>
@@ -155,7 +155,7 @@
 											<td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
 											<td>{{ $sensor->type }}</td>
 											<td><a href="{{ route('sensordata.show', $latestData->id ?? 0) }}">{{ $latestData->value ?? 'null' }}</a></td>
-											<td>{{ $latestData->updated_at ?? 'null' }} GMT</td>
+											<td>{{ $latestData->createdAtHuman ?? 'null' }}</td>
 										</tr>
 									@endforeach
                                 </tbody>

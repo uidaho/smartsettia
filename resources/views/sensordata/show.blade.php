@@ -33,12 +33,8 @@
                                     <td>{{ $sensordata->value }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Updated At:</td>
-                                    <td>{{ $sensordata->updated_at }} GMT</td>
-                                </tr>
-                                <tr>
                                     <td>Created At:</td>
-                                    <td>{{ $sensordata->created_at }} GMT</td>
+                                    <td>{{ $sensordata->createdAtHuman }}</td>
                                 </tr>
                                 </tbody>
                             </table>
