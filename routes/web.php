@@ -80,7 +80,7 @@ Route::get('user-notifications', 'DashboardController@index')->name('user-notifi
 /*-----------------------*
  * Image Controller  *
  *-----------------------*/
-Route::get('image/device/{device_id}', 'ImageController@show');
+Route::get('image/device/{device_id}', 'ImageController@show')->name('image.device');
 
 /*-----------------------*
  * Location Controller *

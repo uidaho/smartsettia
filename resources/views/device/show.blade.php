@@ -12,27 +12,33 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
-                            <img class="img-thumbnail img-responsive"
-                                 src="/image/device/{{ $device->id }}"
-                                 alt="Device picture">
+                        <div class="col-md-12 col-lg-12 text-center">
+                            <input class="img-thumbnail img-responsive center-block" 
+                                type="image"
+                                src="{{ route('image.device', $device->id) }}"
+                                alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
+                            <a class="no-style-link" href="{{ route('image.device', $device->id) }}" 
+                                download="smartsettia-device-{{ $device->id }}_{{ time() }}.jpg" 
+                                id="download_image_link">
+                                <button class="btn btn-primary">Download Image</button>
+                            </a>
                         </div>
-                        <div class="col-xs-2 col-sm-2 hidden-md hidden-lg">
-                            <img class="img-thumbnail img-responsive"
-                                 src="/image/device/{{ $device->id }}"
-                                 alt="Device picture">
-                        </div>
-                        <div class="col-md-9 col-lg-9">
+                        
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-information">
                                 <tbody>
                                 <tr>
                                     <td>Site:</td>
-                                    <td><a href="{{  route('site.show', $device->site->id) }}">{{ $device->site->name ?? 'null' }}</a></td>
+                                    <td>
+                                        <a href="{{ route('site.show', $device->site->id ?? 0) }}">{{ $device->site->name ?? '' }}</a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Location:</td>
-                                    <td><a href="{{  route('location.show', $device->location_id) }}">{{ $device->location->name ?? 'null' }}</a></td>
+                                    <td>
+                                        <a href="{{ route('location.show', $device->location_id ?? 0) }}">{{ is_object($device->location) ? $device->location->name ?? '' : '' }}</a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
@@ -191,6 +197,13 @@
             </div>
         </div>
     </div>
+</div>
+<div id="image_modal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<img class="modal-content" src="{{ route('image.device', $device->id) }}" alt="Device Image">
+		<div id="image_caption">{{ $device->name }}</div>
+	</div>
 </div>
 @endsection
 
