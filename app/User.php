@@ -165,7 +165,7 @@ class User extends Authenticatable
     public function getUpdatedAtHumanAttribute()
     {
         if ($this->updated_at->diffInDays() > 0)
-            return $this->updated_at->setTimezone($this->timezone)->format('M d, Y h:i a');
+            return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
         else
             return $this->updated_at->diffForHumans();
     }
@@ -183,7 +183,7 @@ class User extends Authenticatable
     public function getCreatedAtHumanAttribute()
     {
         if ($this->created_at->diffInDays() > 0)
-            return $this->created_at->setTimezone($this->timezone)->format('M d, Y h:i a');
+            return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
         else
             return $this->created_at->diffForHumans();
     }
