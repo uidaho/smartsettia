@@ -65,8 +65,6 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Manage Users</a></li>
-                                    <li class="{{ Route::currentRouteNamed('manage-groups') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('manage-groups') }}"><i class="fa-fw fa fa-group" aria-hidden="true"></i> Manage Groups</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
                                         <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Manage Devices</a></li>
 									<li class="{{ Route::currentRouteNamed('location.index') ? 'active' : '' }}" role="presentation">
