@@ -68,15 +68,6 @@ Route::resource('sensor', 'SensorController');
  *-----------------------*/
 Route::resource('sensordata', 'SensorDataController');
 
-
-// Placeholders for NYI stuff
-Route::get('unit', 'DashboardController@index')->name('unit');
-Route::get('admin', 'DashboardController@index')->name('admin');
-Route::get('manage-users', 'UserController@index')->name('manage-users');
-Route::get('manage-groups', 'DashboardController@index')->name('manage-groups');
-Route::get('manage-units', 'DashboardController@index')->name('manage-units');
-Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
-
 /*-----------------------*
  * Image Controller  *
  *-----------------------*/
@@ -91,3 +82,8 @@ Route::resource('location', 'LocationController');
  * Site Controller *
  *-----------------------*/
 Route::resource('site', 'SiteController');
+
+// TODO
+Route::get('unit', 'DashboardController@index')->name('unit');
+Route::get('admin', 'DashboardController@index')->name('admin');
+Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
