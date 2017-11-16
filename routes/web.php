@@ -68,15 +68,6 @@ Route::resource('sensor', 'SensorController');
  *-----------------------*/
 Route::resource('sensordata', 'SensorDataController');
 
-
-// Placeholders for NYI stuff
-Route::get('unit', 'DashboardController@index')->name('unit');
-Route::get('admin', 'DashboardController@index')->name('admin');
-Route::get('manage-users', 'UserController@index')->name('manage-users');
-Route::get('manage-groups', 'DashboardController@index')->name('manage-groups');
-Route::get('manage-units', 'DashboardController@index')->name('manage-units');
-Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
-
 /*-----------------------*
  * Image Controller  *
  *-----------------------*/
@@ -109,3 +100,8 @@ Route::post('/sms/receive', function(\Nexmo\Client $nexmo){
     $reply =$nexmo->message()->send($message->createReply('This is for SmartSettia notifications only. Please contact admin@smartsettia.com for assistance.'));
     Log::info('sent reply: ' . $reply['message-id']);
 });
+
+// TODO
+Route::get('unit', 'DashboardController@index')->name('unit');
+Route::get('admin', 'DashboardController@index')->name('admin');
+Route::get('user-notifications', 'DashboardController@index')->name('user-notifications');
