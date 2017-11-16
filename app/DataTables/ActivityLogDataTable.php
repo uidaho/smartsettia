@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Services\DataTable;
 use Spatie\Activitylog\Models\Activity;
 
@@ -24,6 +25,12 @@ class ActivityLogDataTable extends DataTable
             })
             ->editColumn('properties', function ($activity) {
                 return $activity->properties;
+            })
+            ->editColumn('created_at', function ($activity) {
+                if ($activity->created_at->diffInDays() > 0)
+                    return $activity->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+                else
+                    return $activity->created_at->diffForHumans();
             })
             ->rawColumns(['causer_id', 'subject_id', 'properties']);
     }

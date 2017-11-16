@@ -20,6 +20,10 @@
 										<td>ID:</td>
 										<td>{{ $site->id }}</td>
 									</tr>
+									<tr>
+										<td>Created At:</td>
+										<td>{{ $site->createdAtHuman }}</td>
+									</tr>
 									</tbody>
 								</table>
 							</div>
@@ -51,14 +55,14 @@
 									<thead>
 									<tr>
 										<td>Name:</td>
-										<td>Updated:</td>
+										<td>Updated At:</td>
 									</tr>
 									</thead>
 									<tbody>
 									@foreach ($locations as $location)
 										<tr>
 											<td><a href="{{ route('location.show', $location->id) }}">{{ $location->name }}</a></td>
-											<td>{{ is_object($location->updated_at) ? $location->updated_at->diffForHumans() : 'never' }}</td>
+											<td>{{ is_object($location->updated_at) ? $location->updatedAtHuman : 'never' }}</td>
 										</tr>
 									@endforeach
 									</tbody>

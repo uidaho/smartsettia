@@ -49,7 +49,7 @@
 							@default
 								<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Error</button>
 						@endswitch
-						<button class="btn btn-primary" type="button" disabled><i class="fa fa-line-chart"></i> Graphs</button>
+						<a class="btn btn-primary" type="button" href="{{ route('device.show', $device->id) }}"><i class="fa fa-line-chart"></i> Graphs</a>
 						@if($device->actualCoverStatus() == 'locked')
 							<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" data-command="unlock"><i class="fa fa-unlock" aria-hidden="true"></i> Unlock</button>
 						@elseif($device->actualCoverStatus() == 'open' || $device->actualCoverStatus() == 'closed')
