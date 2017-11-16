@@ -12,27 +12,33 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
-                            <img class="img-thumbnail img-responsive"
-                                 src="/image/device/{{ $device->id }}"
-                                 alt="Device picture">
+                        <div class="col-md-12 col-lg-12 text-center">
+                            <input class="img-thumbnail img-responsive center-block" 
+                                type="image"
+                                src="{{ route('image.device', $device->id) }}"
+                                alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
+                            <a class="no-style-link" href="{{ route('image.device', $device->id) }}" 
+                                download="smartsettia-device-{{ $device->id }}_{{ time() }}.jpg" 
+                                id="download_image_link">
+                                <button class="btn btn-primary">Download Image</button>
+                            </a>
                         </div>
-                        <div class="col-xs-2 col-sm-2 hidden-md hidden-lg">
-                            <img class="img-thumbnail img-responsive"
-                                 src="/image/device/{{ $device->id }}"
-                                 alt="Device picture">
-                        </div>
-                        <div class="col-md-9 col-lg-9">
+                        
+                        <div class="col-md-12 col-lg-12">
                             <strong>{{ $device->name }}</strong><br>
                             <table class="table table-device-information">
                                 <tbody>
                                 <tr>
                                     <td>Site:</td>
-                                    <td><a href="{{-- TODO route('site.show', $device->site->id) --}}">{{ $device->site->name ?? 'null' }}</a></td>
+                                    <td>
+                                        <a href="{{ route('site.show', $device->site->id ?? 0) }}">{{ $device->site->name ?? '' }}</a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Location:</td>
-                                    <td><a href="{{-- TODO route('location.show', $device->location_id) --}}">{{ $device->location->name ?? 'null' }}</a></td>
+                                    <td>
+                                        <a href="{{ route('location.show', $device->location_id ?? 0) }}">{{ is_object($device->location) ? $device->location->name ?? '' : '' }}</a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
@@ -40,8 +46,12 @@
                                 </tr>
                                 <tr>
                                     <td>Updated:</td>
-                                    <td>{{ $device->updated_at }}</td>
+                                    <td>{{ $device->updatedAtHuman }}</td>
                                 </tr>
+								<tr>
+									<td>Last Communication:</td>
+									<td>{{ $device->lastNetworkUpdateAtHuman }}</td>
+								</tr>
                                 <tr>
                                     <td>UUID:</td>
                                     <td>{{ $device->uuid }}</td>
@@ -75,18 +85,6 @@
                                     <td>{{ $device->error_msg }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Open Switch:</td>
-                                    <td>{{ $device->limitsw_open }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Closed Switch:</td>
-                                    <td>{{ $device->limitsw_closed }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Timezone:</td>
-                                    <td>{{ $device->timezone }}</td>
-                                </tr>
-                                <tr>
                                     <td>Update rate:</td>
                                     <td>{{ $device->update_rate }} seconds</td>
                                 </tr>
@@ -108,11 +106,11 @@
                                 </tr>
                                 <tr>
                                     <td>Open Time:</td>
-                                    <td>{{ $device->open_time }}</td>
+                                    <td>{{ $device->openTimeHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>Close Time:</td>
-                                    <td>{{ $device->close_time }}</td>
+                                    <td>{{ $device->closeTimeHuman }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -151,14 +149,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($device->sensors as $sensor)
-                                    <tr>
-                                        <td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
-                                        <td>{{ $sensor->type }}</td>
-                                        <td><a href="{{ route('sensordata.show', $sensor->latest_data->id ?? 0) }}">{{ $sensor->latest_data->value ?? 'null' }}</a></td>
-                                        <td>{{ $sensor->latest_data->updated_at ?? 'null' }} GMT</td>
-                                    </tr>
-                                    @endforeach
+									@foreach ($device->sensors as $sensor)
+                                        <?php $latestData = $sensor->latest_data; ?>
+										<tr>
+											<td><a href="{{ route('sensor.show', $sensor->id) }}">{{ $sensor->name }}</a></td>
+											<td>{{ $sensor->type }}</td>
+											<td><a href="{{ route('sensordata.show', $latestData->id ?? 0) }}">{{ $latestData->value ?? 'null' }}</a></td>
+											<td>{{ $latestData->createdAtHuman ?? 'null' }}</td>
+										</tr>
+									@endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -198,6 +197,13 @@
             </div>
         </div>
     </div>
+</div>
+<div id="image_modal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<img class="modal-content" src="{{ route('image.device', $device->id) }}" alt="Device Image">
+		<div id="image_caption">{{ $device->name }}</div>
+	</div>
 </div>
 @endsection
 

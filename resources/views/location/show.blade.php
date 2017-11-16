@@ -62,7 +62,7 @@
 									@foreach ($devices as $device)
 										<tr>
 											<td><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></td>
-											<td>{{ is_object($device->updated_at) ? $device->updated_at->diffForHumans() : 'never' }}</td>
+											<td>{{ is_object($device->updated_at) ? $device->updatedAtHuman : 'never' }}</td>
 										</tr>
 									@endforeach
 									</tbody>

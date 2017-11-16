@@ -51,7 +51,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|min:2|max:190|full_name',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|integer|max:3',
@@ -112,12 +112,12 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|min:2|max:190|full_name',
             'email' => 'required|string|email|max:255|unique:users,email,'.$id,
             'password' => 'sometimes|nullable|min:8|confirmed',
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
-            'preferred_device_id' => 'numeric|nullable|digits_between:1,10|exists:devices,id',
+            'preferred_device_id' => 'nullable|integer|digits_between:1,10|exists:devices,id',
         ]);
         
         $query = User::findOrFail($id);

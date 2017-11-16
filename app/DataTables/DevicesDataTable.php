@@ -29,7 +29,7 @@ class DevicesDataTable extends DataTable
                 return $device->update_rate . '/' . $device->image_rate .'/' . $device->sensor_rate;
             })
             ->editColumn('updated_at', function ($device) {
-                return (is_object($device->updated_at) ? $device->updated_at->diffForHumans() : 'never');
+                return (is_object($device->updated_at) ? $device->updatedAtHuman : 'null');
             })
             ->blacklist([ 'location', 'site', 'rates' ])
             ->rawColumns([ 'name' ]);
@@ -74,7 +74,7 @@ class DevicesDataTable extends DataTable
             'open_time',
             'close_time',
             'rates',
-            [ 'data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated' ]
+            [ 'data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated At' ]
         ];
     }
 

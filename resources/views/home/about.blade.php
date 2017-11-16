@@ -16,10 +16,7 @@
 						<p class="title">COMPUTER SCIENCE</p>
 						<p class="description">I'm a senior Computer Science student at the University of Idaho. My main focus and interests are cyber security and databases. In my free time I like to work on side projects ranging from mobile app development to video game development.</p>
 						<div class="social">
-							<a href="https://github.com"><i class="fa fa-github"></i></a>
-							<a href="https://keybase.io"><i class="fa fa-key"></i></a>
-							<a href="https://linkedin.com"><i class="fa fa-linkedin"></i></a>
-							<a href="https://facebook.com"><i class="fa fa-facebook"></i></a>
+							<a href="https://github.com/brec9824"><i class="fa fa-github"></i></a>
 						</div>
 					</div>
 				</div>

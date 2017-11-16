@@ -22,6 +22,12 @@ class UsersDataTable extends DataTable
             ->editColumn('role', function(User $user) {
                 return $user->roleString();
             })
+            ->editColumn('updated_at', function ($user) {
+                return $user->updatedAtHuman;
+            })
+            ->editColumn('created_at', function ($user) {
+                return $user->createdAtHuman;
+            })
             ->addColumn('action', 'user.action')
             ->blacklist([ 'action' ])
             ->rawColumns([ 'name', 'action' ])

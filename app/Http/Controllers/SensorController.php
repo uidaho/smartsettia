@@ -50,9 +50,9 @@ class SensorController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'device_id' => 'required|integer|exists:devices,id',
-            'name' => 'required|name|max:190',
-            'type' => 'required|name|max:190'
+            'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
+            'name' => 'required|min:2|max:190|name',
+            'type' => 'required|max:190|type_name'
         ]);
 
         $query = Sensor::create($request->all());
@@ -71,15 +71,17 @@ class SensorController extends Controller
     public function show(Request $request, $id)
     {
         $sensor = Sensor::findOrFail($id);
+        $latestData = $sensor->latestData;
         $sensordata = $sensor->data()->orderBy('id', 'desc')->paginate(25);
+        $chartSensorData = $sensordata->reverse();
         $chart = Charts::create('line', 'highcharts')
             ->title($sensor->name)
             ->elementLabel($sensor->type)
-            ->labels($sensordata->reverse()->pluck('created_at'))
-            ->values($sensordata->reverse()->pluck('value'))
+            ->labels($chartSensorData->pluck('created_at'))
+            ->values($chartSensorData->pluck('value'))
             ->responsive(true);
 
-        return view('sensor.show', [ 'sensor' => $sensor, 'sensordata' => $sensordata, 'chart' => $chart ]);
+        return view('sensor.show', [ 'sensor' => $sensor, 'latestData' => $latestData, 'sensordata' => $sensordata, 'chart' => $chart ]);
     }
 
     /**
@@ -106,9 +108,9 @@ class SensorController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            'device_id' => 'required|integer|exists:devices,id',
-            'name' => 'required|name|max:190',
-            'type' => 'required|name|max:190'
+            'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
+            'name' => 'required|min:2|max:190|name',
+            'type' => 'required|max:190|type_name'
         ]);
         $query = Sensor::findOrFail($id)->update($request->all());
         return redirect()->route('sensor.show', $id)

@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class Sensor extends Model 
 {
@@ -69,7 +68,9 @@ class Sensor extends Model
      */
     public function getLatestDataAttribute()
     {
-        return $this->hasOne('App\SensorData')->latest()->first() ?? (object)[];
+        return SensorData::whereRaw('id = (SELECT MAX(id)
+                                                    FROM sensor_data
+                                                    WHERE sensor_id = ?)', [$this->id])->first() ?? (object)[];
     }
     
     /**
@@ -130,5 +131,41 @@ class Sensor extends Model
             ->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL 1 YEAR)")
             ->groupBy("date")
             ->get();
+    }
+    
+    /**
+     * Accessor: Get the sensor's last update time in seconds/minutes/hours since update or converted to user
+     * friendly readable format.
+     * If the time is less then a day old then display time since it last updated
+     * If the time is greater then a day old then display the time in the format of Month day, year 12hour:mins am/pm
+     * and using the user's preferred timezone
+     *
+     *
+     * @return string
+     */
+    public function getUpdatedAtHumanAttribute()
+    {
+        if ($this->updated_at->diffInDays() > 0)
+            return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        else
+            return $this->updated_at->diffForHumans();
+    }
+    
+    /**
+     * Accessor: Get the sensor's creation time in seconds/minutes/hours since update or converted to user
+     * friendly readable format.
+     * If the time is less then a day old then display time since creation
+     * If the time is greater then a day old then display the time in the format of Month day, year 12hour:mins am/pm
+     * and using the user's preferred timezone
+     *
+     *
+     * @return string
+     */
+    public function getCreatedAtHumanAttribute()
+    {
+        if ($this->created_at->diffInDays() > 0)
+            return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        else
+            return $this->created_at->diffForHumans();
     }
 }
