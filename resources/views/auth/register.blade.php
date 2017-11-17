@@ -44,6 +44,14 @@
                                 </div>
                         </div>
 
+						<div class="form-group{{ $errors->has('site_wide_password') ? ' has-error' : '' }}">
+							{!! Form::label('site_wide_password', 'Site Wide Password', ['class' => 'col-sm-3 control-label']) !!}
+							<div class="col-sm-9">
+								{!! Form::password('site_wide_password', ['class' => 'form-control']) !!}
+								<small class="text-danger">{{ $errors->first('site_wide_password') }}</small>
+							</div>
+						</div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 {!! Form::submit('Register', ['class' => 'btn btn-info pull-right']) !!}

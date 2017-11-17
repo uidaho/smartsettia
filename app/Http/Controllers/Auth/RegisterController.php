@@ -47,11 +47,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $validator = Validator::make($data, [
             'name' => 'required|min:2|max:190|full_name',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'site_wide_password' => 'required|string|min:8',
         ]);
+    
+        return $validator->after(function ($validator) {
+            if (array_key_exists('site_wide_password', $validator->valid()))
+            {
+                if ($validator->valid()['site_wide_password'] != env('SITE_WIDE_CHALLENGE', 'temppass')) {
+                    $validator->errors()->add('site_wide_password', 'Incorrect site wide password.');
+                }
+            }
+        });
     }
 
     /**
