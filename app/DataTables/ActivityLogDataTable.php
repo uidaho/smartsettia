@@ -18,10 +18,18 @@ class ActivityLogDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('causer_id', function ($activity) {
-                return ($activity->causer_id ? '<a href="/' . ($activity->causer_type == "App\User" ? 'user' : 'device') . '/' . $activity->causer_id . '">' . ($activity->causer->name ?? '') . '</a>' : 'App');
+                if ($activity->causer_id) {
+                    return '<a href="' . route($this->getRouteFromType($activity->causer_type), $activity->causer_id) . '">' . $activity->causer->name ?? '' . '</a>';
+                } else {
+                    return '';
+                }
             })
             ->editColumn('subject_id', function ($activity) {
-                return ($activity->subject_id ? '<a href="/' . ($activity->subject_type == "App\User" ? 'user' : 'device') . '/' . $activity->subject_id . '">' . ($activity->subject->name ?? '') . '</a>' : 'App');
+                if ($activity->subject_id) {
+                    return '<a href="' . route($this->getRouteFromType($activity->subject_type), $activity->subject_id) . '">' . $activity->subject->name ?? '' . '</a>';
+                } else {
+                    return '';
+                }
             })
             ->editColumn('properties', function ($activity) {
                 return $activity->properties;
@@ -33,6 +41,27 @@ class ActivityLogDataTable extends DataTable
                     return $activity->created_at->diffForHumans();
             })
             ->rawColumns(['causer_id', 'subject_id', 'properties']);
+    }
+    
+    public function getRouteFromType($type) {
+        switch ($type) {
+            case "App\Device":
+                return 'device.show';
+            case "App\Deviceimage":
+                return 'image.device';
+            case "App\Location":
+                return 'location.show';
+            case "App\Sensor":
+                return 'sensor.show';
+            case "App\SensorData":
+                return 'sensordata.show';
+            case "App\Site":
+                return 'site.show';
+            case "App\User":
+                return 'user.show';
+            default:
+                return 'logs';
+        }
     }
 
     /**
