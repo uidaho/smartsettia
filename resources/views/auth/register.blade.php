@@ -44,6 +44,14 @@
                                 </div>
                         </div>
 
+						<div class="form-group{{ $errors->has('registration_password') ? ' has-error' : '' }}">
+							{!! Form::label('registration_password', 'Registration Password', ['class' => 'col-sm-3 control-label']) !!}
+							<div class="col-sm-9">
+								{!! Form::password('registration_password', ['class' => 'form-control']) !!}
+								<small class="text-danger">{{ $errors->first('registration_password') }}</small>
+							</div>
+						</div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 {!! Form::submit('Register', ['class' => 'btn btn-info pull-right']) !!}

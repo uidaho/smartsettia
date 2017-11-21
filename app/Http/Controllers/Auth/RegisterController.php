@@ -47,11 +47,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $validator = Validator::make($data, [
             'name' => 'required|min:2|max:190|full_name',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'registration_password' => 'required|string|min:8',
         ]);
+    
+        return $validator->after(function ($validator) {
+            if (array_key_exists('registration_password', $validator->valid()))
+            {
+                if ($validator->valid()['registration_password'] != env('REGISTRATION_CHALLENGE', 'temppass')) {
+                    $validator->errors()->add('registration_password', 'Incorrect registration password.');
+                }
+            }
+        });
     }
 
     /**
