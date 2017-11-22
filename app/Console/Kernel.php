@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // Prune the activity log for entries older than 30 days.
         $schedule->command('activitylog:clean')->daily();
+        // Prune the sensordata table for entries older than 365 days.
+        $schedule->command('sensordata:clean')->daily();
     }
 
     /**
