@@ -1,4 +1,4 @@
-# The smartsettia Project
+# The SmartSettia Project
 
 [![Build Status](https://travis-ci.org/uidaho/smartsettia.svg?branch=master)](https://travis-ci.org/uidaho/smartsettia)
 [![Total Downloads](https://poser.pugx.org/uidaho/smartsettia/d/total.svg)](https://packagist.org/packages/uidaho/smartsettia)
@@ -16,33 +16,38 @@ Table of Contents
       * [Obtaining a VPS](#obtaining-a-vps)
       * [Securing your VPS](#securing-your-vps)
       * [Create User](#create-user)
-      * [Install Composer](#install-composer)
-      * [Install MySQL, Nginx and PHP5-FPM](#install-mysql-nginx-and-php5-fpm)
+      * [Update system packages](#update-system-packages)
+      * [Install dependencies](#install-dependencies)
     * [Configuration](#configuration)
       * [Create Self-Signed SSL Certificate](#create-self-signed-ssl-certificate)
+      * [Configure MySQL](#configure-mysql)
+      * [Configure PHP7.0](#configure-php7.0)
       * [Configure Nginx](#configure-nginx)
-      * [Configure PHP5-FPM](#configure-php5-fpm)
     * [SmartSettia Installation](#smartsettia-installation)
       * [Create MySQL Database and User](#create-mysql-database-and-user)
-      * [Install smartsettia](#install-smartsettia)
-      * [Install phpMyAdmin (optional)](#install-phpmyadmin-optional)
+      * [Install SmartSettia](#install-smartsettia)
 
 ## SmartSettia Requirements
-SmartSettia is straightforward to install if you have a webserver with the following prerequisites available you can skip ahead to [smartsettia Installation](#smartsettia-installation).
+SmartSettia is straightforward to install if you have a webserver with the following prerequisites available you can skip ahead to [SmartSettia Installation](#smartsettia-installation).
 - Apache/NGINX Webserver pointing to the smartsettia/public folder
-- PHP 5.6 or greater
+- PHP 7.0 or greater
 - Composer v1.0.0 or greater
 
-Otherwise, start with [Obtaining a VPS](#obtaining-a-vps) to create your hosting envionment.
+Otherwise, start with [Obtaining a VPS](#obtaining-a-vps) and then create your hosting envionment.
 
 ### Obtaining a VPS
+Use a provider like Digital Ocean or supply your own server. Here are the settings we used when creating our Digital Ocean droplet:
+- Distrobution: Ubuntu 16.04.3 x64
+- Size: Standard, 512MB / 1 CPU, 20GB Disk
+- Datacenter region: Pick the one closest to your users.
+
 ### Securing your VPS
+Login to your new server, change the root password and setup the firewall:
 ```
 root@www:~# passwd
 root@www:~# ufw allow ssh
 root@www:~# ufw allow http
 root@www:~# ufw allow https
-root@www:~# ufw allow mail
 root@www:~# ufw enable
 root@www:~# ufw status
 ```
@@ -62,26 +67,28 @@ To                         Action      From
 25/tcp (v6)                ALLOW       Anywhere (v6)
 ```
 
-### Create User
-Create a user for smartsettia and give it the ability to use sudo:
+### Create user
+Create a user for smartsettia:
 ```
-adduser smartsettia
 adduser smartsettia admin
 su smartsettia
 ```
 
-### Install Composer
+### Update system packages
+Update packages and then reboot:
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install curl php5-cli git
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+sudo reboot
 ```
 
-### Install MySQL, Nginx and PHP5-FPM
-```
-sudo mysql_secure_installation
-sudo apt install nginx php5-fpm php5-cli php5-mcrypt git lrzsz unzip zip
+### Install dependencies
+Install PHP7, NGINX, redis-server, MySQL and other dependencies:
+```bash
+sudo apt install curl unzip git
+sudo apt install php7.0 php7.0-fpm php7.0-curl php7.0-dev php7.0-gd php7.0-intl php7.0-mcrypt php7.0-json php7.0-mysql php7.0-opcache php7.0-bcmath php7.0-mbstring php7.0-soap php7.0-xml php7.0-cli
+sudo apt install composer redis-server nginx
+sudo apt install mysql-client mysql-server
 ```
 
 ## Configuration
@@ -100,6 +107,27 @@ Organization Name (eg, company) [Internet Widgits Pty Ltd]:University of Idaho
 Organizational Unit Name (eg, section) []:CS383
 Common Name (e.g. server FQDN or YOUR name) []:*.your_domain.com
 Email Address []:admin@your_domain.com
+```
+
+### Configure MySQL
+Perform `mysql_secure_installation` to harden MySQL a bit and then connect to the server as root with the password you created earlier:
+```bash
+sudo mysql_secure_installation
+mysql -U root -p
+```
+Once at the `mysql>` prompt run the following queries to create a database and user for SmartSettia. Be sure to change password to something secure and take note of it, you will need this password for the smartsettia .env file:
+```sql
+CREATE DATABASE smartsettia_db DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+GRANT ALL ON smartsettia_db.* TO 'smartsettia_db'@'localhost' IDENTIFIED BY 'password';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+### Configure PHP7.0
+Edit `/etc/php/7.0/fpm/php.ini` and find `cgi.fix_pathinfo=0` then  set it to `1`:
+```bash
+sudo nano /etc/php/7.0/fpm/php.ini
+sudo systemctl restart php7.0-fpm
 ```
 
 ### Configure Nginx
@@ -123,7 +151,7 @@ ssl_stapling on; # Requires nginx >= 1.3.7
 ssl_stapling_verify on; # Requires nginx => 1.3.7
 resolver 8.8.8.8 8.8.4.4 valid=300s;
 resolver_timeout 5s;
-add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+# add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
 add_header X-Frame-Options DENY;
 add_header X-Content-Type-Options nosniff;
 
@@ -135,22 +163,16 @@ root /home/smartsettia/smartsettia/public;
 index index.php index.html index.htm;
 
 location / {
-    try_files $uri $uri/ =404;
-}
-
-error_page 404 /404.html;
-error_page 500 502 503 504 /50x.html;
-location = /50x.html {
-    root /usr/share/nginx/html;
+    try_files $uri $uri/ /index.php?$query_string;
 }
 
 location ~ \.php$ {
-    try_files $uri =404;
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
-    fastcgi_index index.php;
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    include fastcgi_params;
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+}
+
+location ~ /\.ht {
+    deny all;
 }
 }
 ```
@@ -161,36 +183,7 @@ sudo ln -s /etc/nginx/sites-available/your_domain.com /etc/nginx/sites-enabled/y
 sudo service nginx restart
 ```
 
-### Configure PHP5-FPM
-Edit `/etc/php5/fpm/php.ini` and then find cgi.fix_pathinfo and uncomment and set it like:
-```
-cgi.fix_pathinfo=0
-```
-Edit `/etc/php5/fpm/pool.d/sites.conf` and then add the following to it:
-```
-[smartsettia]
-user = smartsettia
-group = smartsettia
-listen = /var/run/php5-fpm-smartsettia.sock
-listen.owner = www-data
-listen.group = www-data
-pm = dynamic
-pm.max_children = 5
-pm.start_servers = 2
-pm.min_spare_servers = 1
-pm.max_spare_servers = 3
-chdir = /
-```
-Edit `/etc/php5/fpm/conf.d/05-opcache.ini` and set:
-```
-opcache.enable=0
-```
-Then restart the service:
-```
-sudo service php5-fpm restart
-```
-
-## smartsettia Installation
+## SmartSettia Installation
 SSH into the server using the credentials for the smartsettia user you created earlier.
 
 ### Create MySQL Database and User
@@ -204,65 +197,31 @@ FLUSH PRIVILEGES;
 exit
 ```
 
-### Install smartsettia
-1. Generate ssh key on the server:
-    * `smartsettia@www:~$ ssh-keygen -t rsa -b 4096 -C "CHANGE_ME@vandals.uidaho.edu"`
-    * If you enter a password, you will have to provide it each time you use the key (often).
-1. Add your new public key to github.com:
-    * `smartsettia@www:~$ cat ~/.ssh/id_rsa.pub`
-    * copy and paste this string into github key management https://github.com/settings/keys
-1. Clone the smartsettia Project files into your home directory:
-    * `smartsettia@www:~$ cd`
-    * `smartsettia@www:~$ git config --global push.default simple`
-    * `smartsettia@www:~$ git clone git@github.com:uidaho/smartsettia.git`
-1. Change directory to the project folder:
-    * `smartsettia@www:~$ cd ~/smartsettia`
-1. Install the project's library pre-reqs with composer:
-    * `smartsettia@www:~/smartsettia$ composer install`
-1. Edit your individual .env environment file to include your username and mysql db password:
-    * `smartsettia@www:~/smartsettia$ cp .env.example .env`
-    * `smartsettia@www:~/smartsettia$ nano .env`
-    * The .env should look like this:
+### Install SmartSettia
+Once [Dependencies](#dependencies) and [Configuration](#configuration) have been completed you're ready to download the smartsettia project to your home (~) folder:
+```bash
+cd ~
+git clone git@github.com:uidaho/smartsettia.git
+cd smartsettia
 ```
-APP_ENV=local
-APP_DEBUG=true
-APP_KEY=
-APP_URL=http://smartsettia.com
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=smartsettia_smartsettia
-DB_USERNAME=smartsettia_smartsettia
-DB_PASSWORD=secret_password
-
-CACHE_DRIVER=file
-SESSION_DRIVER=file
-QUEUE_DRIVER=sync
-
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-MAIL_DRIVER=sendmail
-MAIL_HOST=mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
+Set permissions to allow nginx access to the storage and cache folders:
+```bash
+sudo chgrp -R www-data storage bootstrap/cache
+sudo chmod -R ug+rwx storage bootstrap/cache
 ```
-1. Generate application key for encrypting protected data:
-    - `smartsettia@www:~/smartsettia$ php artisan key:generate`
-1. Set permissions on the storage folder:
-    - `smartsettia@www:~/smartsettia$ find ~/smartsettia/storage -type d -exec chmod 775 {} +`
-    - `smartsettia@www:~/smartsettia$ find ~/smartsettia/storage -type f -exec chmod 664 {} +`
-1. Navigate to https://your_domain.com/ and bask in the awesomeness that is the smartsettia project.
-
-### Install phpMyAdmin (optional)
+Use composer to download all the php dependencies:
+```bash
+composer install
 ```
-smartsettia@www:~$ cd smartsettia/public
-smartsettia@www:~/smartsettia/public$ wget https://files.phpmyadmin.net/phpMyAdmin/4.6.0/phpMyAdmin-4.6.0-all-languages.zip
-smartsettia@www:~/smartsettia/public$ unzip phpMyAdmin-4.6.0-all-languages.zip
-smartsettia@www:~/smartsettia/public$ mv phpMyAdmin-4.6.0-all-languages phpmyadmin
-smartsettia@www:~/smartsettia/public$ rm phpMyAdmin-4.6.0-all-languages.zip
+Customize the application configuration environment variables for your system:
+```bash
+cp .env.example .env
+nano .env
 ```
+Generate an application encryption key and perform the database migration:
+```bash
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+```
+Navigate to https://your_domain.com/ and bask in the awesomeness that is the SmartSettia project.
