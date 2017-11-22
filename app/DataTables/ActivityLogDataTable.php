@@ -18,14 +18,14 @@ class ActivityLogDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('causer_id', function ($activity) {
-                if ($activity->causer_id) {
+                if ($activity->causer_id && is_object($activity->causer)) {
                     return '<a href="' . route($this->getRouteFromType($activity->causer_type), $activity->causer_id) . '">' . $activity->causer->name ?? '' . '</a>';
                 } else {
                     return '';
                 }
             })
             ->editColumn('subject_id', function ($activity) {
-                if ($activity->subject_id) {
+                if ($activity->subject_id && is_object($activity->subject)) {
                     return '<a href="' . route($this->getRouteFromType($activity->subject_type), $activity->subject_id) . '">' . $activity->subject->name ?? '' . '</a>';
                 } else {
                     return '';
