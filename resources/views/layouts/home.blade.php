@@ -62,15 +62,15 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Manage <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Manage Devices</a></li>
+                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Devices</a></li>
 									<li class="{{ Route::currentRouteNamed('location.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Manage Locations</a></li>
+										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Locations</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> View Logs</a></li>
+                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> Logs</a></li>
 									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Manage Sites</a></li>
+										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Sites</a></li>
 									<li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Manage Users</a></li>
+                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Users</a></li>
                                 </ul>
                             </li>
                         @endif
