@@ -9,6 +9,8 @@
 /public/hot
 /public/packages
 /public/storage
+/public/adminer.php
+/public/adminer.css
 /storage/*.key
 /storage/databases
 /storage/debugbar
