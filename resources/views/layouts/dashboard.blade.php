@@ -49,8 +49,6 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="{{ Route::currentRouteName() == '' ? 'active' : '' }}" role="presentation">
                         <a href="/">Home</a></li>
-                    <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation">
-                        <a href="{{ route('about') }}">About</a></li>
                     <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation">
                         <a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
@@ -63,18 +61,16 @@
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Manage <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Manage Users</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Manage Devices</a></li>
+                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Devices</a></li>
 									<li class="{{ Route::currentRouteNamed('location.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Manage Locations</a></li>
-									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Manage Sites</a></li>
-                                    <li class="{{ Route::currentRouteNamed('sensor.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('sensor.index') }}"><i class="fa-fw fa fa-line-chart"></i> Manage Sensors</a></li>
+										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Locations</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> View Logs</a></li>
+                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> Logs</a></li>
+									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Sites</a></li>
+									<li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Users</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -101,21 +97,24 @@
         </div>
     </nav>
 
-    <!-- success -->
+    <!-- success/failure -->
     @if ($message = Session::get('success'))
     <div class="alert alert-success">
         <p>{{ $message }}</p>
     </div>
-    @endif
-    @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    @elseif ($message = Session::get('failure'))
+    <div class="alert alert-danger">
+        <p>{{ $message }}</p>
+    </div>
+    @elseif (count($errors) > 0)
+    <div class="alert alert-danger">
+        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <!-- yield content -->
