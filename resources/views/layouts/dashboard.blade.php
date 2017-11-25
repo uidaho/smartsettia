@@ -106,8 +106,7 @@
     <div class="alert alert-danger">
         <p>{{ $message }}</p>
     </div>
-    @endif
-    @if (count($errors) > 0)
+    @elseif (count($errors) > 0)
     <div class="alert alert-danger">
         <strong>Whoops!</strong> There were some problems with your input.<br><br>
         <ul>
