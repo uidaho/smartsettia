@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css" integrity="sha256-VZWWO8oq84vI5Es0R/L74m09VSsVHg0sugRTBgnPZnY=" crossorigin="anonymous">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    @stack('styles')
 
     <!-- Head Scripts -->
     <script>
@@ -36,35 +38,39 @@
                 <a class="navbar-brand navbar-link" href="/">
                     <i class="glyphicon glyphicon-grain"></i>SmartSettia
                 </a>
-                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span
-                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
-                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="{{ Route::currentRouteName() == '' ? 'active' : '' }}" role="presentation"><a href="/">Home</a></li>
-                    <li class="{{ Route::currentRouteNamed('about') ? 'active' : '' }}" role="presentation"><a href="{{ route('about') }}">About</a></li>
-                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation"><a href="{{ route('help') }}">Help</a></li>
+                    <li class="{{ Route::currentRouteName() == '' ? 'active' : '' }}" role="presentation">
+                        <a href="/">Home</a></li>
+                    <li class="{{ Route::currentRouteNamed('help') ? 'active' : '' }}" role="presentation">
+                        <a href="{{ route('help') }}">Help</a></li>
                     @if (Auth::guest())
-                        <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation"><a href="{{ route('register') }}">Register</a></li>
-                        <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation"><a href="{{ route('login') }}">Login</a></li>
+                        <li class="{{ Route::currentRouteNamed('register') ? 'active' : '' }}" role="presentation">
+                            <a href="{{ route('register') }}">Register</a></li>
+                        <li class="{{ Route::currentRouteNamed('login') ? 'active' : '' }}" role="presentation">
+                            <a href="{{ route('login') }}">Login</a></li>
                     @else
                         @if (Auth::user()->isManager())
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="{{ route('admin') }}">Manage <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Manage Users</a></li>
                                     <li class="{{ Route::currentRouteNamed('device.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Manage Devices</a></li>
+                                        <a href="{{ route('device.index') }}"><i class="fa-fw fa fa-microchip" aria-hidden="true"></i> Devices</a></li>
 									<li class="{{ Route::currentRouteNamed('location.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Manage Locations</a></li>
-									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
-										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Manage Sites</a></li>
-                                    <li class="{{ Route::currentRouteNamed('sensor.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('sensor.index') }}"><i class="fa-fw fa fa-line-chart" aria-hidden="true"></i> Manage Sensors</a></li>
+										<a href="{{ route('location.index') }}"><i class="fa-fw fa fa-map-marker" aria-hidden="true"></i> Locations</a></li>
                                     <li class="{{ Route::currentRouteNamed('logs') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> View Logs</a></li>
+                                        <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> Logs</a></li>
+									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Sites</a></li>
+									<li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
+                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Users</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -97,18 +103,18 @@
         <p>{{ $message }}</p>
     </div>
     @elseif ($message = Session::get('failure'))
-		<div class="alert alert-danger">
-			<p>{{ $message }}</p>
-		</div>
+    <div class="alert alert-danger">
+        <p>{{ $message }}</p>
+    </div>
     @elseif (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-danger">
+        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <!-- yield content -->
@@ -134,5 +140,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js" integrity="sha256-fzbeRFWxDKUq4+WF3Eyv1jhRcV2hrj5LJDn2asBF6/0=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+	@yield('scripts')
+    @stack('scripts')
 </body>
 </html>
