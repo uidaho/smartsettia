@@ -54,10 +54,10 @@ class RegisterController extends Controller
             'registration_password' => 'required|string|min:8',
         ]);
     
-        return $validator->after(function ($validator) {
+        return $validator->after(function($validator) {
             if (array_key_exists('registration_password', $validator->valid()))
             {
-                if ($validator->valid()['registration_password'] != env('REGISTRATION_CHALLENGE', 'temppass')) {
+                if ($validator->valid()[ 'registration_password' ] != env('REGISTRATION_CHALLENGE', 'temppass')) {
                     $validator->errors()->add('registration_password', 'Incorrect registration password.');
                 }
             }

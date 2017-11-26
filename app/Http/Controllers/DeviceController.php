@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EditDevice;
-use Validator;
 use Illuminate\Http\Request;
 use App\DataTables\DevicesDataTable;
-use Illuminate\Support\Facades\Route;
 use App\Device;
 use App\Site;
 use App\Location;
@@ -55,10 +53,10 @@ class DeviceController extends Controller
     {
         $device = Device::findOrFail($id);
         
-        $charts = [];
+        $charts = [ ];
         foreach ($device->sensors as $sensor) {
             $data = $sensor->last_month_daily_avg_data;
-            $charts[$sensor->id] = Charts::create('line', 'highcharts')
+            $charts[ $sensor->id ] = Charts::create('line', 'highcharts')
                 ->title($sensor->name)
                 ->elementLabel($sensor->type)
                 ->labels($data->pluck('date'))
@@ -90,7 +88,7 @@ class DeviceController extends Controller
         $sites = Site::select('id', 'name')->orderByRaw("id = ? DESC", $site_id)
             ->orderBy('name', 'ASC')->get();
         //Get all locations for the selected site with the selected location first
-        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[0]->id ?? 0)
+        $locations = Location::select('id', 'name')->where('site_id', '=', $sites[ 0 ]->id ?? 0)
             ->orderByRaw("id = ? DESC", $location_id)->orderBy('name', 'ASC')->get();
         
         return view('device.edit', [ 'device' => $device, 'locations' => $locations, 'sites' => $sites ]);
@@ -114,16 +112,17 @@ class DeviceController extends Controller
             if (!empty($request->input('new_site_name')))
             {
                 //Create a new site
-                $site = Site::create(['name' => $request->input('new_site_name')]);
+                $site = Site::create([ 'name' => $request->input('new_site_name') ]);
                 $site_id = $site->id;
-            } else
-                $site_id = $request->input('site_id');
+            } else {
+                            $site_id = $request->input('site_id');
+            }
     
             //Get the location id of the old or newly created location
             if (!empty($request->input('new_location_name')))
             {
                 //Create a new location
-                $location = Location::create(['name' => $request->input('new_location_name'), 'site_id' => $site_id]);
+                $location = Location::create([ 'name' => $request->input('new_location_name'), 'site_id' => $site_id ]);
                 $location_id = $location->id;
             } else
                 $location_id = $request->input('location_id');
@@ -158,9 +157,9 @@ class DeviceController extends Controller
             if ($request->command === 'unlock')
             {
                 if ($device->isDuringScheduleOpen())
-                    $command =  'open';
+                    $command = 'open';
                 else
-                    $command =  'close';
+                    $command = 'close';
             }
             $device->cover_command = $command;
         }
@@ -168,7 +167,7 @@ class DeviceController extends Controller
         $device->save();
     
         if (\Request::ajax())
-            return response()->json(['success' => 'Device updated successfully']);
+            return response()->json([ 'success' => 'Device updated successfully' ]);
         else
             return redirect()->route('device.show', $id)
                 ->with('success', 'Device updated successfully');
@@ -188,8 +187,7 @@ class DeviceController extends Controller
         {
             //If the device was already deleted then permanently delete it
             $device->forceDelete($device->id);
-        }
-        else
+        } else
         {
             //Remove the location from the device
             $device->location_id = null;
@@ -200,7 +198,7 @@ class DeviceController extends Controller
         }
 
         return redirect()->route('device.index')
-            ->with('success','Device deleted successfully');
+            ->with('success', 'Device deleted successfully');
     }
     
     /**
@@ -216,6 +214,6 @@ class DeviceController extends Controller
         $device->restore();
         
         return redirect()->route('device.show', $device->id)
-            ->with('success','Device restored successfully');
+            ->with('success', 'Device restored successfully');
     }
 }

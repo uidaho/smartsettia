@@ -9,8 +9,6 @@ use App\Deviceimage;
 use App\User;
 use App\Sensor;
 use App\SensorData;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class ApiController extends Controller
@@ -18,18 +16,18 @@ class ApiController extends Controller
     /**
      * Creates a json response for all the devices.
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */    
     public function index()
     {
-        return response()->json(['data' => 'SmartSettia API - Bad request type.'], 400);
+        return response()->json([ 'data' => 'SmartSettia API - Bad request type.' ], 400);
     }
 
     /**
      * Creates a json response for a specifc device.
      *
      * @param  Device  $device
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */    
     public function show(Device $device)
     {
@@ -40,7 +38,7 @@ class ApiController extends Controller
      * Updates the status of a device.
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -68,8 +66,9 @@ class ApiController extends Controller
         $device->mac_address = $request->input('mac_address');
         $device->time = $request->input('time');
         $device->cover_status = $request->input('cover_status');
-        if ($request->input('cover_command') != null)
-            $device->cover_command = $request->input('cover_command');
+        if ($request->input('cover_command') != null) {
+                    $device->cover_command = $request->input('cover_command');
+        }
         $device->error_msg = $request->input('error_msg');
         $device->last_network_update_at = Carbon::now();
         
@@ -81,14 +80,14 @@ class ApiController extends Controller
         //event(new Registered(true));
         
         // Return the new device info including the token.
-        return response()->json(['data' => $device->toArray()], 201);
+        return response()->json([ 'data' => $device->toArray() ], 201);
     }
     
     /**
      * Updates the sensors of a device.
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function sensor(Request $request)
     {
@@ -118,13 +117,13 @@ class ApiController extends Controller
         foreach ($sensor_datas as $sensor_data) {
             $sensor = Sensor::firstOrCreate([
                 "device_id" => $device->id,
-                "name" => $sensor_data['name'], 
-                "type" => $sensor_data['type']
+                "name" => $sensor_data[ 'name' ], 
+                "type" => $sensor_data[ 'type' ]
             ]);
             
             SensorData::create([
                 "sensor_id" => $sensor->id,
-                "value" => $sensor_data['value']
+                "value" => $sensor_data[ 'value' ]
             ]);
         }
         
@@ -134,14 +133,14 @@ class ApiController extends Controller
         //event(new Registered(true));
         
         // Return the new device info including the token.
-        return response()->json(['data' => $device->toArray()], 201);
+        return response()->json([ 'data' => $device->toArray() ], 201);
     }
     
     /**
      * Registers a new device.
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request)
     {
@@ -153,7 +152,7 @@ class ApiController extends Controller
         
         // If challenge string doesnt match then send 401 unauthorized.
         if ($request->input('challenge') != env('API_CHALLENGE', 'temppass')) {
-            return response()->json(['data' => 'Bad challenge.'], 401);
+            return response()->json([ 'data' => 'Bad challenge.' ], 401);
         }
         
         // If the uuid already exists then just send them the record.
@@ -163,7 +162,7 @@ class ApiController extends Controller
                 'uuid' => $device->uuid,
                 'id' => $device->id,
                 'token' => $device->token,
-            ]], 200);
+            ] ], 200);
         }
         
         // Create the new device.
@@ -187,14 +186,14 @@ class ApiController extends Controller
             'uuid' => $device->uuid,
             'id' => $device->id,
             'token' => $device->token,
-        ]], 201);
+        ] ], 201);
     }
     
     /**
      * Updates the image for a device.
      *
      * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function image(Request $request) {
         // Validate the request.
@@ -208,21 +207,21 @@ class ApiController extends Controller
         $device = Device::getDeviceByUUID($request->input('uuid'));
         
         // Save the image to disk.
-        $path = $request->file('image')->storeAs('deviceimage', $device['id'], 'private');
+        $path = $request->file('image')->storeAs('deviceimage', $device[ 'id' ], 'private');
         
         // Update the url for the image.
         $deviceimage = Deviceimage::updateOrCreate(
-            ['device_id' => $device['id']],
-            ['url' => $path]
+            [ 'device_id' => $device[ 'id' ] ],
+            [ 'url' => $path ]
         );
         
         // Force the updated_at timestamp to update as the url may not change.
         $deviceimage->touch();
         
         return response()->json([ 'data' => [ 
-            'id' => $deviceimage['id'],
+            'id' => $deviceimage[ 'id' ],
             'url' => $path,
-        ]], 201);
+        ] ], 201);
     }
 }
 

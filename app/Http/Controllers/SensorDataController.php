@@ -9,42 +9,42 @@ use Illuminate\Http\Request;
 class SensorDataController extends Controller 
 {
     /**
-    * Create a new controller instance.
-    *
-    * @return void
-    */
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
     /**
-    * Display a listing of the resource.
-    *
-    * @param SensorDataDataTable $dataTable
-    * @return Response
-    */
+     * Display a listing of the resource.
+     *
+     * @param SensorDataDataTable $dataTable
+     * @return Response
+     */
     public function index(SensorDataDataTable $dataTable)
     {
         return $dataTable->render('sensordata.index');
     }
 
     /**
-    * Show the form for creating a new resource.
-    *
-    * @return Response
-    */
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
     public function create()
     {
         return view('sensordata.create');
     }
 
     /**
-    * Store a newly created resource in storage.
-    *
-    * @param Request $request
-    * @return Response
-    */
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function store(Request $request)
     {
         request()->validate([
@@ -59,12 +59,12 @@ class SensorDataController extends Controller
     }
 
     /**
-    * Display the specified resource.
-    *
-    * @param  Request  $request
-    * @param  int  $id
-    * @return Response
-    */
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
     public function show(Request $request, $id)
     {
         $sensordata = SensorData::findOrFail($id);
@@ -73,11 +73,11 @@ class SensorDataController extends Controller
     }
 
     /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return Response
-    */
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
     public function edit(Request $request, $id)
     {
         $sensordata = SensorData::findOrFail($id);
@@ -86,11 +86,11 @@ class SensorDataController extends Controller
     }
 
     /**
-    * Update the specified resource in storage.
-    *
-    * @param  int  $id
-    * @return Response
-    */
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
     public function update($id)
     {
         request()->validate([
@@ -103,16 +103,16 @@ class SensorDataController extends Controller
     }
 
     /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return Response
-    */
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
     public function destroy($id)
     {
         SensorData::find($id)->delete();
         return redirect()->route('sensordata.index')
-            ->with('success','SensorData deleted successfully');
+            ->with('success', 'SensorData deleted successfully');
     }
 
 }

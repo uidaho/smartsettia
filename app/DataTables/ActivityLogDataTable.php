@@ -35,10 +35,11 @@ class ActivityLogDataTable extends DataTable
                 return $activity->properties;
             })
             ->editColumn('created_at', function ($activity) {
-                if ($activity->created_at->diffInDays() > 0)
-                    return $activity->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-                else
-                    return $activity->created_at->diffForHumans();
+                if ($activity->created_at->diffInDays() > 0) {
+                                    return $activity->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+                } else {
+                                    return $activity->created_at->diffForHumans();
+                }
             })
             ->rawColumns(['causer_id', 'subject_id', 'properties']);
     }
@@ -137,6 +138,6 @@ class ActivityLogDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'activitylog_' . time();
+        return 'activitylog_'.time();
     }
 }

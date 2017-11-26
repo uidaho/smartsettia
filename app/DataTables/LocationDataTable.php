@@ -15,15 +15,15 @@ class LocationDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('name', function ($location) {
-                return '<a href="' . route('location.show', $location->id) . '">'. $location->name . '</a>';
+            ->editColumn('name', function($location) {
+                return '<a href="'.route('location.show', $location->id).'">'.$location->name.'</a>';
             })
-            ->editColumn('site_id', function ($location) {
-                return '<a href="' . route('site.show', $location->site_id) . '">'. ($location->site->name ?? '') . '</a>';
+            ->editColumn('site_id', function($location) {
+                return '<a href="'.route('site.show', $location->site_id).'">'.($location->site->name ?? '').'</a>';
             })
             ->addColumn('action', 'location.action')
             ->blacklist([ 'action' ])
-            ->rawColumns(['site_id', 'name', 'action']);
+            ->rawColumns([ 'site_id', 'name', 'action' ]);
     }
     
     /**

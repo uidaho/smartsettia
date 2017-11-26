@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\ActivityLogDataTable;
-use App\User;
 
 class ActivityLogController extends Controller
 {
@@ -23,7 +20,7 @@ class ActivityLogController extends Controller
     /**
      * Display index page and process dataTable ajax request.
      *
-     * @param \App\DataTables\UsersDataTable $dataTable
+     * @param ActivityLogDataTable $dataTable
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function index(ActivityLogDataTable $dataTable)

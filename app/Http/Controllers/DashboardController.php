@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Validator;
 use App\Device;
 use App\Site;
 use App\Location;
@@ -44,7 +43,7 @@ class DashboardController extends Controller
             
             //If the location exists then set the pagination page to be where the device is located
             if ($location != null)
-                $request->merge(['page' => $device->dashPageNum(4)]);
+                $request->merge([ 'page' => $device->dashPageNum(4) ]);
             $site_id = $location->site_id ?? 0;
             $location_id = $location->id ?? 0;
             $device_id = $device->id ?? 0;
@@ -64,14 +63,14 @@ class DashboardController extends Controller
             ->get();
         //Get all locations for the selected site with the selected location first
         $locations = Location::select('id', 'name', 'site_id')
-            ->where('site_id', '=', $sites[0]->id ?? 0)
+            ->where('site_id', '=', $sites[ 0 ]->id ?? 0)
             ->orderByRaw("id = ? DESC", $location_id)
             ->orderBy('name', 'ASC')
             ->get();
         //Get all devices for the selected location
         $devices = Device::publicDashData()
             ->leftJoin('deviceimages as image', 'devices.id', '=', 'image.device_id')
-            ->where('location_id', '=', $locations[0]->id ?? 0)
+            ->where('location_id', '=', $locations[ 0 ]->id ?? 0)
             ->orderBy('name', 'ASC')
             ->paginate(4);
     
@@ -84,40 +83,41 @@ class DashboardController extends Controller
             //If the original device with the given device id was not found
             //Then assign the the first device in the device list as the active device
             if ($active_device == null)
-                $active_device = $devices[0];
+                $active_device = $devices[ 0 ];
         
             //Add an attribute to each device defining if it is stale
-            $devices->transform(function ($item)
+            $devices->transform(function($item)
             {
                 //Mark the device as stale if the device has missed three updates plus a minute
                 $deviceStaleMins = ceil(($item->update_rate * 3) / 60) + 1;
-                $item['isDeviceStale'] = ($item->last_network_update_at <= Carbon::now()->subMinute($deviceStaleMins)) ? true : false;
+                $item[ 'isDeviceStale' ] = ($item->last_network_update_at <= Carbon::now()->subMinute($deviceStaleMins)) ? true : false;
     
                 //Mark the device image as stale if the device has missed three image updates plus a minute
                 if ($item->image_updated_at != null)
                 {
                     $imageStaleMins = ceil(($item->image_rate * 3) / 60) + 1;
-                    $item['isImageStale'] = ($item->image_updated_at <= Carbon::now()->subMinute($imageStaleMins)) ? true : false;
+                    $item[ 'isImageStale' ] = ($item->image_updated_at <= Carbon::now()->subMinute($imageStaleMins)) ? true : false;
                 }
                 else
-                    $item['isImageStale'] = false;
+                    $item[ 'isImageStale' ] = false;
                 
                 return $item;
             });
         }
     
         //Store the active site, location, and device in a collection
-        $active_data = collect(['device' => $active_device, 'location' => $locations[0] ?? null, 'site' => $sites[0] ?? null]);
+        $active_data = collect([ 'device' => $active_device, 'location' => $locations[ 0 ] ?? null, 'site' => $sites[ 0 ] ?? null ]);
     
         //Use the device_list.blade.php to generate the device table html
-        $html_device_table = view('dashboard.device_list', ['devices' => $devices, 'active_data' => $active_data])->render();
+        $html_device_table = view('dashboard.device_list', [ 'devices' => $devices, 'active_data' => $active_data ])->render();
         
-        if (\Request::ajax())
-            return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations,
+        if (\Request::ajax()) {
+                    return response()->json([ 'active_data' => $active_data, 'devices' => $devices, 'locations' => $locations,
                 'sites' => $sites, 'html_device_table' => $html_device_table ]);
-        else
-            return view('dashboard.index', [ 'active_data' => $active_data, 'devices' => $devices,
+        } else {
+                    return view('dashboard.index', [ 'active_data' => $active_data, 'devices' => $devices,
                 'locations' => $locations, 'sites' => $sites ]);
+        }
     }
     
     /**

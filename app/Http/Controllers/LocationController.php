@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\DataTables\LocationDataTable;
 use App\Location;
 use App\Site;
@@ -44,7 +43,7 @@ class LocationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  EditLocation $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(EditLocation $request)
     {
@@ -52,13 +51,13 @@ class LocationController extends Controller
         if (!empty($request->input('new_site_name')))
         {
             //Create a new site
-            $site = Site::create(['name' => $request->input('new_site_name')]);
+            $site = Site::create([ 'name' => $request->input('new_site_name') ]);
             $site_id = $site->id;
+        } else {
+                    $site_id = $request->input('site');
         }
-        else
-            $site_id = $request->input('site');
     
-        $location = Location::create(['name' => $request->input('name'), 'site_id' => $site_id]);
+        $location = Location::create([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
     
         return redirect()->route('location.show', $location->id)
             ->with('success', 'Location created successfully');
@@ -97,7 +96,7 @@ class LocationController extends Controller
      *
      * @param  EditLocation  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(EditLocation $request, $id)
     {
@@ -105,14 +104,14 @@ class LocationController extends Controller
         if (!empty($request->input('new_site_name')))
         {
             //Create a new site
-            $site = Site::create(['name' => $request->input('new_site_name')]);
+            $site = Site::create([ 'name' => $request->input('new_site_name') ]);
             $site_id = $site->id;
+        } else {
+                    $site_id = $request->input('site');
         }
-        else
-            $site_id = $request->input('site');
         
         //Update the location with the supplied name and the site
-        Location::findOrFail($id)->update(['name' => $request->input('name'), 'site_id' => $site_id]);
+        Location::findOrFail($id)->update([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
         
         return redirect()->route('location.show', $id)
             ->with('success', 'Location updated successfully');
@@ -122,12 +121,12 @@ class LocationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         Location::findOrFail($id)->delete();
         return redirect()->route('location.index')
-            ->with('success','Location deleted successfully');
+            ->with('success', 'Location deleted successfully');
     }
 }
