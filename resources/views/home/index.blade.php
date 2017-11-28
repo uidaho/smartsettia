@@ -24,12 +24,11 @@
 						anywhere with an internet connection.
 					</p>
 					<p>
-						<a class="btn btn-primary btn-lg" role="button" href="#">
-							<i class="fa fa-apple"></i>
-							Available on the App Store
+						<a class="btn btn-primary btn-lg" role="button" href="{{ route('login') }}">
+							<i class="fa fa-sign-in"></i> Login
 						</a>
-						<a class="btn btn-success btn-lg" role="button" href="#">
-							<i class="fa fa-google"></i> Available on Google Play
+						<a class="btn btn-success btn-lg" role="button" href="{{ route('register') }}">
+							<i class="fa fa-user-plus"></i> Register
 						</a>
 					</p>
 				</div>
@@ -73,9 +72,6 @@
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-refresh"></i>
 							<p>Manual Control</p>
 						</div>
-						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-globe"></i>
-							<p>Global Control</p>
-						</div>
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-time"></i>
 							<p>Automatic Control</p>
 						</div>
@@ -100,14 +96,8 @@
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-calendar"></i>
 							<p>Custom Scheduling</p>
 						</div>
-						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-tint"></i>
-							<p>Moisture Sensors</p>
-						</div>
-						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-adjust"></i>
-							<p>Light Sensors</p>
-						</div>
 						<div class="col-xs-4 icon-feature"><i class="glyphicon glyphicon-scale"></i>
-							<p>Temperature Sensors</p>
+							<p>Sensors</p>
 						</div>
 					</div>
 				</div>
