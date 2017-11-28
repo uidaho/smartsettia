@@ -16,16 +16,16 @@ class UsersDataTable extends DataTable
     {
         return datatables($query)
             ->editColumn('name', function(User $user) {
-                return '<a href="' . route('user.show', $user->id) . '">'. $user->name . '</a>';
+                return '<a href="'.route('user.show', $user->id).'">'.$user->name.'</a>';
             })
 
             ->editColumn('role', function(User $user) {
                 return $user->roleString();
             })
-            ->editColumn('updated_at', function ($user) {
+            ->editColumn('updated_at', function($user) {
                 return $user->updatedAtHuman;
             })
-            ->editColumn('created_at', function ($user) {
+            ->editColumn('created_at', function($user) {
                 return $user->createdAtHuman;
             })
             ->addColumn('action', 'user.action')

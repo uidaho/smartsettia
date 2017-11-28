@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EditDevice extends FormRequest
@@ -46,19 +45,19 @@ class EditDevice extends FormRequest
     {
         $validator = parent::getValidatorInstance();
     
-        $validator->sometimes('site_id', 'bail|integer|digits_between:1,10|exists:sites,id', function ($input) {
+        $validator->sometimes('site_id', 'bail|integer|digits_between:1,10|exists:sites,id', function($input) {
             return !$input->new_site_name && $input->site_id;
         });
     
-        $validator->sometimes('location_id', 'bail|integer|digits_between:1,10|exists:locations,id', function ($input) {
+        $validator->sometimes('location_id', 'bail|integer|digits_between:1,10|exists:locations,id', function($input) {
             return !$input->new_location_name && $input->location_id;
         });
     
-        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function($input) {
             return !$input->site_id && $input->name;
         });
     
-        $validator->sometimes('new_location_name', 'bail|min:2|max:190|name|unique:locations,name', function ($input) {
+        $validator->sometimes('new_location_name', 'bail|min:2|max:190|name|unique:locations,name', function($input) {
             return !$input->location_id && $input->name;
         });
         

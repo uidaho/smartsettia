@@ -70,7 +70,7 @@ class Sensor extends Model
     {
         return SensorData::whereRaw('id = (SELECT MAX(id)
                                                     FROM sensor_data
-                                                    WHERE sensor_id = ?)', [$this->id])->first() ?? (object)[];
+                                                    WHERE sensor_id = ?)', [ $this->id ])->first() ?? (object) [ ];
     }
     
     /**
@@ -145,10 +145,11 @@ class Sensor extends Model
      */
     public function getUpdatedAtHumanAttribute()
     {
-        if ($this->updated_at->diffInDays() > 0)
-            return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->updated_at->diffForHumans();
+        if ($this->updated_at->diffInDays() > 0) {
+                    return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->updated_at->diffForHumans();
+        }
     }
     
     /**
@@ -163,9 +164,10 @@ class Sensor extends Model
      */
     public function getCreatedAtHumanAttribute()
     {
-        if ($this->created_at->diffInDays() > 0)
-            return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->created_at->diffForHumans();
+        if ($this->created_at->diffInDays() > 0) {
+                    return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->created_at->diffForHumans();
+        }
     }
 }

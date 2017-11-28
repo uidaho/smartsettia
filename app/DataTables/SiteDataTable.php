@@ -15,12 +15,12 @@ class SiteDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('name', function ($site) {
-                return '<a href="' . route('site.show', $site->id) . '">'. $site->name . '</a>';
+            ->editColumn('name', function($site) {
+                return '<a href="'.route('site.show', $site->id).'">'.$site->name.'</a>';
             })
             ->addColumn('action', 'site.action')
             ->blacklist([ 'action' ])
-            ->rawColumns(['name', 'action']);
+            ->rawColumns([ 'name', 'action' ]);
     }
     
     /**

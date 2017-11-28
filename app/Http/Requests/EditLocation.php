@@ -38,11 +38,11 @@ class EditLocation extends FormRequest
     {
         $validator = parent::getValidatorInstance();
         
-        $validator->sometimes('site', 'integer|digits_between:1,10|exists:sites,id', function ($input) {
+        $validator->sometimes('site', 'integer|digits_between:1,10|exists:sites,id', function($input) {
             return !$input->new_site_name && $input->site;
         });
         
-        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function ($input) {
+        $validator->sometimes('new_site_name', 'bail|min:2|max:190|name|unique:sites,name', function($input) {
             return !$input->site;
         });
         

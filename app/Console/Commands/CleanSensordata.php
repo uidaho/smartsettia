@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\SensorData;
 use Illuminate\Console\Command;
 
 class CleanSensordata extends Command

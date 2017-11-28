@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\UsersDataTable;
@@ -156,7 +155,7 @@ class UserController extends Controller
         }
 
         return redirect()->route('user.index')
-            ->with('success','User deleted successfully');
+            ->with('success', 'User deleted successfully');
     }
     
     /**
@@ -172,6 +171,6 @@ class UserController extends Controller
         $user->restore();
         
         return redirect()->route('user.show', $user->id)
-            ->with('success','User restored successfully');
+            ->with('success', 'User restored successfully');
     }
 }
