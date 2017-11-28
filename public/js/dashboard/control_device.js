@@ -52,3 +52,49 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 		});
 	}
 });
+
+//Change default device
+$deviceTableHolder.on('click', '[data-default-check]', function (e) {
+	e.preventDefault();
+
+	if (!lock)
+	{
+		lock = true;
+
+		//Get the device's id
+		let deviceId = $(this).attr("data-device-id");
+		//Get the user's id
+		let userId = $(this).attr("data-user-id");
+		//Store the device id and the route type override
+		let targetData = {
+			preferred_device_id: deviceId,
+			_method: 'put'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/user/' + userId,
+			data: targetData,
+			dataType: "json",
+			success: function (data) {
+				lock = false;
+
+				//Update the page
+				let targetURL = '/dashboard';
+				let newTargetData = { device_id : currentDeviceId, location_id : currentLocationId, site_id : currentSiteId, page : currentPaginationPage };
+				updateDashboardData(targetURL, newTargetData);
+
+				//Display a message of success to the user
+				alertBarActivate(data['success'], 'success');
+			},
+			error: function (data) {
+				alertBarActivate("Sorry an error was encountered, try again later.", 'error');
+
+				console.log(data);
+
+				lock = false;
+			}
+
+		});
+	}
+});

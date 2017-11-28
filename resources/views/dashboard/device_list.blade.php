@@ -2,6 +2,7 @@
 	<table class="table table-striped table-responsive" style="margin-bottom: 0;">
 		<thead>
 		<tr>
+			<th style="text-align:center;">Default</th>
 			<th>Name</th>
 			<th>Controls</th>
 		</tr>
@@ -9,6 +10,13 @@
 		<tbody id="control_devices_list">
 		@foreach ($devices as $device)
 			<tr id="tr_{{ $device->id }}">
+				<td style="padding-bottom: 0; text-align:center;">
+					@if($device->id == Auth::user()->preferred_device_id)
+						<input type="checkbox" data-default-check="{{ $loop->index }}" data-device-id="{{ $device->id }}" data-user-id="{{ Auth::user()->id }}" checked disabled>
+					@else
+						<input type="checkbox" data-default-check="{{ $loop->index }}" data-device-id="{{ $device->id }}" data-user-id="{{ Auth::user()->id }}">
+					@endif
+				</td>
 				<td style="padding-bottom: 0;">
 					<b><a href="{{ route('device.show', $device->id) }}">{{ $device->name }}</a></b>
 					@if($device->isDeviceStale)

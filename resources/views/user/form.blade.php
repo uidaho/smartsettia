@@ -45,11 +45,3 @@
             <span class="help-block">Role for this user that limits access to features.</span>
         </div>
 </div>
-<div class="form-group{{ $errors->has('preferred_device_id') ? ' has-error' : '' }}">
-	{!! Form::label('preferred_device_id', 'Preferred Device ID', ['class' => 'col-sm-3 control-label']) !!}
-	<div class="col-sm-9">
-		{!! Form::text('preferred_device_id', null, ['class' => 'form-control']) !!}
-		<small class="text-danger">{{ $errors->first('preferred_device_id') }}</small>
-		<span class="help-block">Preferred device to be shown on the dashboard.</span>
-	</div>
-</div>
