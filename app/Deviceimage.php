@@ -24,7 +24,7 @@ class Deviceimage extends Model
      *
      * @var array
      */
-    protected static $ignoreChangedAttributes = ['updated_at'];
+    protected static $ignoreChangedAttributes = [ 'updated_at' ];
     
     /**
      * The attributes to log in the Activity Log

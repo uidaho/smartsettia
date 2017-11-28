@@ -29,7 +29,7 @@ class Device extends Model
      *
      * @var array
      */
-    protected $hidden = ['token'];
+    protected $hidden = [ 'token' ];
     
     /**
      * The attributes that are mass assignable.
@@ -47,7 +47,7 @@ class Device extends Model
      *
      * @var array
      */
-    protected static $ignoreChangedAttributes = ['updated_at', 'last_network_update_at'];
+    protected static $ignoreChangedAttributes = [ 'updated_at', 'last_network_update_at' ];
     
     /**
      * The attributes to log in the Activity Log
@@ -87,7 +87,7 @@ class Device extends Model
      */
     public function getSiteAttribute()
     {
-        return $this->location->site ?? (object)[];
+        return $this->location->site ?? (object) [ ];
     }
     
     /**
@@ -103,8 +103,9 @@ class Device extends Model
         $time = new Carbon($value, 'UTC');
         
         //If the user is logged in then use there preferred timezone
-        if (Auth::check())
-            $time = $time->setTimezone(Auth::user()->timezone);
+        if (Auth::check()) {
+                    $time = $time->setTimezone(Auth::user()->timezone);
+        }
 
         return $time->format('H:i');
     }
@@ -117,7 +118,7 @@ class Device extends Model
      */
     public function getOpenTimeHumanAttribute()
     {
-        $time = new Carbon($this->attributes['open_time'], 'UTC');
+        $time = new Carbon($this->attributes[ 'open_time' ], 'UTC');
         $time = $time->setTimezone(Auth::user()->timezone);
         
         return $time->format('h:i a');
@@ -136,8 +137,9 @@ class Device extends Model
         $time = new Carbon($value, 'UTC');
     
         //If the user is logged in then use there preferred timezone
-        if (Auth::check())
-            $time = $time->setTimezone(Auth::user()->timezone);
+        if (Auth::check()) {
+                    $time = $time->setTimezone(Auth::user()->timezone);
+        }
         
         return $time->format('H:i');
     }
@@ -150,7 +152,7 @@ class Device extends Model
      */
     public function getCloseTimeHumanAttribute()
     {
-        $time = new Carbon($this->attributes['close_time'], 'UTC');
+        $time = new Carbon($this->attributes[ 'close_time' ], 'UTC');
         $time = $time->setTimezone(Auth::user()->timezone);
         
         return $time->format('h:i a');
@@ -171,11 +173,11 @@ class Device extends Model
         {
             $time = new Carbon($value, Auth::user()->timezone);
             $time = $time->setTimezone('UTC');
+        } else {
+                    $time = new Carbon($value, 'UTC');
         }
-        else
-            $time = new Carbon($value, 'UTC');
         
-        $this->attributes['open_time'] = $time->format('H:i:s');
+        $this->attributes[ 'open_time' ] = $time->format('H:i:s');
     }
     
     /**
@@ -193,11 +195,11 @@ class Device extends Model
         {
             $time = new Carbon($value, Auth::user()->timezone);
             $time = $time->setTimezone('UTC');
+        } else {
+                    $time = new Carbon($value, 'UTC');
         }
-        else
-            $time = new Carbon($value, 'UTC');
         
-        $this->attributes['close_time'] = $time->format('H:i:s');
+        $this->attributes[ 'close_time' ] = $time->format('H:i:s');
     }
     
     /**
@@ -211,10 +213,11 @@ class Device extends Model
      */
     public function getLastNetworkUpdateAtHumanAttribute()
     {
-        if ($this->last_network_update_at->diffInDays() > 0)
-            return $this->last_network_update_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->last_network_update_at->diffForHumans();
+        if ($this->last_network_update_at->diffInDays() > 0) {
+                    return $this->last_network_update_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->last_network_update_at->diffForHumans();
+        }
     }
     
     /**
@@ -229,10 +232,11 @@ class Device extends Model
      */
     public function getUpdatedAtHumanAttribute()
     {
-        if ($this->updated_at->diffInDays() > 0)
-            return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->updated_at->diffForHumans();
+        if ($this->updated_at->diffInDays() > 0) {
+                    return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->updated_at->diffForHumans();
+        }
     }
     
     /**
@@ -246,10 +250,11 @@ class Device extends Model
      */
     public function getCreatedAtHumanAttribute()
     {
-        if ($this->created_at->diffInDays() > 0)
-            return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->created_at->diffForHumans();
+        if ($this->created_at->diffInDays() > 0) {
+                    return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->created_at->diffForHumans();
+        }
     }
     
     /**
@@ -360,10 +365,11 @@ class Device extends Model
         $time_now = Carbon::now($timezone);
     
         //Check if the current time is during the open schedule or not
-        if ($time_now->gt($open_time) && $time_now->lt($close_time))
-            return true;
-        else
-            return false;
+        if ($time_now->gt($open_time) && $time_now->lt($close_time)) {
+                    return true;
+        } else {
+                    return false;
+        }
     }
     
     /**
@@ -377,23 +383,25 @@ class Device extends Model
         $isClosed = $this->cover_status === 'closed';
         $isLocked = $this->cover_status === 'locked';
             
-        switch ($this['cover_command'])
+        switch ($this[ 'cover_command' ])
         {
             case 'open':
-                if ($isOpen)
-                    $status = 'open';
-                else if ($isLocked)
-                    $status = 'unlocking';
-                else
-                    $status = 'opening';
+                if ($isOpen) {
+                                    $status = 'open';
+                } else if ($isLocked) {
+                                    $status = 'unlocking';
+                } else {
+                                    $status = 'opening';
+                }
                 break;
             case 'close':
-                if ($isClosed)
-                    $status = 'closed';
-                else if ($isLocked)
-                    $status = 'unlocking';
-                else
-                    $status = 'closing';
+                if ($isClosed) {
+                                    $status = 'closed';
+                } else if ($isLocked) {
+                                    $status = 'unlocking';
+                } else {
+                                    $status = 'closing';
+                }
                 break;
             case 'lock':
                 $status = 'locked';
@@ -402,8 +410,9 @@ class Device extends Model
                 $status = 'error';
         }
     
-        if ($this->cover_status === 'error')
-            $status = 'error';
+        if ($this->cover_status === 'error') {
+                    $status = 'error';
+        }
         
         return $status;
     }
@@ -412,7 +421,7 @@ class Device extends Model
      * Get the page number of the device for the dashboard device table pagination
      *
      * @param int $limit
-     * @return int
+     * @return double
      */
     public function dashPageNum($limit)
     {

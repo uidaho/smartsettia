@@ -3,7 +3,6 @@
 namespace App\DataTables;
 
 use App\Device;
-use App\Site;
 use Yajra\DataTables\Services\DataTable;
 
 class DevicesDataTable extends DataTable
@@ -16,19 +15,19 @@ class DevicesDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('name', function ($device) {
-                return '<a href="' . route('device.show', $device->id) . '">' . $device->name . '</a>';
+            ->editColumn('name', function($device) {
+                return '<a href="'.route('device.show', $device->id).'">'.$device->name.'</a>';
             })
-            ->addColumn('location', function ($device) {
+            ->addColumn('location', function($device) {
                 return ($device->location->name ?? 'null');
             })
-            ->addColumn('site', function ($device) {
+            ->addColumn('site', function($device) {
                 return ($device->location->site->name ?? 'null');
             })
-            ->addColumn('rates', function ($device) {
-                return $device->update_rate . '/' . $device->image_rate .'/' . $device->sensor_rate;
+            ->addColumn('rates', function($device) {
+                return $device->update_rate.'/'.$device->image_rate.'/'.$device->sensor_rate;
             })
-            ->editColumn('updated_at', function ($device) {
+            ->editColumn('updated_at', function($device) {
                 return (is_object($device->updated_at) ? $device->updatedAtHuman : 'null');
             })
             ->blacklist([ 'location', 'site', 'rates' ])

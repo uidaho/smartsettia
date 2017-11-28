@@ -137,12 +137,12 @@ class User extends Authenticatable
     /**
      * Returns the users role as a string.
      *
-     * @return Users
+     * @return string
      */
     public function roleString()
     {
         $role_en = array(0 => "Registered", 1 => "User", 2 => "Manager", 3 => "Admin");
-        return $role_en[ $this->role ] . ' (' . $this->role . ')';
+        return $role_en[ $this->role ].' ('.$this->role.')';
     }
     
     /**
@@ -165,10 +165,11 @@ class User extends Authenticatable
      */
     public function getUpdatedAtHumanAttribute()
     {
-        if ($this->updated_at->diffInDays() > 0)
-            return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->updated_at->diffForHumans();
+        if ($this->updated_at->diffInDays() > 0) {
+                    return $this->updated_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->updated_at->diffForHumans();
+        }
     }
     
     /**
@@ -183,9 +184,10 @@ class User extends Authenticatable
      */
     public function getCreatedAtHumanAttribute()
     {
-        if ($this->created_at->diffInDays() > 0)
-            return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
-        else
-            return $this->created_at->diffForHumans();
+        if ($this->created_at->diffInDays() > 0) {
+                    return $this->created_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+                    return $this->created_at->diffForHumans();
+        }
     }
 }

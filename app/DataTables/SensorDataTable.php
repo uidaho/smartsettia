@@ -15,18 +15,18 @@ class SensorDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->editColumn('name', function ($sensor) {
-                return '<a href="' . route('sensor.show', $sensor->id) . '">'. $sensor->name . '</a>';
+            ->editColumn('name', function($sensor) {
+                return '<a href="'.route('sensor.show', $sensor->id).'">'.$sensor->name.'</a>';
             })
-            ->editColumn('device_id', function ($sensor) {
-                return '<a href="' . route('device.show', $sensor->device_id) . '">'. ($sensor->device->name ?? '') . '</a>';
+            ->editColumn('device_id', function($sensor) {
+                return '<a href="'.route('device.show', $sensor->device_id).'">'.($sensor->device->name ?? '').'</a>';
             })
-            ->addColumn('value', function ($sensor) {
-                return '<a href="' . route('sensordata.show', $sensor->latest_data->id ?? '0') . '">'. ($sensor->latest_data->value ?? 'null') . '</a>';
+            ->addColumn('value', function($sensor) {
+                return '<a href="'.route('sensordata.show', $sensor->latest_data->id ?? '0').'">'.($sensor->latest_data->value ?? 'null').'</a>';
             })
             ->addColumn('action', 'sensor.action')
             ->blacklist([ 'value', 'action' ])
-            ->rawColumns(['device_id', 'name', 'value', 'action']);
+            ->rawColumns([ 'device_id', 'name', 'value', 'action' ]);
     }
 
     /**

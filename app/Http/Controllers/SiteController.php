@@ -41,7 +41,7 @@ class SiteController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -49,7 +49,7 @@ class SiteController extends Controller
             'name' => 'required|min:2|max:190|name|unique:sites,name',
         ]);
         
-        $site = Site::create(['name' => $request->name]);
+        $site = Site::create([ 'name' => $request->name ]);
         
         return redirect()->route('site.show', $site->id)
             ->with('success', 'Site created successfully');
@@ -66,10 +66,11 @@ class SiteController extends Controller
         $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
     
-        if (\Request::ajax())
-            return response()->json(['site' => $site, 'locations' => $locations]);
-        else
-            return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
+        if (\Request::ajax()) {
+                    return response()->json(['site' => $site, 'locations' => $locations]);
+        } else {
+                    return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
+        }
     }
     
     /**
@@ -90,7 +91,7 @@ class SiteController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  Site  $site
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Site $site)
     {
@@ -98,7 +99,7 @@ class SiteController extends Controller
             'name' => 'required|min:2|max:190|name|unique:sites,name,'.$site->id,
         ]);
         
-        $site->update(['name' => $request->name]);
+        $site->update([ 'name' => $request->name ]);
         
         return redirect()->route('site.show', $site->id)
             ->with('success', 'Site updated successfully');
@@ -108,12 +109,12 @@ class SiteController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         Site::findOrFail($id)->delete();
         return redirect()->route('site.index')
-            ->with('success','Site deleted successfully');
+            ->with('success', 'Site deleted successfully');
     }
 }

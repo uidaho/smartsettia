@@ -15,15 +15,15 @@ class SensorDataDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables($query)
-            ->addColumn('sensor', function ($sensordata) {
-                return '<a href="' . route('sensor.show', $sensordata->sensor_id) . '">'. ($sensordata->sensor->name ?? 'null') . '</a>';
+            ->addColumn('sensor', function($sensordata) {
+                return '<a href="'.route('sensor.show', $sensordata->sensor_id).'">'.($sensordata->sensor->name ?? 'null').'</a>';
             })
-            ->addColumn('device', function ($sensordata) {
-                return '<a href="' . route('device.show', $sensordata->sensor->device->id ?? '0') . '">'. ($sensordata->sensor->device->name ?? 'null') . '</a>';
+            ->addColumn('device', function($sensordata) {
+                return '<a href="'.route('device.show', $sensordata->sensor->device->id ?? '0').'">'.($sensordata->sensor->device->name ?? 'null').'</a>';
             })
             ->addColumn('action', 'sensordata.action')
-            ->blacklist([ 'action'])
-            ->rawColumns(['device', 'sensor', 'action']);
+            ->blacklist([ 'action' ])
+            ->rawColumns([ 'device', 'sensor', 'action' ]);
     }
 
     /**
