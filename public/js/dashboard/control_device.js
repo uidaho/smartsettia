@@ -54,7 +54,7 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 });
 
 //Change default device
-$deviceTableHolder.on('click', '[data-default-check]', function (e) {
+$deviceTableHolder.on('click', '[data-default-radio]', function (e) {
 	e.preventDefault();
 
 	if (!lock)
