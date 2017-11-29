@@ -111,29 +111,35 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            'name' => 'required|min:2|max:190|full_name',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
+            'name' => 'sometimes|nullable|min:2|max:190|full_name',
+            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,'.$id,
             'password' => 'sometimes|nullable|min:8|confirmed',
-            'role' => 'required|integer|max:3',
+            'role' => 'sometimes|nullable|integer|max:3',
             'phone' => 'numeric|phone|nullable',
             'preferred_device_id' => 'nullable|integer|digits_between:1,10|exists:devices,id',
         ]);
         
         $query = User::findOrFail($id);
 
-        $query->name = $request->input('name');
-        $query->email = $request->input('email');
-        if ($request->input('password') != '') {
-            $query->password = bcrypt($request->input('password'));
+        if ($request->input('name') != null)
+        {
+            $query->name = $request->input('name');
+            $query->email = $request->input('email');
+            $query->role = $request->input('role');
+            $query->phone = $request->input('phone');
+            if ($request->input('password') != '')
+                $query->password = bcrypt($request->input('password'));
         }
-        $query->role = $request->input('role');
-        $query->phone = $request->input('phone');
-        $query->preferred_device_id = $request->input('preferred_device_id');
+        else
+            $query->preferred_device_id = $request->input('preferred_device_id');
 
         $query->save();
-
-        return redirect()->route('user.show', $id)
-            ->with('success', 'User updated successfully');
+    
+        if (\Request::ajax())
+            return response()->json([ 'success' => 'Preferred device updated successfully' ]);
+        else
+            return redirect()->route('user.show', $id)
+                ->with('success', 'User updated successfully');
     }
 
     /**

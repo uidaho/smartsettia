@@ -3,6 +3,7 @@
 		<thead>
 		<tr>
 			<th>Name</th>
+			<th style="text-align:center;">Default</th>
 			<th>Controls</th>
 		</tr>
 		</thead>
@@ -18,6 +19,13 @@
 						</p>
 					@else
 						<p class="status-online">Online</p>
+					@endif
+				</td>
+				<td style="padding-bottom: 0; text-align: center">
+					@if($device->id == Auth::user()->preferred_device_id)
+						<input type="radio" data-default-radio="{{ $loop->index }}" data-device-id="{{ $device->id }}" data-user-id="{{ Auth::user()->id }}" checked disabled>
+					@else
+						<input type="radio" data-default-radio="{{ $loop->index }}" data-device-id="{{ $device->id }}" data-user-id="{{ Auth::user()->id }}">
 					@endif
 				</td>
 				<td>
