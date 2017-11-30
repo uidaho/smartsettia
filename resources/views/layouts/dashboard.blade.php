@@ -127,9 +127,7 @@
                 <div class="col-sm-6">
                     <h5>SmartSettia © 2017</h5></div>
                 <div class="col-sm-6 social-icons">
-                    <a href="#"><i class="fa fa-facebook"></i></a>
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                    <a href="#"><i class="fa fa-instagram"></i></a>
+					<a href="https://github.com/uidaho/smartsettia"><i class="fa fa-github"></i></a>
                 </div>
             </div>
         </div>
