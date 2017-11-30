@@ -48,7 +48,7 @@
 				<div class="col-md-6">
 					<h2>Fantastic Features</h2>
 					<p>SmartSettia has all the features you would expect from a greenhouse management system and more.
-						The interface focuses on keeping operatiors and administrators informed and in controllof all
+						The interface focuses on keeping operators and administrators informed and in control of all
 						units in the greenhouse.
 					</p>
 				</div>
