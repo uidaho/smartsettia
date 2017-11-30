@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Device;
+use App\Policies\DevicePolicy;
+use App\User;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,8 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
-        Users::class => UserPolicy::class,
+        User::class => UserPolicy::class,
+        Device::class => DevicePolicy::class,
     ];
 
     /**
@@ -26,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::resource('users', 'UserPolicy');
+        //Gate::resource('users', 'UserPolicy');
         // Resource automagically defines:
         // Gate::define('users.view', 'UserPolicy@view');
         // Gate::define('users.create', 'UserPolicy@create');

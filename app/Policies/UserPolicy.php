@@ -10,21 +10,6 @@ class UserPolicy
     use HandlesAuthorization;
 
     /**
-     * The before method will be executed before any other methods on the policy,
-     * giving you an opportunity to authorize the action before the intended
-     * policy method is actually called. This feature is most commonly used for
-     * authorizing application administrators to perform any action.
-     */
-    public function before($user, $ability)
-    {
-        // TODO: Admins...
-        // if ($user->isSuperAdmin()) {
-        //     return true;
-        // }
-        return false;
-    }
-
-    /**
      * Determine whether the user can view the user.
      *
      * @param  \App\User  $user

@@ -29,6 +29,8 @@ class DeviceController extends Controller
      */
     public function index(DevicesDataTable $dataTable)
     {
+        $this->authorize('index', Device::class);
+        
         $trashed = Device::onlyTrashed()->get();
         return $dataTable->render('device.index', compact('trashed'));
     }
@@ -40,6 +42,8 @@ class DeviceController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Device::class);
+        
         return view('device.index');
     }
 
@@ -51,6 +55,8 @@ class DeviceController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show', Device::class);
+        
         $device = Device::findOrFail($id);
         
         $charts = [ ];
@@ -75,6 +81,8 @@ class DeviceController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('edit', Device::class);
+        
         //Get the device with the given id
         $device = Device::findOrFail($id);
         //Get the devices location
@@ -103,6 +111,8 @@ class DeviceController extends Controller
      */
     public function update(EditDevice $request, $id)
     {
+        $this->authorize('update', Device::class);
+        
         $device = Device::findOrFail($id);
         
         //Get the site id and location id for the device if they are not null
@@ -181,6 +191,8 @@ class DeviceController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Device::class);
+        
         $device = Device::withTrashed()->findOrFail($id);
 
         if ($device->trashed())
@@ -209,6 +221,8 @@ class DeviceController extends Controller
      */
     public function restore($id)
     {
+        $this->authorize('restore', Device::class);
+        
         $device = Device::onlyTrashed()->findOrFail($id);
 
         $device->restore();
