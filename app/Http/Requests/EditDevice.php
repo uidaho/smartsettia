@@ -29,9 +29,9 @@ class EditDevice extends FormRequest
             'name' => 'sometimes|nullable|min:2|max:190|name',
             'open_time' => 'sometimes|nullable|date_format:H:i',
             'close_time' => 'sometimes|nullable|date_format:H:i',
-            'update_rate' => 'sometimes|nullable|integer|digits_between:1,7',
-            'image_rate' => 'sometimes|nullable|integer|digits_between:1,7',
-            'sensor_rate' => 'sometimes|nullable|integer|digits_between:1,7',
+            'update_rate' => 'sometimes|nullable|integer|min:2|digits_between:1,7',
+            'image_rate' => 'sometimes|nullable|integer|min:3|digits_between:1,7',
+            'sensor_rate' => 'sometimes|nullable|integer|min:10|digits_between:1,7',
             'command' => 'sometimes|nullable|alpha|max:6|in:open,close,lock,unlock',
         ];
     }
