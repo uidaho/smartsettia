@@ -165,6 +165,9 @@ function updateDashboardData(targetURL, targetData)
 			},
 			error: function (data)
 			{
+				if (data.status === 404)
+					alertBarActivate("An error was encountered, please try again later.", 'error');
+				
 				lock = false;
 			}
 		});
