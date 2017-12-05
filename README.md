@@ -30,7 +30,7 @@ Thank you for considering contributing to SmartSettia! If you are a member of ou
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Squire Project, please send an e-mail to admin@smartsettia.com. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within SmartSettia, please send an e-mail to admin@smartsettia.com. All security vulnerabilities will be promptly addressed.
 
 ## License
 

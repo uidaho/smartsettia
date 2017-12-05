@@ -42,9 +42,7 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 					alertBarActivate("That device is currently in use.", 'error');
 				}
 				else
-					alertBarActivate("Uncaught error in updateDeviceCommand()", 'error');
-
-				console.log(data);
+					alertBarActivate("Sorry an error was encountered, try again later.", 'error');
 
 				lock = false;
 			}
@@ -89,9 +87,6 @@ $deviceTableHolder.on('click', '[data-default-radio]', function (e) {
 			},
 			error: function (data) {
 				alertBarActivate("Sorry an error was encountered, try again later.", 'error');
-
-				console.log(data);
-
 				lock = false;
 			}
 
