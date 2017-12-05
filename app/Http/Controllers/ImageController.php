@@ -25,11 +25,10 @@ class ImageController extends Controller
      */
     public function show($device_id)
     {
-        if (Storage::disk('private')->exists('deviceimage/'.$device_id)) {
+        if (Storage::disk('private')->exists('deviceimage/'.$device_id))
             $image = Image::make(Storage::disk('private')->get('deviceimage/'.$device_id));
-        } else {
-            $image = Image::make(public_path().'/img/video_not_found.jpg');
-        }
+        else
+            $image = Image::make('img/video_not_found.jpg');
         
         return $image->response();
     }

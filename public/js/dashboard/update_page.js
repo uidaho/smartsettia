@@ -163,17 +163,11 @@ function updateDashboardData(targetURL, targetData)
 
 				lock = false;
 			},
-			error: function (data) {
+			error: function (data)
+			{
 				if (data.status === 404)
-				{
 					alertBarActivate("An error was encountered, please try again later.", 'error');
-				}
-				else
-				{
-					alertBarActivate("Uncaught error in updateDashboardData()", 'error');
-				}
-
-				console.log(data);
+				
 				lock = false;
 			}
 		});
