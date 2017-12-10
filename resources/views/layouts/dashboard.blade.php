@@ -83,8 +83,10 @@
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li class="{{ Route::currentRouteNamed('user.edit') ? 'active' : '' }}" role="presentation">
                                     <a href="{{ route('user.edit', ['id' => Auth::user()->id]) }}"><i class="fa-fw fa fa-gear"></i> Settings</a></li>
-                                <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
-                                    <a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
+								{{--
+									<li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
+                                --}}
                                 <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa-fw fa fa-sign-out"></i> Logout</a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>

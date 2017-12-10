@@ -24,12 +24,14 @@
 						anywhere with an internet connection.
 					</p>
 					<p>
-						<a class="btn btn-primary btn-lg" role="button" href="{{ route('login') }}">
-							<i class="fa fa-sign-in"></i> Login
-						</a>
-						<a class="btn btn-success btn-lg" role="button" href="{{ route('register') }}">
-							<i class="fa fa-user-plus"></i> Register
-						</a>
+						@if (Auth::guest())
+							<a class="btn btn-primary btn-lg" role="button" href="{{ route('login') }}">
+								<i class="fa fa-sign-in"></i> Login
+							</a>
+							<a class="btn btn-success btn-lg" role="button" href="{{ route('register') }}">
+								<i class="fa fa-user-plus"></i> Register
+							</a>
+						@endif
 					</p>
 				</div>
 			</div>

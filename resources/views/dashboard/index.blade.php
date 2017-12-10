@@ -93,7 +93,6 @@
 @section('scripts')
 	<script src="{{ asset('js/dashboard/update_page.js') }}"></script>
 	<script src="{{ asset('js/dashboard/update_image.js') }}"></script>
-	<script src="{{ asset('js/dashboard/update_sensors.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
 	<script src="{{ asset('js/dashboard/control_device.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>
