@@ -95,8 +95,8 @@ class SensorDataController extends Controller
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
         ]);
-        $sensorData = SensorData::findOrFail($id)->update($request->all());
-        return redirect()->route('sensordata.show', $sensorData->id)
+        $query = SensorData::findOrFail($id)->update($request->all());
+        return redirect()->route('sensordata.show', $id)
             ->with('success', 'SensorData updated successfully');    
     }
 

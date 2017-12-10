@@ -108,8 +108,8 @@ class SensorController extends Controller
             'name' => 'required|min:2|max:190|name',
             'type' => 'required|max:190|type_name'
         ]);
-        $sensor = $sensor = Sensor::findOrFail($id)->update($request->all());
-        return redirect()->route('sensor.show', $sensor->id)
+        $query = Sensor::findOrFail($id)->update($request->all());
+        return redirect()->route('sensor.show', $id)
             ->with('success', 'Sensor updated successfully');
     }
 
