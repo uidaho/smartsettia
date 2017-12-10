@@ -54,7 +54,7 @@ class UserPolicy
         if ($user->isAdmin())
             return true;
         else
-            return $user->isUser() && $user->id === $user2->id;
+            return $user->id === $user2->id;
     }
     
     /**
@@ -69,7 +69,7 @@ class UserPolicy
         if ($user->isAdmin())
             return true;
         else
-            return $user->isUser() && $user->id === $user2->id;
+            return $user->id === $user2->id;
     }
 
     /**
@@ -84,7 +84,7 @@ class UserPolicy
         if ($user->isAdmin())
             return true;
         else
-            return $user->isUser() && $user->id === $user2->id;
+            return $user->id === $user2->id;
     }
     
     /**

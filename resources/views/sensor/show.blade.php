@@ -40,7 +40,7 @@
                 <div class="panel-footer clearfix">
                     <a class="btn btn-sm btn-primary" type="button" title="Go up to device" href="{{ route('device.show', $sensor->device_id) }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
                     <span class="pull-right">
-						@can('delete', App\Sensor::class)
+						@can('destroy', App\Sensor::class)
 							{!! Form::open(['method' => 'DELETE', 'route' => ['sensor.destroy', $sensor->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
 								{!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this sensor']) !!}
 							{!! Form::close() !!}
