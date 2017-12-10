@@ -32,10 +32,10 @@ class DashboardController extends Controller
         if (Gate::denies('index-dashboard'))
         {
             if (\Request::ajax()) {
-                return response()->json("Please contact the website's admin to request access.", 403);
+                return response()->json("Please contact engr-smartsettia@uidaho.edu to request access.", 403);
             } else {
                 return redirect()->route('home')
-                    ->with('failure', 'Please contact the website\'s admin to request access.');
+                    ->with('failure', 'Please contact engr-smartsettia@uidaho.edu to request access.');
             }
         }
         
