@@ -17,7 +17,7 @@
 		            </a>
 		        </li>
 		        <li>
-		            <a href="#trash" role="tab" data-toggle="tab" onclick="trashDataTables()">
+		            <a href="#trash" role="tab" data-toggle="tab">
 		                <i class="fa fa-trash"></i> Trash
 		            </a>
 		        </li>

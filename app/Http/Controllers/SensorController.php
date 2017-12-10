@@ -27,6 +27,8 @@ class SensorController extends Controller
      */
     public function index(SensorDataTable $dataTable)
     {
+        $this->authorize('index', Sensor::class);
+        
         return $dataTable->render('sensor.index');
     }
 
@@ -37,6 +39,8 @@ class SensorController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Sensor::class);
+    
         return view('sensor.create');
     }
 
@@ -48,6 +52,8 @@ class SensorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', Sensor::class);
+    
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
@@ -63,12 +69,13 @@ class SensorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
+        $this->authorize('show', Sensor::class);
+    
         $sensor = Sensor::findOrFail($id);
         $latestData = $sensor->latestData;
         $sensordata = $sensor->data()->orderBy('id', 'desc')->paginate(25);
@@ -86,12 +93,13 @@ class SensorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
+        $this->authorize('edit', Sensor::class);
+    
         $sensor = Sensor::findOrFail($id);
         
         return view('sensor.edit', [ 'sensor' => $sensor ]);
@@ -101,18 +109,20 @@ class SensorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param  int  $id
+     * @param  Sensor  $sensor
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Sensor $sensor)
     {
+        $this->authorize('update', Sensor::class);
+    
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
             'type' => 'required|max:190|type_name'
         ]);
-        $query = Sensor::findOrFail($id)->update($request->all());
-        return redirect()->route('sensor.show', $id)
+        $sensor->update($request->all());
+        return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor updated successfully');
     }
 
@@ -124,6 +134,8 @@ class SensorController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Sensor::class);
+    
         Sensor::findOrFail($id)->delete();
         return redirect()->route('sensor.index')
             ->with('success', 'Sensor deleted successfully');

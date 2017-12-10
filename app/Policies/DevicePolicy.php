@@ -11,7 +11,7 @@ class DevicePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the device.
+     * Determine whether the user can view the list of devices.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -19,17 +19,6 @@ class DevicePolicy
     public function index(User $user)
     {
         return $user->isManager();
-    }
-
-    /**
-     * Determine whether the user can create devices.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function create(User $user)
-    {
-        return $user->isAdmin();
     }
     
     /**
@@ -53,7 +42,7 @@ class DevicePolicy
     {
         return $user->isManager();
     }
-
+    
     /**
      * Determine whether the user can update the device.
      *
@@ -62,9 +51,20 @@ class DevicePolicy
      */
     public function update(User $user)
     {
+        return $user->isManager();
+    }
+    
+    /**
+     * Determine whether the user can update the device's command.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function updateCommand(User $user)
+    {
         return $user->isUser();
     }
-
+    
     /**
      * Determine whether the user can delete the device.
      *

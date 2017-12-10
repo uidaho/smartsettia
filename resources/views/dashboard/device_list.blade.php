@@ -65,7 +65,9 @@
 						@else
 							<button class="btn btn-primary" type="button" data-array-pos="{{ $loop->index }}" data-device-id="{{ $device->id }}" disabled><i class="fa fa-lock" aria-hidden="true"></i> Lock</button>
 						@endif
-						<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" data-edit="{{ $loop->index }}" data-device-id="{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+						@can('edit', App\Device::class)
+							<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editDeviceModal" data-edit="{{ $loop->index }}" data-device-id="{{ $device->id }}"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+						@endcan
 					</div>
 				</td>
 			</tr>

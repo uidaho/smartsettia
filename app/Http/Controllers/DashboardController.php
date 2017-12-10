@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Device;
@@ -28,6 +29,16 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+        if (Gate::denies('index-dashboard'))
+        {
+            if (\Request::ajax()) {
+                return response()->json("Please contact the website's admin to request access.", 403);
+            } else {
+                return redirect()->route('home')
+                    ->with('failure', 'Please contact the website\'s admin to request access.');
+            }
+        }
+        
         $request->validate([
             'site_id' => 'sometimes|required|integer|digits_between:1,10',
             'location_id' => 'sometimes|required|integer|digits_between:1,10',

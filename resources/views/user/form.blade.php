@@ -37,11 +37,13 @@
             <span class="help-block">Choose a long password that is not used anywhere else.</span>
         </div>
 </div>
-<div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-    {!! Form::label('role', 'User Role', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::select('role', [0 => 'Registered - No access', 1 => 'User - Can control units', 2 => 'Manager - Can modify units and users', 3 => 'Admin - Can create managers'], null, ['placeholder' => 'Pick a role...', 'class' => 'form-control', 'name' => 'role', 'required' => 'required']) !!}
-            <small class="text-danger">{{ $errors->first('role') }}</small>
-            <span class="help-block">Role for this user that limits access to features.</span>
-        </div>
-</div>
+@can('updateRole', App\User::class)
+	<div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+		{!! Form::label('role', 'User Role', ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-9">
+				{!! Form::select('role', [0 => 'Registered - No access', 1 => 'User - Can control units', 2 => 'Manager - Can modify units and users', 3 => 'Admin - Can create managers'], null, ['placeholder' => 'Pick a role...', 'class' => 'form-control', 'name' => 'role', 'required' => 'required']) !!}
+				<small class="text-danger">{{ $errors->first('role') }}</small>
+				<span class="help-block">Role for this user that limits access to features.</span>
+			</div>
+	</div>
+@endcan

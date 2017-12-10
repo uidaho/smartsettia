@@ -39,7 +39,11 @@ $deviceTableHolder.on('click', '[data-command]', function () {
 				}
 				else if (data.status === 403)
 				{
-					alertBarActivate("That device is currently in use.", 'error');
+					alertBarActivate(data.responseJSON['message'], 'error');
+				}
+				else if (data.status === 503)
+				{
+					alertBarActivate("That device is currently in use, try again later.", 'error');
 				}
 				else
 					alertBarActivate("Sorry an error was encountered, try again later.", 'error');

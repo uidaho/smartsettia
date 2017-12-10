@@ -26,6 +26,8 @@ class SensorDataController extends Controller
      */
     public function index(SensorDataDataTable $dataTable)
     {
+        $this->authorize('index', SensorData::class);
+        
         return $dataTable->render('sensordata.index');
     }
 
@@ -36,6 +38,8 @@ class SensorDataController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', SensorData::class);
+        
         return view('sensordata.create');
     }
 
@@ -47,6 +51,8 @@ class SensorDataController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', SensorData::class);
+        
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
@@ -67,6 +73,8 @@ class SensorDataController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $this->authorize('show', SensorData::class);
+        
         $sensordata = SensorData::findOrFail($id);
 
         return view('sensordata.show', [ 'sensordata' => $sensordata ]);
@@ -80,6 +88,8 @@ class SensorDataController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $this->authorize('edit', SensorData::class);
+        
         $sensordata = SensorData::findOrFail($id);
         
         return view('sensordata.edit', [ 'sensordata' => $sensordata ]);
@@ -88,11 +98,14 @@ class SensorDataController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
+        $this->authorize('update', SensorData::class);
+        
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
@@ -110,6 +123,8 @@ class SensorDataController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', SensorData::class);
+        
         SensorData::find($id)->delete();
         return redirect()->route('sensordata.index')
             ->with('success', 'SensorData deleted successfully');

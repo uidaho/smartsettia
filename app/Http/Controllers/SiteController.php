@@ -24,6 +24,8 @@ class SiteController extends Controller
      */
     public function index(SiteDataTable $dataTable)
     {
+        $this->authorize('index', Site::class);
+        
         return $dataTable->render('site.index');
     }
     
@@ -34,6 +36,8 @@ class SiteController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Site::class);
+        
         return view('site.create');
     }
     
@@ -45,6 +49,8 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', Site::class);
+        
         $request->validate([
             'name' => 'required|min:2|max:190|name|unique:sites,name',
         ]);
@@ -63,6 +69,8 @@ class SiteController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show', Site::class);
+        
         $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
     
@@ -81,6 +89,8 @@ class SiteController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('edit', Site::class);
+        
         $site = Site::findOrFail($id);
         
         return view('site.edit', [ 'site' => $site ]);
@@ -95,6 +105,8 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
+        $this->authorize('update', Site::class);
+        
         $request->validate([
             'name' => 'required|min:2|max:190|name|unique:sites,name,'.$site->id,
         ]);
@@ -113,6 +125,8 @@ class SiteController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Site::class);
+        
         Site::findOrFail($id)->delete();
         return redirect()->route('site.index')
             ->with('success', 'Site deleted successfully');

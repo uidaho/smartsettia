@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\UsersDataTable;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -27,6 +28,8 @@ class UserController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
+        $this->authorize('index', User::class);
+        
         $trashed = User::onlyTrashed()->get();
         return $dataTable->render('user.index', compact('trashed'));
     }
@@ -38,6 +41,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', User::class);
+        
         return view('user.create');
     }
 
@@ -49,6 +54,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', User::class);
+        
         request()->validate([
             'name' => 'required|min:2|max:190|full_name',
             'email' => 'required|string|email|max:255|unique:users',
@@ -74,13 +81,13 @@ class UserController extends Controller
     /**
      * Show the given user.
      *
-     * @param  Request  $request
-     * @param  string  $id
+     * @param  User  $user
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Request $request, $id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
+        $this->authorize('show', $user);
+        
         $user->password = "";
         
         return view('user.show', [ 'user' => $user ]);
@@ -89,13 +96,13 @@ class UserController extends Controller
     /**
      * Edit the given user.
      *
-     * @param  Request  $request
-     * @param  string  $id
+     * @param  User  $user
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Request $request, $id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
+        $this->authorize('edit', $user);
+        
         $user->password = "";
 
         return view('user.edit', [ 'user' => $user ]);
@@ -105,40 +112,41 @@ class UserController extends Controller
      * Update the given user.
      *
      * @param  Request  $request
-     * @param  string  $id
+     * @param  User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+        
         request()->validate([
             'name' => 'sometimes|nullable|min:2|max:190|full_name',
-            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,'.$id,
+            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,'.$user->id,
             'password' => 'sometimes|nullable|min:8|confirmed',
             'role' => 'sometimes|nullable|integer|max:3',
             'phone' => 'numeric|phone|nullable',
             'preferred_device_id' => 'nullable|integer|digits_between:1,10|exists:devices,id',
         ]);
-        
-        $query = User::findOrFail($id);
 
         if ($request->input('name') != null)
         {
-            $query->name = $request->input('name');
-            $query->email = $request->input('email');
-            $query->role = $request->input('role');
-            $query->phone = $request->input('phone');
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->phone = $request->input('phone');
             if ($request->input('password') != '')
-                $query->password = bcrypt($request->input('password'));
+                $user->password = bcrypt($request->input('password'));
+            if (Auth::user()->can('updateRole', User::class))
+                $user->role = $request->input('role');
         }
         else
-            $query->preferred_device_id = $request->input('preferred_device_id');
+            $user->preferred_device_id = $request->input('preferred_device_id');
 
-        $query->save();
+        $user->save();
     
         if (\Request::ajax())
             return response()->json([ 'success' => 'Preferred device updated successfully' ]);
         else
-            return redirect()->route('user.show', $id)
+            return redirect()->route('user.show', $user->id)
                 ->with('success', 'User updated successfully');
     }
 
@@ -150,6 +158,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', User::class);
+        
         $user = User::withTrashed()->findOrFail($id);
 
         if ($user->trashed()) {
@@ -172,6 +182,8 @@ class UserController extends Controller
      */
     public function restore($id)
     {
+        $this->authorize('restore', User::class);
+        
         $user = User::onlyTrashed()->findOrFail($id);
 
         $user->restore();

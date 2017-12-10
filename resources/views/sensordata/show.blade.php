@@ -41,13 +41,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer">
+                <div class="panel-footer clearfix">
                     <a class="btn btn-sm btn-primary" type="button" title="Go up to sensor" href="{{ route('sensor.show', $sensordata->sensor_id) }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
                     <span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this sensor data" href="{{ route('sensordata.edit', $sensordata->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                            {!! Form::open(['method' => 'DELETE', 'route' => ['sensordata.destroy', $sensordata->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+						@can('destroy', App\SensorData::class)
+                        	{!! Form::open(['method' => 'DELETE', 'route' => ['sensordata.destroy', $sensordata->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
                                 {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this sensor data']) !!}
                             {!! Form::close() !!}
+						@endcan
                     </span>
                 </div>
             </div>

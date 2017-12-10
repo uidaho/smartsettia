@@ -9,6 +9,7 @@ use App\Device;
 use App\Site;
 use App\Location;
 use Charts;
+use Illuminate\Support\Facades\Auth;
 
 class DeviceController extends Controller
 {
@@ -33,18 +34,6 @@ class DeviceController extends Controller
         
         $trashed = Device::onlyTrashed()->get();
         return $dataTable->render('device.index', compact('trashed'));
-    }
-
-    /**
-     * Show create device page.
-     *
-     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
-    {
-        $this->authorize('create', Device::class);
-        
-        return view('device.index');
     }
 
     /**
@@ -106,27 +95,25 @@ class DeviceController extends Controller
      * Update the given device.
      *
      * @param  EditDevice  $request
-     * @param  string  $id
+     * @param  Device  $device
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function update(EditDevice $request, $id)
+    public function update(EditDevice $request, Device $device)
     {
-        $this->authorize('update', Device::class);
-        
-        $device = Device::findOrFail($id);
-        
-        //Get the site id and location id for the device if they are not null
-        if ($request->input('new_site_name') != null || $request->input('site_id') != null)
+        //Update the device if the user us authorized to
+        if ($request->input('name') != null)
         {
+            $this->authorize('update', Device::class);
+            
             //Get the site id of the old or newly created site
             if (!empty($request->input('new_site_name')))
             {
                 //Create a new site
                 $site = Site::create([ 'name' => $request->input('new_site_name') ]);
                 $site_id = $site->id;
-            } else {
-                            $site_id = $request->input('site_id');
             }
+            else
+                $site_id = $request->input('site_id');
     
             //Get the location id of the old or newly created location
             if (!empty($request->input('new_location_name')))
@@ -134,32 +121,28 @@ class DeviceController extends Controller
                 //Create a new location
                 $location = Location::create([ 'name' => $request->input('new_location_name'), 'site_id' => $site_id ]);
                 $location_id = $location->id;
-            } else
+            }
+            else
                 $location_id = $request->input('location_id');
     
             //Update the device
             $device->location_id = $location_id;
-        }
-        
-        //Update the device
-        if ($request->input('name') != null)
+    
             $device->name = $request->input('name');
-        if ($request->input('open_time') != null)
             $device->open_time = $request->input('open_time');
-        if ($request->input('close_time') != null)
             $device->close_time = $request->input('close_time');
-        if ($request->input('update_rate') != null)
             $device->update_rate = $request->input('update_rate');
-        if ($request->input('image_rate') != null)
             $device->image_rate = $request->input('image_rate');
-        if ($request->input('sensor_rate') != null)
             $device->sensor_rate = $request->input('sensor_rate');
+        }
+
         //Check if the cover_command needs to be updated
         if ($request->input('command') != null)
         {
+            $this->authorize('updateCommand', Device::class);
             //If device is currently opening, closing or in an error state don't update command
             if (!$device->isReadyForCommand())
-                return response()->json("Device is currently in use.", 403);
+                return response()->json("Device is currently in use.", 503);
     
             $command = $request->input('command');
             
@@ -179,7 +162,7 @@ class DeviceController extends Controller
         if (\Request::ajax())
             return response()->json([ 'success' => 'Device updated successfully' ]);
         else
-            return redirect()->route('device.show', $id)
+            return redirect()->route('device.show', $device->id)
                 ->with('success', 'Device updated successfully');
     }
 

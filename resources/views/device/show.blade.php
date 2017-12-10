@@ -52,30 +52,36 @@
 									<td>Last Communication:</td>
 									<td>{{ $device->lastNetworkUpdateAtHuman }}</td>
 								</tr>
-                                <tr>
-                                    <td>UUID:</td>
-                                    <td>{{ $device->uuid }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Token:</td>
-                                    <td>{{ $device->token }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Hostname:</td>
-                                    <td>{{ $device->hostname }}</td>
-                                </tr>
-                                <tr>
-                                    <td>IP:</td>
-                                    <td>{{ $device->ip }}</td>
-                                </tr>
-                                <tr>
-                                    <td>MAC Address:</td>
-                                    <td>{{ $device->mac_address }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Time:</td>
-                                    <td>{{ $device->time }}</td>
-                                </tr>
+								@if (Auth::user()->isAdmin())
+									<tr>
+										<td>UUID:</td>
+										<td>{{ $device->uuid }}</td>
+									</tr>
+									<tr>
+										<td>Token:</td>
+										<td>{{ $device->token }}</td>
+									</tr>
+									{{--
+										<tr>
+											<td>Hostname:</td>
+											<td>{{ $device->hostname }}</td>
+										</tr>
+										<tr>
+											<td>IP:</td>
+											<td>{{ $device->ip }}</td>
+										</tr>
+										<tr>
+											<td>MAC Address:</td>
+											<td>{{ $device->name }}</td>
+										</tr>
+									--}}
+								@endif
+                                {{--
+									<tr>
+										<td>Time:</td>
+										<td>{{ $device->time }}</td>
+									</tr>
+                                --}}
                                 <tr>
                                     <td>Timezone:</td>
                                     <td>{{ $device->timezone }}</td>
@@ -117,13 +123,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer">
-					<a class="btn btn-sm btn-primary" type="button" title="Go to device list" href="{{ route('device.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+                <div class="panel-footer clearfix">
+					@can('index', App\Device::class)
+						<a class="btn btn-sm btn-primary" type="button" title="Go to device list" href="{{ route('device.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+					@endcan
                     <span class="pull-right">
-						<a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="{{ route('device.edit', $device->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                        {!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $device->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
-                            {!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this device']) !!}
-                        {!! Form::close() !!}
+						@can('edit', App\Device::class)
+							<a class="btn btn-sm btn-warning" type="button" title="Edit this device" href="{{ route('device.edit', $device->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+						@endcan
+						@can('destroy', App\Device::class)
+							{!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $device->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+								{!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this device']) !!}
+							{!! Form::close() !!}
+						@endcan
                     </span>
                 </div>
             </div>

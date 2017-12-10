@@ -25,6 +25,8 @@ class LocationController extends Controller
      */
     public function index(LocationDataTable $dataTable)
     {
+        $this->authorize('index', Location::class);
+        
         return $dataTable->render('location.index');
     }
 
@@ -35,6 +37,8 @@ class LocationController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Location::class);
+        
         $sites = Site::orderBy('name', 'ASC')->get();
         return view('location.create', [ 'sites' => $sites ]);
     }
@@ -47,6 +51,8 @@ class LocationController extends Controller
      */
     public function store(EditLocation $request)
     {
+        $this->authorize('store', Location::class);
+        
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
         {
@@ -71,6 +77,8 @@ class LocationController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show', Location::class);
+        
         $location = Location::findOrFail($id);
         $devices = $location->devices()->orderBy('name', 'ASC')->paginate(15);
     
@@ -85,6 +93,8 @@ class LocationController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('edit', Location::class);
+        
         $location = Location::findOrFail($id);
         $sites = Site::orderByRaw("id = ? DESC", $location->site_id)->orderBy('name', 'ASC')->get();
     
@@ -100,6 +110,8 @@ class LocationController extends Controller
      */
     public function update(EditLocation $request, $id)
     {
+        $this->authorize('update', Location::class);
+        
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
         {
@@ -125,6 +137,8 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Location::class);
+        
         Location::findOrFail($id)->delete();
         return redirect()->route('location.index')
             ->with('success', 'Location deleted successfully');
