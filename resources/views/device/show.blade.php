@@ -42,7 +42,7 @@
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
-                                    <td>{{ $device->created_at }}</td>
+                                    <td>{{ $device->createdAtHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>Updated:</td>
