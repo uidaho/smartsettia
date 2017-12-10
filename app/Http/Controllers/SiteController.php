@@ -58,31 +58,27 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($site)
     {
-        $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
     
-        if (\Request::ajax()) {
-                    return response()->json(['site' => $site, 'locations' => $locations]);
-        } else {
-                    return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
-        }
+        if (\Request::ajax())
+            return response()->json(['site' => $site, 'locations' => $locations]);
+        else
+            return view('site.show', [ 'site' => $site, 'locations' => $locations ]);
     }
     
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($site)
     {
-        $site = Site::findOrFail($id);
-        
         return view('site.edit', [ 'site' => $site ]);
     }
     
@@ -108,12 +104,12 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Site  $site
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy($site)
     {
-        Site::findOrFail($id)->delete();
+        $site->delete();
         return redirect()->route('site.index')
             ->with('success', 'Site deleted successfully');
     }

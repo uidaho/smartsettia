@@ -54,22 +54,20 @@ class SensorController extends Controller
             'type' => 'required|max:190|type_name'
         ]);
 
-        $query = Sensor::create($request->all());
+        $sensor = Sensor::create($request->all());
 
-        return redirect()->route('sensor.show', $query->id)
+        return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  Sensor  $sensor
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show($sensor)
     {
-        $sensor = Sensor::findOrFail($id);
         $latestData = $sensor->latestData;
         $sensordata = $sensor->data()->orderBy('id', 'desc')->paginate(25);
         $chartSensorData = $sensordata->reverse();
@@ -86,14 +84,11 @@ class SensorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  Sensor  $sensor
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit($sensor)
     {
-        $sensor = Sensor::findOrFail($id);
-        
         return view('sensor.edit', [ 'sensor' => $sensor ]);
     }
 
@@ -101,30 +96,30 @@ class SensorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param  int  $id
+     * @param  Sensor  $sensor
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $sensor)
     {
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
             'type' => 'required|max:190|type_name'
         ]);
-        $query = Sensor::findOrFail($id)->update($request->all());
-        return redirect()->route('sensor.show', $id)
+        $sensor->update($request->all());
+        return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Sensor  $sensor
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($sensor)
     {
-        Sensor::findOrFail($id)->delete();
+        $sensor->delete();
         return redirect()->route('sensor.index')
             ->with('success', 'Sensor deleted successfully');
     }

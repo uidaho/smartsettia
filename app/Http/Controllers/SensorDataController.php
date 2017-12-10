@@ -52,65 +52,61 @@ class SensorDataController extends Controller
             'value' => 'required|max:190|value_string'
         ]);
 
-        $query = SensorData::create($request->all());
+        $sensorData = SensorData::create($request->all());
 
-        return redirect()->route('sensordata.show', $query->id)
+        return redirect()->route('sensordata.show', $sensorData->id)
             ->with('success', 'SensorData created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  SensorData  $sensorData
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show($sensorData)
     {
-        $sensordata = SensorData::findOrFail($id);
-
-        return view('sensordata.show', [ 'sensordata' => $sensordata ]);
+        return view('sensordata.show', [ 'sensordata' => $sensorData ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  SensorData  $sensorData
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit($sensorData)
     {
-        $sensordata = SensorData::findOrFail($id);
-        
-        return view('sensordata.edit', [ 'sensordata' => $sensordata ]);
+        return view('sensordata.edit', [ 'sensordata' => $sensorData ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param  SensorData  $sensorData
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request, $sensorData)
     {
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
         ]);
-        $query = SensorData::findOrFail($id)->update($request->all());
-        return redirect()->route('sensordata.show', $id)
+        $sensorData->update($request->all());
+        return redirect()->route('sensordata.show', $sensorData->id)
             ->with('success', 'SensorData updated successfully');    
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  SensorData  $sensorData
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($sensorData)
     {
-        SensorData::find($id)->delete();
+        $sensorData->delete();
         return redirect()->route('sensordata.index')
             ->with('success', 'SensorData deleted successfully');
     }
