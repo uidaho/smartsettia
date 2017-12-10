@@ -63,11 +63,12 @@ class SensorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Sensor  $sensor
+     * @param  String  $id
      * @return Response
      */
-    public function show($sensor)
+    public function show($id)
     {
+        $sensor = Sensor::findOrFail($id);
         $latestData = $sensor->latestData;
         $sensordata = $sensor->data()->orderBy('id', 'desc')->paginate(25);
         $chartSensorData = $sensordata->reverse();
@@ -84,11 +85,12 @@ class SensorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Sensor  $sensor
+     * @param  String  $id
      * @return Response
      */
-    public function edit($sensor)
+    public function edit($id)
     {
+        $sensor = Sensor::findOrFail($id);
         return view('sensor.edit', [ 'sensor' => $sensor ]);
     }
 
@@ -96,17 +98,17 @@ class SensorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param  Sensor  $sensor
+     * @param  String  $id
      * @return Response
      */
-    public function update(Request $request, $sensor)
+    public function update(Request $request, $id)
     {
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
             'type' => 'required|max:190|type_name'
         ]);
-        $sensor->update($request->all());
+        $sensor = $sensor = Sensor::findOrFail($id)->update($request->all());
         return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor updated successfully');
     }
@@ -114,12 +116,12 @@ class SensorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Sensor  $sensor
+     * @param  String  $id
      * @return Response
      */
-    public function destroy($sensor)
+    public function destroy($id)
     {
-        $sensor->delete();
+        Sensor::findOrFail($id)->delete();
         return redirect()->route('sensor.index')
             ->with('success', 'Sensor deleted successfully');
     }

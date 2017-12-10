@@ -58,11 +58,12 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Site  $site
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($site)
+    public function show($id)
     {
+        $site = Site::findOrFail($id);
         $locations = $site->locations()->orderBy('name', 'ASC')->paginate(15);
     
         if (\Request::ajax())
@@ -74,11 +75,12 @@ class SiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Site  $site
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($site)
+    public function edit($id)
     {
+        $site = Site::findOrFail($id);
         return view('site.edit', [ 'site' => $site ]);
     }
     

@@ -70,11 +70,12 @@ class UserController extends Controller
     /**
      * Show the given user.
      *
-     * @param  User  $user
+     * @param  String  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($user)
+    public function show($id)
     {
+        $user = User::findOrFail($id);
         $user->password = "";
         
         return view('user.show', [ 'user' => $user ]);
@@ -83,11 +84,12 @@ class UserController extends Controller
     /**
      * Edit the given user.
      *
-     * @param  User  $user
+     * @param  String  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($user)
+    public function edit($id)
     {
+        $user = User::findOrFail($id);
         $user->password = "";
 
         return view('user.edit', [ 'user' => $user ]);
@@ -97,20 +99,21 @@ class UserController extends Controller
      * Update the given user.
      *
      * @param  Request  $request
-     * @param  User  $user
+     * @param  String  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $user)
+    public function update(Request $request, $id)
     {
         request()->validate([
             'name' => 'sometimes|nullable|min:2|max:190|full_name',
-            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,'.$user->id,
+            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,'.$id,
             'password' => 'sometimes|nullable|min:8|confirmed',
             'role' => 'sometimes|nullable|integer|max:3',
             'phone' => 'numeric|phone|nullable',
             'preferred_device_id' => 'nullable|integer|digits_between:1,10|exists:devices,id',
         ]);
-        
+    
+        $user = User::findOrFail($id);
         if ($request->input('name') != null)
         {
             $user->name = $request->input('name');

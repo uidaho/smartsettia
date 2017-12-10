@@ -61,22 +61,24 @@ class SensorDataController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  SensorData  $sensorData
+     * @param  String  $id
      * @return Response
      */
-    public function show($sensorData)
+    public function show($id)
     {
+        $sensorData = SensorData::findOrFail($id);
         return view('sensordata.show', [ 'sensordata' => $sensorData ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  SensorData  $sensorData
+     * @param  String  $id
      * @return Response
      */
-    public function edit($sensorData)
+    public function edit($id)
     {
+        $sensorData = SensorData::findOrFail($id);
         return view('sensordata.edit', [ 'sensordata' => $sensorData ]);
     }
 
@@ -84,16 +86,16 @@ class SensorDataController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  SensorData  $sensorData
+     * @param  String  $id
      * @return Response
      */
-    public function update(Request $request, $sensorData)
+    public function update(Request $request, $id)
     {
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
         ]);
-        $sensorData->update($request->all());
+        $sensorData = SensorData::findOrFail($id)->update($request->all());
         return redirect()->route('sensordata.show', $sensorData->id)
             ->with('success', 'SensorData updated successfully');    
     }
@@ -101,12 +103,12 @@ class SensorDataController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  SensorData  $sensorData
+     * @param  String  $id
      * @return Response
      */
-    public function destroy($sensorData)
+    public function destroy($id)
     {
-        $sensorData->delete();
+        SensorData::findOrFail($id)->delete();
         return redirect()->route('sensordata.index')
             ->with('success', 'SensorData deleted successfully');
     }
