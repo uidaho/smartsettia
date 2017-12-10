@@ -135,7 +135,7 @@ class UserController extends Controller
             $user->phone = $request->input('phone');
             if ($request->input('password') != '')
                 $user->password = bcrypt($request->input('password'));
-            if (Auth::user()->can('updateRole', User::class))
+            if (Auth::user()->can('updateRole', $user))
                 $user->role = $request->input('role');
         }
         else
@@ -158,9 +158,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('destroy', User::class);
-        
         $user = User::withTrashed()->findOrFail($id);
+        $this->authorize('destroy', $user);
 
         if ($user->trashed()) {
             //If the user was already deleted then permanently delete it

@@ -66,14 +66,16 @@ class UserPolicy
      */
     public function edit(User $user, User $user2)
     {
-        if ($user->isAdmin())
-            return true;
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
         else
             return $user->id === $user2->id;
     }
 
     /**
-     * Determine whether the user can update user2.
+     * Determine whether the user can update themselves or another user.
      *
      * @param  \App\User  $user
      * @param  \App\User  $user2
@@ -81,32 +83,46 @@ class UserPolicy
      */
     public function update(User $user, User $user2)
     {
-        if ($user->isAdmin())
-            return true;
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
         else
             return $user->id === $user2->id;
     }
     
     /**
-     * Determine whether the user can update a user's role.
+     * Determine whether the user can update another user's role.
      *
      * @param  \App\User  $user
+     * @param  \App\User  $user2
      * @return boolean
      */
-    public function updateRole(User $user)
+    public function updateRole(User $user, $user2)
     {
-        return $user->isAdmin();
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return false;
     }
-
+    
     /**
      * Determine whether the user can delete the user.
      *
      * @param  \App\User  $user
+     * @param  \App\User  $user2
      * @return boolean
      */
-    public function destroy(User $user)
+    public function destroy(User $user, $user2)
     {
-        return $user->isAdmin();
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return false;
     }
     
     /**
