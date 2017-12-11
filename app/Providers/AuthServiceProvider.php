@@ -48,5 +48,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('index-dashboard', function ($user) {
             return $user->isUser();
         });
+        Gate::define('index-activitylog', function ($user) {
+            return $user->isManager();
+        });
     }
 }
