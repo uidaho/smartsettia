@@ -37,7 +37,7 @@
             <span class="help-block">Choose a long password that is not used anywhere else.</span>
         </div>
 </div>
-@can('updateRole', $user)
+@can('updateRole', $user ?? new App\User)
 	<div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
 		{!! Form::label('role', 'User Role', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-9">
