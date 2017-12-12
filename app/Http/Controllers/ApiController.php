@@ -92,7 +92,7 @@ class ApiController extends Controller
     public function sensor(Request $request)
     {
         // Validate the request
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'uuid'          => 'required|size:36|uuid|exists:devices,uuid',
             'token'         => 'required|max:60|alpha_num|exists:devices,token',
             'sensor_data.*.name'   => 'required|min:2|max:190|name',
@@ -145,7 +145,7 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         // Validate the request.
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'uuid' => 'required|size:36|uuid',
             'challenge' => 'required|min:6|string',
         ])->validate();
@@ -197,7 +197,7 @@ class ApiController extends Controller
      */
     public function image(Request $request) {
         // Validate the request.
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'uuid'          => 'required|size:36|uuid|exists:devices,uuid',
             'token'         => 'required|max:60|alpha_num|exists:devices,token',
             'image'         => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',

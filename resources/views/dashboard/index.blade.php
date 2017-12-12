@@ -61,7 +61,7 @@
 		<div class="row">
 			<div class="col-md-5 col-md-offset-1 text-center relative">
 				<!-- Image alert bar -->
-				<div class="alert alert-warning alert-dismissible alert-image-stale" role="alert" id="alert_stale_image_bar" hidden>
+				<div class="alert alert-danger alert-dismissible alert-image-stale" role="alert" id="alert_stale_image_bar" hidden>
 					<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<div id="image_stale_bar_text"></div>
 				</div>
@@ -93,7 +93,6 @@
 @section('scripts')
 	<script src="{{ asset('js/dashboard/update_page.js') }}"></script>
 	<script src="{{ asset('js/dashboard/update_image.js') }}"></script>
-	<script src="{{ asset('js/dashboard/update_sensors.js') }}"></script>
 	<script src="{{ asset('js/dashboard/change_modal_edit.js') }}"></script>
 	<script src="{{ asset('js/dashboard/control_device.js') }}"></script>
 	<script src="{{ asset('js/device_edit.js') }}"></script>

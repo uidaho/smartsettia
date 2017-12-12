@@ -56,16 +56,12 @@ class UserController extends Controller
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
         ]);
-
-        $user = new User;
-
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->role = $request->input('role');
-        $user->phone = $request->input('phone');
-
-        $user->save();
+    
+        $user = User::create([ 'name' => $request->name,
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+            'phone' => $request->input('phone'),
+            'role' => $request->input('role'),]);
 
         return redirect()->route('user.show', $user->id)
             ->with('success', 'User created successfully');
@@ -74,11 +70,10 @@ class UserController extends Controller
     /**
      * Show the given user.
      *
-     * @param  Request  $request
-     * @param  string  $id
+     * @param  String  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $user = User::findOrFail($id);
         $user->password = "";
@@ -89,11 +84,10 @@ class UserController extends Controller
     /**
      * Edit the given user.
      *
-     * @param  Request  $request
-     * @param  string  $id
+     * @param  String  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $user = User::findOrFail($id);
         $user->password = "";
@@ -105,7 +99,7 @@ class UserController extends Controller
      * Update the given user.
      *
      * @param  Request  $request
-     * @param  string  $id
+     * @param  String  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -118,34 +112,33 @@ class UserController extends Controller
             'phone' => 'numeric|phone|nullable',
             'preferred_device_id' => 'nullable|integer|digits_between:1,10|exists:devices,id',
         ]);
-        
-        $query = User::findOrFail($id);
-
+    
+        $user = User::findOrFail($id);
         if ($request->input('name') != null)
         {
-            $query->name = $request->input('name');
-            $query->email = $request->input('email');
-            $query->role = $request->input('role');
-            $query->phone = $request->input('phone');
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->role = $request->input('role');
+            $user->phone = $request->input('phone');
             if ($request->input('password') != '')
-                $query->password = bcrypt($request->input('password'));
+                $user->password = bcrypt($request->input('password'));
         }
         else
-            $query->preferred_device_id = $request->input('preferred_device_id');
-
-        $query->save();
+            $user->preferred_device_id = $request->input('preferred_device_id');
+    
+        $user->save();
     
         if (\Request::ajax())
             return response()->json([ 'success' => 'Preferred device updated successfully' ]);
         else
-            return redirect()->route('user.show', $id)
+            return redirect()->route('user.show', $user->id)
                 ->with('success', 'User updated successfully');
     }
 
     /**
      * Deletes a user.
      *
-     * @param  string  $id
+     * @param  int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
@@ -167,7 +160,7 @@ class UserController extends Controller
     /**
      * Restores a user.
      *
-     * @param  string  $id
+     * @param  int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)

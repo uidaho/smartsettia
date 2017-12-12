@@ -66,12 +66,11 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Location  $location
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Location $location)
     {
-        $location = Location::findOrFail($id);
         $devices = $location->devices()->orderBy('name', 'ASC')->paginate(15);
     
         return view('location.show', [ 'location' => $location, 'devices' => $devices ]);
@@ -80,12 +79,11 @@ class LocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Location  $location
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Location $location)
     {
-        $location = Location::findOrFail($id);
         $sites = Site::orderByRaw("id = ? DESC", $location->site_id)->orderBy('name', 'ASC')->get();
     
         return view('location.edit', [ 'location' => $location, 'sites' => $sites ]);
@@ -95,10 +93,10 @@ class LocationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  EditLocation  $request
-     * @param  int  $id
+     * @param  Location $location
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(EditLocation $request, $id)
+    public function update(EditLocation $request, Location $location)
     {
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
@@ -111,21 +109,21 @@ class LocationController extends Controller
         }
         
         //Update the location with the supplied name and the site
-        Location::findOrFail($id)->update([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
+        $location->update([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
         
-        return redirect()->route('location.show', $id)
+        return redirect()->route('location.show', $location->id)
             ->with('success', 'Location updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Location $location
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Location $location)
     {
-        Location::findOrFail($id)->delete();
+        $location->delete();
         return redirect()->route('location.index')
             ->with('success', 'Location deleted successfully');
     }

@@ -54,20 +54,19 @@ class SensorController extends Controller
             'type' => 'required|max:190|type_name'
         ]);
 
-        $query = Sensor::create($request->all());
+        $sensor = Sensor::create($request->all());
 
-        return redirect()->route('sensor.show', $query->id)
+        return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $sensor = Sensor::findOrFail($id);
         $latestData = $sensor->latestData;
@@ -86,14 +85,12 @@ class SensorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $sensor = Sensor::findOrFail($id);
-        
         return view('sensor.edit', [ 'sensor' => $sensor ]);
     }
 
@@ -101,7 +98,7 @@ class SensorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function update(Request $request, $id)
@@ -119,7 +116,7 @@ class SensorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function destroy($id)

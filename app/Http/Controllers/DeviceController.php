@@ -46,13 +46,11 @@ class DeviceController extends Controller
     /**
      * Show the given device.
      *
-     * @param  string  $id
+     * @param  Device  $device
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($id)
+    public function show(Device $device)
     {
-        $device = Device::findOrFail($id);
-        
         $charts = [ ];
         foreach ($device->sensors as $sensor) {
             $data = $sensor->last_month_daily_avg_data;
@@ -70,13 +68,11 @@ class DeviceController extends Controller
     /**
      * View the edit device page
      *
-     * @param  string  $id
+     * @param  Device  $device
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Device $device)
     {
-        //Get the device with the given id
-        $device = Device::findOrFail($id);
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
     
@@ -98,13 +94,11 @@ class DeviceController extends Controller
      * Update the given device.
      *
      * @param  EditDevice  $request
-     * @param  string  $id
+     * @param  Device  $device
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function update(EditDevice $request, $id)
+    public function update(EditDevice $request, Device $device)
     {
-        $device = Device::findOrFail($id);
-        
         //Get the site id and location id for the device if they are not null
         if ($request->input('new_site_name') != null || $request->input('site_id') != null)
         {
@@ -169,14 +163,14 @@ class DeviceController extends Controller
         if (\Request::ajax())
             return response()->json([ 'success' => 'Device updated successfully' ]);
         else
-            return redirect()->route('device.show', $id)
+            return redirect()->route('device.show', $device->id)
                 ->with('success', 'Device updated successfully');
     }
 
     /**
      * Deletes a device.
      *
-     * @param  string  $id
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
@@ -204,7 +198,7 @@ class DeviceController extends Controller
     /**
      * Restores a device.
      *
-     * @param  string  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)

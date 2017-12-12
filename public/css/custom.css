@@ -90,14 +90,14 @@ Dashboard Image Modal
 	color: #ccc;
 	padding: 10px 0;
 	height: 8vw;
-	font-size: 4vw;
+	font-size: 3.5vw;
 }
 
 /* Dashboard image modal close button */
 #image_modal button
 {
 	position: absolute;
-	top:-7vw;
+	top:-20%;
 	right: 0;
 	color: white;
 	height: 50px;

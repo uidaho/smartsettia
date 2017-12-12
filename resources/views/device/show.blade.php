@@ -13,7 +13,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12 col-lg-12 text-center">
-                            <input class="img-thumbnail img-responsive center-block" 
+                            <input class="img-thumbnail img-responsive center-block" style="max-width: 75%"
                                 type="image"
                                 src="{{ route('image.device', $device->id) }}"
                                 alt="Device Image" id="deviceImage" data-toggle="modal" data-target="#image_modal"/>
@@ -42,7 +42,7 @@
                                 </tr>
                                 <tr>
                                     <td>Registered:</td>
-                                    <td>{{ $device->created_at }}</td>
+                                    <td>{{ $device->createdAtHuman }}</td>
                                 </tr>
                                 <tr>
                                     <td>Updated:</td>
