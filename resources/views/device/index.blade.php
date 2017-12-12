@@ -41,7 +41,7 @@
 							<tr>
 								<th>{{ $trash->id }}</th>
 								<th>{{ $trash->name }}</th>
-								<th>{{ $trash->deleted_at }}</th>
+								<th>{{ $trash->deletedAtHuman }}</th>
 								<th>
 									@can('restore', App\Device::class)
 										{!! Form::open(['method' => 'PUT', 'route' => ['device.restore', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to restore this device?")']) !!}

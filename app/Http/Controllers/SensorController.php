@@ -60,16 +60,16 @@ class SensorController extends Controller
             'type' => 'required|max:190|type_name'
         ]);
 
-        $query = Sensor::create($request->all());
+        $sensor = Sensor::create($request->all());
 
-        return redirect()->route('sensor.show', $query->id)
+        return redirect()->route('sensor.show', $sensor->id)
             ->with('success', 'Sensor created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function show($id)
@@ -93,7 +93,7 @@ class SensorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function edit($id)
@@ -101,7 +101,6 @@ class SensorController extends Controller
         $this->authorize('edit', Sensor::class);
     
         $sensor = Sensor::findOrFail($id);
-        
         return view('sensor.edit', [ 'sensor' => $sensor ]);
     }
 
@@ -109,10 +108,10 @@ class SensorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param  Sensor  $sensor
+     * @param  String  $id
      * @return Response
      */
-    public function update(Request $request, Sensor $sensor)
+    public function update(Request $request, $id)
     {
         $this->authorize('update', Sensor::class);
     
@@ -121,15 +120,15 @@ class SensorController extends Controller
             'name' => 'required|min:2|max:190|name',
             'type' => 'required|max:190|type_name'
         ]);
-        $sensor->update($request->all());
-        return redirect()->route('sensor.show', $sensor->id)
+        $query = Sensor::findOrFail($id)->update($request->all());
+        return redirect()->route('sensor.show', $id)
             ->with('success', 'Sensor updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function destroy($id)

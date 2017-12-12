@@ -41,7 +41,7 @@
 							<tr>
 								<th>{{ $trash->id }}</th>
 								<th>{{ $trash->name }}</th>
-								<th>{{ $trash->deleted_at }}</th>
+								<th>{{ $trash->deletedAtHuman }}</th>
 								<th>
 									{!! Form::open(['method' => 'PUT', 'route' => ['user.restore', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to restore this user?")']) !!}
 										{!! Form::button('<i class="fa fa-undo"></i> Restore', ['type' => 'submit', 'class' => 'btn btn-xs btn-primary', 'title' => 'Restore this user']) !!}

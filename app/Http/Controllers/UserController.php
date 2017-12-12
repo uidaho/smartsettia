@@ -63,16 +63,12 @@ class UserController extends Controller
             'role' => 'required|integer|max:3',
             'phone' => 'numeric|phone|nullable',
         ]);
-
-        $user = new User;
-
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->role = $request->input('role');
-        $user->phone = $request->input('phone');
-
-        $user->save();
+    
+        $user = User::create([ 'name' => $request->name,
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+            'phone' => $request->input('phone'),
+            'role' => $request->input('role'),]);
 
         return redirect()->route('user.show', $user->id)
             ->with('success', 'User created successfully');

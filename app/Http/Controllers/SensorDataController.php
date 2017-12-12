@@ -58,48 +58,45 @@ class SensorDataController extends Controller
             'value' => 'required|max:190|value_string'
         ]);
 
-        $query = SensorData::create($request->all());
+        $sensorData = SensorData::create($request->all());
 
-        return redirect()->route('sensordata.show', $query->id)
+        return redirect()->route('sensordata.show', $sensorData->id)
             ->with('success', 'SensorData created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $this->authorize('show', SensorData::class);
         
-        $sensordata = SensorData::findOrFail($id);
-
-        return view('sensordata.show', [ 'sensordata' => $sensordata ]);
+        $sensorData = SensorData::findOrFail($id);
+        return view('sensordata.show', [ 'sensordata' => $sensorData ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $this->authorize('edit', SensorData::class);
         
-        $sensordata = SensorData::findOrFail($id);
-        
-        return view('sensordata.edit', [ 'sensordata' => $sensordata ]);
+        $sensorData = SensorData::findOrFail($id);
+        return view('sensordata.edit', [ 'sensordata' => $sensorData ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param Request $request
+     * @param  String  $id
      * @return Response
      */
     public function update(Request $request, $id)
@@ -118,14 +115,14 @@ class SensorDataController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  String  $id
      * @return Response
      */
     public function destroy($id)
     {
         $this->authorize('destroy', SensorData::class);
         
-        SensorData::find($id)->delete();
+        SensorData::findOrFail($id)->delete();
         return redirect()->route('sensordata.index')
             ->with('success', 'SensorData deleted successfully');
     }

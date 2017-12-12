@@ -10,6 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title') - {{ config('app.name', 'SmartSettia') }}</title>
+	<link rel="favicon" href="{{ asset('favicon.ico') }}">
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -35,9 +36,9 @@
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand navbar-link" href="/">
-                    <i class="glyphicon glyphicon-grain"></i>SmartSettia
-                </a>
+				<a class="navbar-brand navbar-link" style="max-height: 50px; margin-top: -5px" href="/">
+					<span><img src="{{ asset('img/logo64.png') }}" style="max-height: 30px; margin: 0;"> SmartSettia</span>
+				</a>
                 <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -78,15 +79,17 @@
                         @endif
                         <li class="{{ Route::currentRouteNamed('dashboard') ? 'active' : '' }}" role="presentation"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#" style="max-height: 50px">
                                 <img src="/img/avatar.jpg" class="dropdown-image">{{ Auth::user()->name }}
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li class="{{ Route::currentRouteNamed('user.edit') ? 'active' : '' }}" role="presentation">
                                     <a href="{{ route('user.edit', ['id' => Auth::user()->id]) }}"><i class="fa-fw fa fa-gear"></i> Settings</a></li>
-                                <li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
-                                    <a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
+								{{--
+									<li class="{{ Route::currentRouteNamed('user-notifications') ? 'active' : '' }}" role="presentation">
+										<a href="{{ route('user-notifications') }}"><i class="fa-fw fa fa-envelope"></i> Notifications</a></li>
+                                --}}
                                 <li class="{{ Route::currentRouteNamed('logout') ? 'active' : '' }}" role="presentation" class="active">
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa-fw fa fa-sign-out"></i> Logout</a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>

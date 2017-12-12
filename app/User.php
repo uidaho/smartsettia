@@ -190,4 +190,23 @@ class User extends Authenticatable
                     return $this->created_at->diffForHumans();
         }
     }
+    
+    /**
+     * Accessor: Get the user's deletion time in seconds/minutes/hours since deletion or converted to user
+     * friendly readable format.
+     * If the time is less then a day old then display time since deletion
+     * If the time is greater then a day old then display the time in the format of Month day, year 12hour:mins am/pm
+     * and using the user's preferred timezone
+     *
+     *
+     * @return string
+     */
+    public function getDeletedAtHumanAttribute()
+    {
+        if ($this->deleted_at->diffInDays() > 0) {
+            return $this->deleted_at->setTimezone(Auth::user()->timezone)->format('M d, Y h:i a');
+        } else {
+            return $this->deleted_at->diffForHumans();
+        }
+    }
 }
