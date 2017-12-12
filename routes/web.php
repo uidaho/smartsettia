@@ -83,6 +83,24 @@ Route::resource('location', 'LocationController');
  *-----------------------*/
 Route::resource('site', 'SiteController');
 
+/*-----------------------*
+ * SMS Controller *
+ *-----------------------*/
+Route::get('/sms/send/{to}', function(\Nexmo\Client $nexmo, $to){
+    $message = $nexmo->message()->send([
+        'to' => $to,
+        'from' => env('NEXMO_FROM'),
+        'text' => 'This is a test sms message from SmartSettia.'
+    ]);
+    Log::info('sent message: ' . $message['message-id']);
+});
+Route::post('/sms/receive', function(\Nexmo\Client $nexmo){
+    $message = \Nexmo\Message\InboundMessage::createFromGlobals();
+    Log::info('got text: ' . $message->getBody());
+    $reply =$nexmo->message()->send($message->createReply('This is for SmartSettia notifications only. Please contact admin@smartsettia.com for assistance.'));
+    Log::info('sent reply: ' . $reply['message-id']);
+});
+
 // TODO
 Route::get('unit', 'DashboardController@index')->name('unit');
 Route::get('admin', 'DashboardController@index')->name('admin');
