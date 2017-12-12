@@ -8,71 +8,131 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
-
+    
     /**
-     * The before method will be executed before any other methods on the policy,
-     * giving you an opportunity to authorize the action before the intended
-     * policy method is actually called. This feature is most commonly used for
-     * authorizing application administrators to perform any action.
-     */
-    public function before($user, $ability)
-    {
-        // TODO: Admins...
-        // if ($user->isSuperAdmin()) {
-        //     return true;
-        // }
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the user.
+     * Determine whether the user can view the list of users.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $user
-     * @return boolean
+     * @return mixed
      */
-    public function view(User $user, User $user2)
+    public function index(User $user)
     {
-        // TODO: Check if user role is > 0
-        return $user->role > 1 || $user->id === $user2->id;
+        return $user->isAdmin();
     }
-
+    
     /**
-     * Determine whether the user can create users.
+     * Determine whether the user can view the create users page.
      *
      * @param  \App\User  $user
      * @return boolean
      */
     public function create(User $user)
     {
-        // TODO: Check if user role > 1
-        return true;
+        return $user->isAdmin();
+    }
+    
+    /**
+     * Determine whether the user can create a user.
+     *
+     * @param  \App\User  $user
+     * @return boolean
+     */
+    public function store(User $user)
+    {
+        return $user->isAdmin();
     }
 
     /**
-     * Determine whether the user can update the user2.
+     * Determine whether the user can view the user.
+     *
+     * @param  \App\User  $user the current user
+     * @param  \App\User  $user2 the user to be viewed
+     * @return boolean
+     */
+    public function show(User $user, User $user2)
+    {
+        if ($user->isAdmin())
+            return true;
+        else
+            return $user->id === $user2->id;
+    }
+    
+    /**
+     * Determine whether the user can view the edit page for a user.
      *
      * @param  \App\User  $user
+     * @param  \App\User  $user2 the user to be edited
+     * @return mixed
+     */
+    public function edit(User $user, User $user2)
+    {
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return $user->id === $user2->id;
+    }
+
+    /**
+     * Determine whether the user can update themselves or another user.
+     *
      * @param  \App\User  $user
+     * @param  \App\User  $user2
      * @return boolean
      */
     public function update(User $user, User $user2)
     {
-        // Users can update themselves
-        //return $user->id === $user->id;
-        return true;
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return $user->id === $user2->id;
     }
-
+    
+    /**
+     * Determine whether the user can update another user's role.
+     *
+     * @param  \App\User  $user
+     * @param  \App\User  $user2
+     * @return boolean
+     */
+    public function updateRole(User $user, $user2)
+    {
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return false;
+    }
+    
     /**
      * Determine whether the user can delete the user.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $user
+     * @param  \App\User  $user2
      * @return boolean
      */
-    public function delete(User $user, User $user2)
+    public function destroy(User $user, $user2)
     {
-        // TODO: Check if user role > 1
-        return true;
+        if ($user->role > $user2->role)
+        {
+            return $user->isAdmin();
+        }
+        else
+            return false;
+    }
+    
+    /**
+     * Determine whether the user can restore the user.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function restore(User $user)
+    {
+        return $user->isAdmin();
     }
 }

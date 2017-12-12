@@ -88,7 +88,6 @@ class DevicesDataTable extends DataTable
             'dom'     => 'Bfrtip',
             'order'   => [ [ 0, 'asc' ] ],
             'buttons' => [
-                'create',
                 [ 'extend' => 'collection', 'text' => '<i class="fa fa-file-excel-o"></i> Export', 'buttons' => [ 
                     [ 'extend' => 'csv', 'exportOptions' => [ 'modifier' => [ 'search' => true ] ] ],
                     [ 'extend' => 'excel', 'exportOptions' => [ 'modifier' => [ 'search' => true ] ] ],

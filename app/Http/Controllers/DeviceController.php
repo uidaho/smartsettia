@@ -9,6 +9,7 @@ use App\Device;
 use App\Site;
 use App\Location;
 use Charts;
+use Illuminate\Support\Facades\Auth;
 
 class DeviceController extends Controller
 {
@@ -29,28 +30,24 @@ class DeviceController extends Controller
      */
     public function index(DevicesDataTable $dataTable)
     {
+        $this->authorize('index', Device::class);
+        
         $trashed = Device::onlyTrashed()->get();
         return $dataTable->render('device.index', compact('trashed'));
     }
 
     /**
-     * Show create device page.
-     *
-     * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('device.index');
-    }
-
-    /**
      * Show the given device.
      *
-     * @param  Device  $device
+     * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Device $device)
+    public function show($id)
     {
+        $this->authorize('show', Device::class);
+        
+        $device = Device::findOrFail($id);
+        
         $charts = [ ];
         foreach ($device->sensors as $sensor) {
             $data = $sensor->last_month_daily_avg_data;
@@ -68,11 +65,15 @@ class DeviceController extends Controller
     /**
      * View the edit device page
      *
-     * @param  Device  $device
+     * @param  string  $id
      * @return \BladeView|bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Device $device)
+    public function edit($id)
     {
+        $this->authorize('edit', Device::class);
+        
+        //Get the device with the given id
+        $device = Device::findOrFail($id);
         //Get the devices location
         $location = $device->location()->select('id', 'name', 'site_id')->first();
     
@@ -99,18 +100,20 @@ class DeviceController extends Controller
      */
     public function update(EditDevice $request, Device $device)
     {
-        //Get the site id and location id for the device if they are not null
-        if ($request->input('new_site_name') != null || $request->input('site_id') != null)
+        //Update the device if the user us authorized to
+        if ($request->input('name') != null)
         {
+            $this->authorize('update', Device::class);
+            
             //Get the site id of the old or newly created site
             if (!empty($request->input('new_site_name')))
             {
                 //Create a new site
                 $site = Site::create([ 'name' => $request->input('new_site_name') ]);
                 $site_id = $site->id;
-            } else {
-                            $site_id = $request->input('site_id');
             }
+            else
+                $site_id = $request->input('site_id');
     
             //Get the location id of the old or newly created location
             if (!empty($request->input('new_location_name')))
@@ -118,32 +121,28 @@ class DeviceController extends Controller
                 //Create a new location
                 $location = Location::create([ 'name' => $request->input('new_location_name'), 'site_id' => $site_id ]);
                 $location_id = $location->id;
-            } else
+            }
+            else
                 $location_id = $request->input('location_id');
     
             //Update the device
             $device->location_id = $location_id;
-        }
-        
-        //Update the device
-        if ($request->input('name') != null)
+    
             $device->name = $request->input('name');
-        if ($request->input('open_time') != null)
             $device->open_time = $request->input('open_time');
-        if ($request->input('close_time') != null)
             $device->close_time = $request->input('close_time');
-        if ($request->input('update_rate') != null)
             $device->update_rate = $request->input('update_rate');
-        if ($request->input('image_rate') != null)
             $device->image_rate = $request->input('image_rate');
-        if ($request->input('sensor_rate') != null)
             $device->sensor_rate = $request->input('sensor_rate');
+        }
+
         //Check if the cover_command needs to be updated
         if ($request->input('command') != null)
         {
+            $this->authorize('updateCommand', Device::class);
             //If device is currently opening, closing or in an error state don't update command
             if (!$device->isReadyForCommand())
-                return response()->json("Device is currently in use.", 403);
+                return response()->json("Device is currently in use.", 503);
     
             $command = $request->input('command');
             
@@ -170,11 +169,13 @@ class DeviceController extends Controller
     /**
      * Deletes a device.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Device::class);
+        
         $device = Device::withTrashed()->findOrFail($id);
 
         if ($device->trashed())
@@ -198,11 +199,13 @@ class DeviceController extends Controller
     /**
      * Restores a device.
      *
-     * @param int $id
+     * @param  string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
+        $this->authorize('restore', Device::class);
+        
         $device = Device::onlyTrashed()->findOrFail($id);
 
         $device->restore();

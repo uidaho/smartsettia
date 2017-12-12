@@ -70,8 +70,10 @@
                                         <a href="{{ route('logs') }}"><i class="fa-fw fa fa-history" aria-hidden="true"></i> Logs</a></li>
 									<li class="{{ Route::currentRouteNamed('site.index') ? 'active' : '' }}" role="presentation">
 										<a href="{{ route('site.index') }}"><i class="fa-fw fa fa-globe" aria-hidden="true"></i> Sites</a></li>
-									<li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
-                                        <a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Users</a></li>
+									@can('index', App\User::class)
+										<li class="{{ Route::currentRouteNamed('user.index') ? 'active' : '' }}" role="presentation">
+											<a href="{{ route('user.index') }}"><i class="fa-fw fa fa-user" aria-hidden="true"></i> Users</a></li>
+									@endcan
                                 </ul>
                             </li>
                         @endif

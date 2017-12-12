@@ -45,7 +45,7 @@ Route::resource('user', 'UserController');
  * Device Controller       *
  *-----------------------*/
 Route::put('device/{id}/restore', 'DeviceController@restore')->name('device.restore');
-Route::resource('device', 'DeviceController');
+Route::resource('device', 'DeviceController', ['except' => ['create', 'store']]);
 
 /*-----------------------*
  * Dashboard Controller  *
@@ -61,12 +61,12 @@ Route::get('logs', 'ActivityLogController@index')->name('logs');
 /*-----------------------*
  * Sensor Controller *
  *-----------------------*/
-Route::resource('sensor', 'SensorController');
+Route::resource('sensor', 'SensorController', ['except' => ['index', 'create', 'store', 'edit', 'update']]);
 
 /*-----------------------*
  * SensorData Controller *
  *-----------------------*/
-Route::resource('sensordata', 'SensorDataController');
+Route::resource('sensordata', 'SensorDataController', ['except' => ['index', 'create', 'store', 'edit', 'update']]);
 
 /*-----------------------*
  * Image Controller  *

@@ -29,14 +29,20 @@
 							</div>
 						</div>
 					</div>
-					<div class="panel-footer">
-						<a class="btn btn-sm btn-primary" type="button" title="Go to location list" href="{{ route('location.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+					<div class="panel-footer clearfix">
+						@can('index', App\Location::class)
+							<a class="btn btn-sm btn-primary" type="button" title="Go to location list" href="{{ route('location.index') }}"><i class="glyphicon glyphicon-arrow-up"></i></a>
+						@endcan
 						<span class="pull-right">
-                        <a class="btn btn-sm btn-warning" type="button" title="Edit this location data" href="{{ route('location.edit', $location->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
-							{!! Form::open(['method' => 'DELETE', 'route' => ['location.destroy', $location->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
-							{!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this location']) !!}
-							{!! Form::close() !!}
-                    </span>
+							@can('edit', App\Location::class)
+                        		<a class="btn btn-sm btn-warning" type="button" title="Edit this location data" href="{{ route('location.edit', $location->id) }}"><i class="glyphicon glyphicon-edit"></i></a>
+							@endcan
+							@can('destroy', App\Location::class)
+								{!! Form::open(['method' => 'DELETE', 'route' => ['location.destroy', $location->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to delete this?")']) !!}
+									{!! Form::button('<i class="glyphicon glyphicon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger', 'title' => 'Remove this location']) !!}
+								{!! Form::close() !!}
+							@endcan
+                    	</span>
 					</div>
 				</div>
 			</div>

@@ -26,6 +26,8 @@ class SensorDataController extends Controller
      */
     public function index(SensorDataDataTable $dataTable)
     {
+        $this->authorize('index', SensorData::class);
+        
         return $dataTable->render('sensordata.index');
     }
 
@@ -36,6 +38,8 @@ class SensorDataController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', SensorData::class);
+        
         return view('sensordata.create');
     }
 
@@ -47,6 +51,8 @@ class SensorDataController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', SensorData::class);
+        
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
@@ -66,6 +72,8 @@ class SensorDataController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show', SensorData::class);
+        
         $sensorData = SensorData::findOrFail($id);
         return view('sensordata.show', [ 'sensordata' => $sensorData ]);
     }
@@ -78,6 +86,8 @@ class SensorDataController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('edit', SensorData::class);
+        
         $sensorData = SensorData::findOrFail($id);
         return view('sensordata.edit', [ 'sensordata' => $sensorData ]);
     }
@@ -91,6 +101,8 @@ class SensorDataController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('update', SensorData::class);
+        
         request()->validate([
             'sensor_id' => 'required|integer|digits_between:1,10|exists:sensors,id',
             'value' => 'required|max:190|value_string'
@@ -108,6 +120,8 @@ class SensorDataController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', SensorData::class);
+        
         SensorData::findOrFail($id)->delete();
         return redirect()->route('sensordata.index')
             ->with('success', 'SensorData deleted successfully');

@@ -27,6 +27,8 @@ class SensorController extends Controller
      */
     public function index(SensorDataTable $dataTable)
     {
+        $this->authorize('index', Sensor::class);
+        
         return $dataTable->render('sensor.index');
     }
 
@@ -37,6 +39,8 @@ class SensorController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Sensor::class);
+    
         return view('sensor.create');
     }
 
@@ -48,6 +52,8 @@ class SensorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', Sensor::class);
+    
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
@@ -68,6 +74,8 @@ class SensorController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show', Sensor::class);
+    
         $sensor = Sensor::findOrFail($id);
         $latestData = $sensor->latestData;
         $sensordata = $sensor->data()->orderBy('id', 'desc')->paginate(25);
@@ -90,6 +98,8 @@ class SensorController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('edit', Sensor::class);
+    
         $sensor = Sensor::findOrFail($id);
         return view('sensor.edit', [ 'sensor' => $sensor ]);
     }
@@ -103,6 +113,8 @@ class SensorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('update', Sensor::class);
+    
         request()->validate([
             'device_id' => 'required|integer|digits_between:1,10|exists:devices,id',
             'name' => 'required|min:2|max:190|name',
@@ -121,6 +133,8 @@ class SensorController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('destroy', Sensor::class);
+    
         Sensor::findOrFail($id)->delete();
         return redirect()->route('sensor.index')
             ->with('success', 'Sensor deleted successfully');

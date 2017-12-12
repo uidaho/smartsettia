@@ -17,7 +17,7 @@
 		            </a>
 		        </li>
 				<li>
-					<a href="#trash" role="tab" data-toggle="tab"">
+					<a href="#trash" role="tab" data-toggle="tab">
 						<i class="fa fa-trash"></i> Trash
 					</a>
 				</li>
@@ -43,12 +43,16 @@
 								<th>{{ $trash->name }}</th>
 								<th>{{ $trash->deletedAtHuman }}</th>
 								<th>
-									{!! Form::open(['method' => 'PUT', 'route' => ['device.restore', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to restore this device?")']) !!}
-										{!! Form::button('<i class="fa fa-undo"></i> Restore', ['type' => 'submit', 'class' => 'btn btn-xs btn-primary', 'title' => 'Restore this device']) !!}
-									{!! Form::close() !!}
-									{!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to permanantly delete this device?")']) !!}
-										{!! Form::button('<i class="glyphicon glyphicon-remove"></i> Delete', ['type' => 'submit', 'class' => 'btn btn-xs btn-danger', 'title' => 'Permanantly delete this device']) !!}
-									{!! Form::close() !!}
+									@can('restore', App\Device::class)
+										{!! Form::open(['method' => 'PUT', 'route' => ['device.restore', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to restore this device?")']) !!}
+											{!! Form::button('<i class="fa fa-undo"></i> Restore', ['type' => 'submit', 'class' => 'btn btn-xs btn-primary', 'title' => 'Restore this device']) !!}
+										{!! Form::close() !!}
+									@endcan
+									@can('destroy', App\Device::class)
+										{!! Form::open(['method' => 'DELETE', 'route' => ['device.destroy', $trash->id], 'style' => 'display:inline', 'onsubmit' => 'return confirm("Are you sure you want to permanantly delete this device?")']) !!}
+											{!! Form::button('<i class="glyphicon glyphicon-remove"></i> Delete', ['type' => 'submit', 'class' => 'btn btn-xs btn-danger', 'title' => 'Permanantly delete this device']) !!}
+										{!! Form::close() !!}
+									@endcan
 								</th>
 							</tr>
 							@endforeach

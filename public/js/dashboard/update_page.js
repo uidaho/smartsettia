@@ -87,7 +87,7 @@ $locationList.on('click', 'li[data-location-id]', function () {
 $deviceTableHolder.on('click', '#pagination_links', function (e) {
 	//Prevent the normal link redirect
 	e.preventDefault();
-	let $clickedElement = $(event.target);
+	let $clickedElement = $(e.target);
 
 	if (typeof $clickedElement.attr('href') !== typeof undefined && $clickedElement.attr('href') !== false)
 	{
@@ -167,6 +167,8 @@ function updateDashboardData(targetURL, targetData)
 			{
 				if (data.status === 404)
 					alertBarActivate("An error was encountered, please try again later.", 'error');
+				else if (data.status === 403)
+					window.location.href = 'dashboard';
 				
 				lock = false;
 			}

@@ -25,6 +25,8 @@ class LocationController extends Controller
      */
     public function index(LocationDataTable $dataTable)
     {
+        $this->authorize('index', Location::class);
+        
         return $dataTable->render('location.index');
     }
 
@@ -35,6 +37,8 @@ class LocationController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Location::class);
+        
         $sites = Site::orderBy('name', 'ASC')->get();
         return view('location.create', [ 'sites' => $sites ]);
     }
@@ -47,6 +51,8 @@ class LocationController extends Controller
      */
     public function store(EditLocation $request)
     {
+        $this->authorize('store', Location::class);
+        
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
         {
@@ -66,11 +72,14 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Location  $location
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Location $location)
+    public function show($id)
     {
+        $this->authorize('show', Location::class);
+        
+        $location = Location::findOrFail($id);
         $devices = $location->devices()->orderBy('name', 'ASC')->paginate(15);
     
         return view('location.show', [ 'location' => $location, 'devices' => $devices ]);
@@ -79,11 +88,14 @@ class LocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Location  $location
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Location $location)
+    public function edit($id)
     {
+        $this->authorize('edit', Location::class);
+        
+        $location = Location::findOrFail($id);
         $sites = Site::orderByRaw("id = ? DESC", $location->site_id)->orderBy('name', 'ASC')->get();
     
         return view('location.edit', [ 'location' => $location, 'sites' => $sites ]);
@@ -93,11 +105,13 @@ class LocationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  EditLocation  $request
-     * @param  Location $location
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(EditLocation $request, Location $location)
+    public function update(EditLocation $request, $id)
     {
+        $this->authorize('update', Location::class);
+        
         //Get the site id of the old or newly created site
         if (!empty($request->input('new_site_name')))
         {
@@ -109,21 +123,23 @@ class LocationController extends Controller
         }
         
         //Update the location with the supplied name and the site
-        $location->update([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
+        Location::findOrFail($id)->update([ 'name' => $request->input('name'), 'site_id' => $site_id ]);
         
-        return redirect()->route('location.show', $location->id)
+        return redirect()->route('location.show', $id)
             ->with('success', 'Location updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Location $location
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Location $location)
+    public function destroy($id)
     {
-        $location->delete();
+        $this->authorize('destroy', Location::class);
+        
+        Location::findOrFail($id)->delete();
         return redirect()->route('location.index')
             ->with('success', 'Location deleted successfully');
     }

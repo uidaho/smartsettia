@@ -14,7 +14,7 @@ class EditDevice extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->isUser();
+        return true;
     }
 
     /**

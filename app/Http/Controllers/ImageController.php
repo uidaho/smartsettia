@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Deviceimage;
 use Intervention\Image\Facades\Image as Image;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,8 @@ class ImageController extends Controller
      */
     public function show($device_id)
     {
+        $this->authorize('show', Deviceimage::class);
+        
         if (Storage::disk('private')->exists('deviceimage/'.$device_id))
             $image = Image::make(Storage::disk('private')->get('deviceimage/'.$device_id));
         else
