@@ -7,8 +7,8 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 7.2.24
-  - 7.3.11
+  - 7.2
+  - 7.3
 
 services:
   - redis-server
