@@ -5,8 +5,8 @@
 [![Latest Stable Version](https://poser.pugx.org/uidaho/smartsettia/v/stable)](https://packagist.org/packages/uidaho/smartsettia)
 [![Latest Unstable Version](https://poser.pugx.org/uidaho/smartsettia/v/unstable)](https://packagist.org/packages/uidaho/smartsettia)
 [![License](https://poser.pugx.org/uidaho/smartsettia/license)](https://packagist.org/packages/uidaho/smartsettia)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/uidaho/smartsettia/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/uidaho/smartsettia/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/uidaho/smartsettia/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/uidaho/smartsettia/?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0a2c540209c27913ae33/maintainability)](https://codeclimate.com/github/uidaho/smartsettia/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0a2c540209c27913ae33/test_coverage)](https://codeclimate.com/github/uidaho/smartsettia/test_coverage)
 [![composer.lock](https://poser.pugx.org/uidaho/smartsettia/composerlock)](https://packagist.org/packages/uidaho/smartsettia)
 
 SmartSettia is a poinsettia life-cycle management system that couples the flexibility of IoT devices with the power of the cloud. Control units can be securely installed and controlled anywhere with an internet connection.
